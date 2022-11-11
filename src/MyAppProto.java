@@ -12,7 +12,7 @@ public class MyAppProto {
 
     public MyAppProto (byte[] info)
     {
-        String infoStr = new String(info);
+        String infoStr = new String(info).trim();
         String[] fields = infoStr.split(";");
         this.msgID   = fields[0];
         this.flags   = fields[1];

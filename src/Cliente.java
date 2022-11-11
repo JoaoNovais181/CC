@@ -10,5 +10,14 @@ public class Cliente {
         DatagramPacket req = new DatagramPacket(pdu.getBytes(), pdu.getBytes().length, serverAdress, portServer);
         DatagramSocket s = new DatagramSocket();
         s.send(req);
+
+        byte[] buf = new byte[256];
+        DatagramPacket receive = new DatagramPacket(buf, buf.length);
+        s.receive(receive);
+
+        MyAppProto ans = new MyAppProto(receive.getData());
+        System.out.println(ans.toString());
+
+        s.close();
     }
 }

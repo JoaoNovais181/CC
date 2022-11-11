@@ -2,29 +2,29 @@
 # It also includes a pointer to the primary server
 # of the smaller.example.com subdomain
 
-@ DEFAULT example.com.
+@ DEFAULT mafarrico.
 TTL DEFAULT 86400
 
-@ SOASP ns1.example.com. TTL
-@ SOAADMIN dns\.admin.example.com. TTL
+@ SOASP ns1.mafarrico. TTL
+@ SOAADMIN dns\.admin.mafarrico. TTL
 @ SOASERIAL 0117102022 TTL
 @ SOAREFRESH 14400 TTL
 @ SOARETRY 3600 TTL
 @ SOAEXPIRE 604800 TTL
 
-@ NS ns1.example.com. TTL
-@ NS ns2.example.com. TTL
-@ NS ns3.example.com. TTL
+@ NS ns1.mafarrico. TTL
+@ NS ns2.mafarrico. TTL
+@ NS ns3.mafarrico. TTL
 
-Smaller.@ NS sp.smaller.example.com.
+chocapic.@ NS sp.chocapic.mafarrico.
 
-@ MX mx1.example.com TTL 10
-@ MX mx2.example.com TTL 20
+@ MX mx1.mafarrico TTL 10
+@ MX mx2.mafarrico TTL 20
 
 ns1 A 10.0.17.10 TTL
 ns2 A 10.0.18.12 TTL
 ns3 A 10.0.19.11 TTL
-sp.smaller A 193.140.90.11 TTL
+sp.chocapic A 10.0.22.10 TTL
 mx1 A 10.0.18.11 TTL
 mx2 A 10.0.19.12 TTL
 

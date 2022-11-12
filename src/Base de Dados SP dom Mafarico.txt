@@ -1,13 +1,13 @@
-# DNS database file for domain example.com
+# DNS database file for domain mafarrico
 # It also includes a pointer to the primary server
-# of the smaller.example.com subdomain
+# of the chocapic.mafarrico subdomain
 
 @ DEFAULT mafarrico.
 TTL DEFAULT 86400
 
 @ SOASP ns1.mafarrico. TTL
 @ SOAADMIN dns\.admin.mafarrico. TTL
-@ SOASERIAL 0117102022 TTL
+@ SOASERIAL 0112112022 TTL
 @ SOAREFRESH 14400 TTL
 @ SOARETRY 3600 TTL
 @ SOAEXPIRE 604800 TTL

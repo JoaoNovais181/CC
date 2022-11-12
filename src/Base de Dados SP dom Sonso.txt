@@ -1,30 +1,30 @@
-# DNS database file for domain example.com
+# DNS database file for domain sonso
 # It also includes a pointer to the primary server
-# of the smaller.example.com subdomain
+# of the nestle.sonso subdomain
 
-@ DEFAULT example.com.
+@ DEFAULT sonso.
 TTL DEFAULT 86400
 
-@ SOASP ns1.example.com. TTL
-@ SOAADMIN dns\.admin.example.com. TTL
-@ SOASERIAL 0117102022 TTL
+@ SOASP ns1.sonso. TTL
+@ SOAADMIN dns\.admin.sonso. TTL
+@ SOASERIAL 0112112022 TTL
 @ SOAREFRESH 14400 TTL
 @ SOARETRY 3600 TTL
 @ SOAEXPIRE 604800 TTL
 
-@ NS ns1.example.com. TTL
-@ NS ns2.example.com. TTL
-@ NS ns3.example.com. TTL
+@ NS ns1.sonso. TTL
+@ NS ns2.sonso. TTL
+@ NS ns3.sonso. TTL
 
-Smaller.@ NS sp.smaller.example.com.
+nestle.@ NS sp.nestle.sonso.
 
-@ MX mx1.example.com TTL 10
-@ MX mx2.example.com TTL 20
+@ MX mx1.sonso TTL 10
+@ MX mx2.sonso TTL 20
 
 ns1 A 10.0.20.10 TTL
 ns2 A 10.0.15.12 TTL
 ns3 A 10.0.21.11 TTL
-sp.smaller A 193.140.90.11 TTL
+sp.nestle A 10.0.26.10 TTL
 mx1 A 10.0.15.11 TTL
 mx2 A 10.0.21.10 TTL
 

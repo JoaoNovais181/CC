@@ -39,4 +39,10 @@ public class DBEntry
         if (str.equals("PTR")) return Type.PTR;
         return Type.DEFAULT;
     }
+
+    @Override
+    public String toString() 
+    {
+        return "" + this.param + " " + this.type + " " + this.value + " " + this.TTL + " " + this.priority;
+    }
 }

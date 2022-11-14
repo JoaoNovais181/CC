@@ -1,0 +1,2 @@
+# Ficheiro de Config para SS1 e SS2 do dominio sonso
+mafarrico SP 10.0.20.10

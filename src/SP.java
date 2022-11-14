@@ -1,4 +1,4 @@
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class SP
 {
-    private String configFile, databaseFile, logFile;
+    private String serverName, configFile, databaseFile, logFile, STfile;
     private Cache cache;
     private Map<String,String> macros;
     private boolean debug;
@@ -23,23 +23,34 @@ public class SP
     // private Map<String, List<Object>> MXs;
     // private Map<String, Object> alias;
     // private int databaseSerialNumber, SOAEXPIRE, ttlDB;
-    public SP (String configFile)
+    public SP (String serverName, String configFile, boolean debug) throws IOException, InvalidConfigException, InvalidDatabaseException, InvalidCacheEntryException
     {
+        this.serverName = serverName;
         this.configFile = configFile;
+        this.debug = debug;
+
         this.SSlist = new ArrayList<>();
         this.DDlist = new HashMap<>();
         this.logFiles = new HashMap<>();
-        this.ParseConfig();
-        this.logger = new CCLogger(this.logFile, this.debug);
-        // this.databaseFile = configFile;
         this.macros = new HashMap<>();
-        // this.entries = new HashMap<>();
-        // this.NSs = new HashMap<>();
-        // this.MXs = new HashMap<>();
-        // this.alias = new HashMap<>();
         this.cache = new Cache(64000);//,this.configFile, this.debug);
-        // this.databaseSerialNumber = -1;
-        // this.SOAEXPIRE = -1;
+        this.logger = new CCLogger(null, this.debug);
+    }
+
+    public void setup() throws IOException, InvalidConfigException, InvalidDatabaseException, InvalidCacheEntryException
+    {
+        this.ParseConfig();
+        this.logger.log(new LogEntry("EV", "localhost", ("conf-file-read " + this.configFile)));
+        
+        File f = new File(this.logFile);
+        if (!f.exists())
+        {
+            f.createNewFile();
+            this.logger.log(new LogEntry("EV", "localhost", ("log-file-create " + this.logFile)));
+        }
+        
+        this.ParseDB();
+        this.logger.log(new LogEntry("EV", "localhost", ("db-file-read " + this.configFile)));
     }
 
     public void ParseConfig() throws IOException, InvalidConfigException
@@ -54,6 +65,9 @@ public class SP
             e.printStackTrace();
             throw new IOException("Couldn't read DB file");
         }
+
+        int firstDot = this.serverName.indexOf('.');
+        String domain = this.serverName.substring(firstDot+1);
 
         for (String line : lines)
         {
@@ -84,8 +98,29 @@ public class SP
 
             else if (tokens[1].equals("LG"))
             {
-                // if (tokens[0].equals(lines))
+                if (tokens[0].equals(domain))
+                {
+                    this.logFile = tokens[2];
+                    this.logger.setLogFile(tokens[2]);
+                }
+                else
+                {
+                    if (!this.logFiles.containsKey(tokens[0]))
+                        this.logFiles.put(tokens[0], new ArrayList<>());
+                    this.logFiles.get(tokens[0]).add(tokens[2]);
+                }
             }
+            
+            else if (tokens[1].equals("ST"))
+            {
+                if (!tokens[0].equals("root"))
+                    throw new InvalidConfigException("ST entry should have 'root' as its parameter");
+
+                this.STfile = tokens[2];
+            }
+
+            else
+                throw new InvalidConfigException("Invalid type " + tokens[1]);
         }
     }
 
@@ -117,8 +152,6 @@ public class SP
                     if (tokens[i].contains(macro)) tokens[i] = tokens[i].replace(macro, this.macros.get(macro));
             }
 
-            
-            
             if (tokens[1].equals("DEFAULT"))
             {
                 if (tokens.length != 3)
@@ -126,6 +159,7 @@ public class SP
                 
                 this.macros.put(tokens[0], tokens[2]);
                 this.cache.put(new CacheEntry(tokens[0], tokens[1], tokens[2], "FILE"));
+                continue;
             }
 
             else if (tokens[1].equals("CNAME"))
@@ -145,6 +179,7 @@ public class SP
 
 
                 alias.put(tokens[0], new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
+                continue;
             }
             
             if (!tokens[0].endsWith(".")) tokens[0] = tokens[0] + "." + this.macros.get("@");
@@ -170,6 +205,30 @@ public class SP
                 if (tokens.length != 4)
                 throw new InvalidDatabaseException("SOAEXPIRE field is not correct (too many arguments)");
                 
+                this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
+            }
+
+            else if (tokens[1].equals("SOASERIAL"))
+            {
+                if (tokens.length != 4)
+                    throw new InvalidDatabaseException("SOASERIAL field is not correct");
+
+                this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
+            }
+
+            else if (tokens[1].equals("SOAREFRESH"))
+            {
+                if (tokens.length != 4)
+                    throw new InvalidDatabaseException("SOAREFRESH field is not correct");
+
+                this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
+            }
+
+            else if (tokens[1].equals("SOARETRY"))
+            {
+                if (tokens.length != 4)
+                    throw new InvalidDatabaseException("SOARETRY field is not correct");
+
                 this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
             }
             
@@ -214,19 +273,25 @@ public class SP
                 throw new InvalidDatabaseException("Type " + tokens[1] + " is invalid");
         }
         this.cache.put(alias.values());
-        System.out.println(this.cache);
+        // System.out.println(this.cache);
     }
 }
 
 
-class Test
+class MainSP
 {
-    public static void main(String[] args)
+    public static void main(String[] args) throws IOException, InvalidConfigException, InvalidDatabaseException, InvalidCacheEntryException
     {
-        SP sp = new SP("./BasedeDadosSPdomMafarrico.txt");
+        if (args.length < 2)
+            return;
 
-        try {sp.ParseDB();}
-        catch (Exception e) {e.printStackTrace();}
+        SP sp;
 
+        if (args.length == 3 && args[0].equals("-g"))
+            sp = new SP(args[1], args[2], true);
+        else
+            sp = new SP(args[0], args[1], false);
+
+        sp.setup();
     }
 }

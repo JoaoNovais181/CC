@@ -5,15 +5,13 @@ import java.time.temporal.ChronoUnit;
 public class Cache
 {
     private CacheEntry[] values;
-    // private CCLogger logger;
 
     
-    public Cache (int size)//, String logFile, boolean debug)
+    public Cache (int size)
     {
         this.values = new CacheEntry[size];
         for (int i=0 ; i<this.values.length ; i++)
             this.values[i] = new CacheEntry();
-        // this.logger = new CCLogger(logFile, debug);
     }
 
     private boolean putFILEorSP (CacheEntry entry)

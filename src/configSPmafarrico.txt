@@ -1,0 +1,12 @@
+# Configuration file for primary server for mafarrico
+
+# mafarrico DB /var/dns/BasedeDadosSPdomMafarrico.txt
+mafarrico DB ./BasedeDadosSPdomMafarrico.txt
+mafarrico SS 10.0.18.12
+example.com SS 10.0.19.11
+#Perguntar ao stor
+mafarico DD 127.0.0.1
+# mafarrico LG /var/dns/mafarricolog.txt
+mafarrico LG ./mafarricolog.txt
+all LG /var/dns/alllogs.log
+root ST /var/dns/rootservers.txt

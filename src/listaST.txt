@@ -1,0 +1,4 @@
+# Ficheiro que contem a lista de ST
+# Perguntar ao professor se tem de aparecer ST ou tenho de mudar o nome deles
+10.0.12.10 ST
+10.0.13.10 ST

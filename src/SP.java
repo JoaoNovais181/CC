@@ -9,24 +9,27 @@ import java.util.Map;
 
 public class SP
 {
-    private String databaseFile;
+    private String configFile, databaseFile;
     private Cache cache;
     private Map<String,String> macros;
+    private boolean debug;
     // private Map<String, Object> entries;
     // private Map<String, Object> SOASPentires;
     // private Map<String, Object> NSs;
     // private Map<String, List<Object>> MXs;
     // private Map<String, Object> alias;
     // private int databaseSerialNumber, SOAEXPIRE, ttlDB;
-    public SP (String databaseFile)
+    public SP (String configFile)
     {
-        this.databaseFile = databaseFile;
+        this.configFile = configFile;
+        this.ParseConfig();
+        // this.databaseFile = databaseFile;
         this.macros = new HashMap<>();
         // this.entries = new HashMap<>();
         // this.NSs = new HashMap<>();
         // this.MXs = new HashMap<>();
         // this.alias = new HashMap<>();
-        this.cache = new Cache(64000);
+        this.cache = new Cache(64000,this.configFile, this.debug);
         // this.databaseSerialNumber = -1;
         // this.SOAEXPIRE = -1;
     }

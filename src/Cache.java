@@ -8,11 +8,12 @@ public class Cache
     private CCLogger logger;
 
     
-    public Cache (int size)
+    public Cache (int size, String logFile, boolean debug)
     {
         this.values = new CacheEntry[size];
         for (int i=0 ; i<this.values.length ; i++)
             this.values[i] = new CacheEntry();
+        this.logger = new CCLogger(logFile, debug);
     }
 
     private boolean putFILEorSP (CacheEntry entry)

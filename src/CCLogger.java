@@ -1,4 +1,7 @@
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class CCLogger 
 {
@@ -12,11 +15,20 @@ public class CCLogger
         this.debugMode = debugMode;
     }
 
-    public void log(String message)
+    public void log(String message) throws IOException
     {
         if (this.debugMode)
         {
-
+            System.out.println(message);
+        }
+        else
+        {
+            FileWriter fw = new FileWriter(this.logFile);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(message);
+            bw.newLine();
+            bw.close();
+            fw.close();
         }
     }
 }

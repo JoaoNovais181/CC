@@ -1,0 +1,2 @@
+# Ficheiro de Config para SS1 e SS2 do dominio mafarrico
+mafarrico SP 10.0.17.10

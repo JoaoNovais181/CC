@@ -13,7 +13,7 @@ public class CacheEntry
     {
         this.Name = Name;
         this.Type = Type;
-        this.Value = "";
+        this.Value = Value;
         this.TTL  = TTL;
         this.Order = Order;
         if ("OTHERS FILE SP".indexOf(Origin)==-1)
@@ -28,7 +28,7 @@ public class CacheEntry
     {
         this.Name = Name;
         this.Type = Type;
-        this.Value = "";
+        this.Value = Value;
         this.TTL  = TTL;
         this.Order = 0;
         if ("OTHERS FILE SP".indexOf(Origin)==-1)
@@ -44,7 +44,7 @@ public class CacheEntry
     {
         this.Name = Name;
         this.Type = Type;
-        this.Value = "";
+        this.Value = Value;
         this.TTL  = 0;
         this.Order = 0;
         if ("OTHERS FILE SP".indexOf(Origin)==-1)
@@ -65,7 +65,7 @@ public class CacheEntry
         this.Origin = "";
         this.TimeStamp = LocalDateTime.now();
         this.Index = 0;
-        this.Status = true;
+        this.Status = FREE;
     }
 
     public String getName() {return this.Name;}
@@ -100,6 +100,6 @@ public class CacheEntry
     @Override
     public String toString() 
     {
-        return "" + this.Name + " " + this.Type + " " + this.Value + " " + this.TTL + " " + this.Order + " " + this.TimeStamp.toString() + " " + this.Index + " " + ((this.Status) ?"FREE" :"VALID");
+        return "" + this.Name + " " + this.Type + " " + this.Value + " " + this.TTL + " " + this.Order + " " + this.Origin + " " + this.TimeStamp.toString() + " " + this.Index + " " + ((this.Status) ?"FREE" :"VALID");
     }
 }

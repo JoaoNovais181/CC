@@ -5,35 +5,35 @@ import java.time.temporal.ChronoUnit;
 public class Cache
 {
     private CacheEntry[] values;
-    private CCLogger logger;
+    // private CCLogger logger;
 
     
-    public Cache (int size, String logFile, boolean debug)
+    public Cache (int size)//, String logFile, boolean debug)
     {
         this.values = new CacheEntry[size];
         for (int i=0 ; i<this.values.length ; i++)
             this.values[i] = new CacheEntry();
-        this.logger = new CCLogger(logFile, debug);
+        // this.logger = new CCLogger(logFile, debug);
     }
 
     private boolean putFILEorSP (CacheEntry entry)
     {
         for (int i=0 ; i<this.values.length ; i++)
-            if (this.values[i].getStatus()) { this.values[i] = entry; entry.setIndex(i); entry.setTimeStamp(LocalDateTime.now()); return true;}
+            if (this.values[i].getStatus() == CacheEntry.FREE) { this.values[i] = entry; entry.setIndex(i); entry.setTimeStamp(LocalDateTime.now()); return true;}
         return false;
     }
 
     public boolean put(CacheEntry entry)
     {
-        if ("FILE SP".indexOf(entry.getType()) != -1)
+        if ("FILE SP".indexOf(entry.getOrigin()) != -1)
             return putFILEorSP(entry);
-        
+
         int i = this.get(entry.getName(), entry.getType(), 1);
         if (i != -1)
         {
             CacheEntry existing = this.values[i];
             if ("FILE SP".indexOf(existing.getOrigin()) != -1)
-                return true;
+                return false;
             
             existing.setTimeStamp(LocalDateTime.now());
             existing.setStatus(CacheEntry.VALID);
@@ -41,7 +41,7 @@ public class Cache
         }
 
         for (int j=0 ; j<this.values.length ; j++)
-            if (this.values[i].getStatus()) 
+            if (this.values[j].getStatus()) 
                 i=j;
 
         if (i==-1) return false;
@@ -64,7 +64,7 @@ public class Cache
         int r = -1;
         for (int i=0 ; i<this.values.length ; i++)
         {
-            int index = Index+i;
+            int index = (Index+i)%this.values.length;
             CacheEntry curr = this.values[index]; 
             if (curr.getName().equals(Name) && curr.getType().equals(Type)) r = index;
 

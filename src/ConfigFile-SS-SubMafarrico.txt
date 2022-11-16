@@ -1,0 +1,3 @@
+# Ficheiro de Config para SS1 e SS2 do subdominio de mafarrico
+chocapic.mafarrico SP 10.0.22.10
+chocapic.mafarrico LG /var/dns/subdommafarrico.txt

@@ -16,7 +16,7 @@ public class Servidor {
             serverSocket.receive(receive) ;   // extrair ip cliente, Port Client, Payload UDP
             InetAddress clientAddress = receive.getAddress();
             int clientPort = receive.getPort();
-            MyAppProto msg = new MyAppProto(receive.getData());   // o getdata da um array de bytes - bytes []
+            MyAppProtoOld msg = new MyAppProtoOld(receive.getData());   // o getdata da um array de bytes - bytes []
 
             int result;
             boolean op = msg.getFlags().toUpperCase().equals("S"); // se for True temos Adicao senao temos Multiplicacao
@@ -36,7 +36,7 @@ public class Servidor {
 
             int msgID = Integer.parseInt(msg.getMsgID()) + 1;
 
-            String pdu = new MyAppProto(("" + msgID), "A", (""+result)).toString();
+            String pdu = new MyAppProtoOld(("" + msgID), "A", (""+result)).toString();
 
             DatagramPacket send = new DatagramPacket(pdu.getBytes(), pdu.getBytes().length, clientAddress, clientPort);
 

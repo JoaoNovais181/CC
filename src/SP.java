@@ -17,12 +17,8 @@ public class SP
     private List<String> SSlist;
     private Map<String,List<String>> DDlist;
     private Map<String,List<String>> logFiles;
-    // private Map<String, Object> entries;
-    // private Map<String, Object> SOASPentires;
-    // private Map<String, Object> NSs;
-    // private Map<String, List<Object>> MXs;
-    // private Map<String, Object> alias;
-    // private int databaseSerialNumber, SOAEXPIRE, ttlDB;
+    private List<String> STs;
+
     public SP (String serverName, String configFile, boolean debug) throws IOException, InvalidConfigException, InvalidDatabaseException, InvalidCacheEntryException
     {
         this.serverName = serverName;
@@ -33,6 +29,7 @@ public class SP
         this.DDlist = new HashMap<>();
         this.logFiles = new HashMap<>();
         this.macros = new HashMap<>();
+        this.STs    = new ArrayList<>();
         this.cache = new Cache(64000);//,this.configFile, this.debug);
         this.logger = new CCLogger(null, this.debug);
     }
@@ -51,6 +48,36 @@ public class SP
         
         this.ParseDB();
         this.logger.log(new LogEntry("EV", "localhost", ("db-file-read " + this.configFile)));
+    }
+
+    public void ParseSTfile () throws IOException, InvalidSTFile
+    {
+        List<String> lines = new ArrayList<String>();
+        try
+        {
+            lines = Files.readAllLines(Paths.get(this.STfile));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            throw new IOException("Couldn't read DB file");
+        }
+
+        for (String line : lines)
+        {
+            if (line.length() == 0 || line.charAt(0) == '#')
+                continue;
+
+            String[] tokens = line.split(" ");
+            
+            if (tokens.length != 2) 
+                throw new InvalidSTFile("Incorrect number of arguments for entry: " + line);
+
+            if (!tokens[1].equals("ST"))
+                throw new InvalidSTFile("Wrong type \"" + tokens[1] + "\"");
+
+            this.STs.add(tokens[0]);
+        }            
     }
 
     public void ParseConfig() throws IOException, InvalidConfigException

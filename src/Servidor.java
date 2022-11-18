@@ -16,7 +16,8 @@ public class Servidor {
             serverSocket.receive(receive) ;   // extrair ip cliente, Port Client, Payload UDP
             InetAddress clientAddress = receive.getAddress();
             int clientPort = receive.getPort();
-            MyAppProtoOld msg = new MyAppProtoOld(receive.getData());   // o getdata da um array de bytes - bytes []
+            // MyAppProtoOld msg = new MyAppProtoOld(receive.getData());   // o getdata da um array de bytes - bytes []
+            MyAppProto msg = new My
 
             int result;
             boolean op = msg.getFlags().toUpperCase().equals("S"); // se for True temos Adicao senao temos Multiplicacao

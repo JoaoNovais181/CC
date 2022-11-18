@@ -1,6 +1,4 @@
 import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.util.BitSet;
 
 public class Header
 {
@@ -30,14 +28,15 @@ public class Header
     // msgid -> 16 bits, flags -> 4 bits  (podia ser 2 mas nao consigo fazer com 2 por enquanto), rest -> 8 bits
     public byte[] Encode()
     {
-        ByteBuffer bb = ByteBuffer.allocate(56);
+        ByteBuffer bb = ByteBuffer.allocate(7);
         short id = Short.valueOf(this.MsgID);
         bb.putShort(id);
         
         byte flags;
-        if (this.Flags.equals("Q")) flags = 0b01;        // se flag for Q entao fica com o valor 01 em binario
-        else if (this.Flags.equals("R")) flags = 0b10;   // se flag for R entao fica com o valor 10 em binario
-        else if (this.Flags.equals("A")) flags = 0b11;   // se flag for A entao fica com o valor 11 em binario
+        if (this.Flags.equals("Q")) flags = 0b001;        // se flag for Q entao fica com o valor 001 em binario
+        else if (this.Flags.equals("R")) flags = 0b010;   // se flag for R entao fica com o valor 010 em binario
+        else if (this.Flags.equals("A")) flags = 0b100;   // se flag for A entao fica com o valor 100 em binario
+        else if (this.Flags.equals("Q+R")) flags = 0b011;   // se flag for Q+R entao fica com o valor 011 em binario
         else return null;   // mudar isto 
         bb.put(flags);
 
@@ -52,9 +51,40 @@ public class Header
         return bb.array();
     }
 
+    public static Header Decode (byte[] encodedHeader)
+    {
+        String MsgId, Flags;
+        int responseCode, numberOfValues, numberOfAuthorities, numberOfExtraValues;
+
+        short id = ByteBuffer.wrap(new byte[]{encodedHeader[0], encodedHeader[1]}).getShort();
+        MsgId = "" + id;
+
+        if (encodedHeader[2]==0b001) Flags = "Q";
+        else if (encodedHeader[2]==0b010) Flags = "R";
+        else if (encodedHeader[2]==0b100) Flags = "A";
+        else if (encodedHeader[2]==0b011) Flags = "Q+R";
+        else return null; // mudar isto
+
+        responseCode = (int)encodedHeader[3];
+        numberOfValues = (int)encodedHeader[4] + 127;
+        numberOfAuthorities = (int)encodedHeader[5] + 127;
+        numberOfExtraValues = (int)encodedHeader[6] + 127;
+
+        return new Header(MsgId, Flags, responseCode, numberOfValues, numberOfAuthorities, numberOfExtraValues);
+    }
+
+    @Override
+    public String toString()
+    {
+        return this.MsgID + "," + this.Flags + "," + this.responseCode + ","
+               + this.numberOfValues + "," + this.numberOfAuthorities + "," + this.numberOfExtraValues + ";";
+    }
+
     public static void main(String[] args)
     {
-        Header header = new Header("1", "Q");
-        System.out.println(Arrays.toString(header.Encode()));
+        Header header = new Header("9854", "Q+R");
+        byte[] encoded = header.Encode();
+        // System.out.println(Arrays.toString(header.Encode()));
+        System.out.println(Header.Decode(encoded));
     }
 }

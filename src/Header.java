@@ -25,6 +25,17 @@ public class Header
         this.numberOfExtraValues = numberOfExtraValues;
     }
 
+    public Header(String paramsString)
+    {
+        String[] params = paramsString.split(",");
+        this.MsgID = params[0];
+        this.Flags = params[1];
+        this.responseCode = Integer.parseInt(params[2]);
+        this.numberOfValues = Integer.parseInt(params[3]);
+        this.numberOfAuthorities = Integer.parseInt(params[4]);
+        this.numberOfExtraValues = Integer.parseInt(params[5]);
+    }
+
     // msgid -> 16 bits, flags -> 4 bits  (podia ser 2 mas nao consigo fazer com 2 por enquanto), rest -> 8 bits
     public byte[] Encode()
     {

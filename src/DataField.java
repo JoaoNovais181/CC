@@ -25,6 +25,16 @@ public class DataField
         for (int i=0 ; i<nev ; i++) this.extraValues[i] = null;
     }
 
+    public DataField(String paramsString)
+    {
+        String[] params = paramsString.split(",");
+        this.Name = params[0];
+        this.TypeOfValue = params[1];
+        this.responseValues = new String[Integer.parseInt(params[2])];
+        this.authoritiesValues = new String[Integer.parseInt(params[3])];
+        this.extraValues = new String[Integer.parseInt(params[4])];
+    }
+
     public void PutValue (String value)
     {
         for (int i=0 ; i<this.responseValues.length ; i++)
@@ -53,15 +63,15 @@ public class DataField
 
         for (int i=0 ; i<this.responseValues.length-1 ; i++)
             r += this.responseValues[i] + ",\n";
-        r += this.responseValues[this.responseValues.length-1] + ";\n";
+        r += (this.responseValues==null) ?this.responseValues[this.responseValues.length-1] :"" + ";\n";
         
         for (int i=0 ; i<this.authoritiesValues.length-1 ; i++)
             r += this.authoritiesValues[i] + ",\n";
-        r += this.authoritiesValues[this.authoritiesValues.length-1] + ";\n";
+        r += (this.authoritiesValues==null) ?this.authoritiesValues[this.authoritiesValues.length-1] :"" + ";\n";
 
         for (int i=0 ; i<this.extraValues.length-1 ; i++)
             r += this.extraValues[i] + ",\n";
-        r += this.extraValues[this.extraValues.length-1] + ";\n";
+        r += (this.extraValues==null) ?this.extraValues[this.extraValues.length-1] :"" + ";\n";
     
         return r;
     }

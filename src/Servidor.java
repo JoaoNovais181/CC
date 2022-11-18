@@ -17,27 +17,27 @@ public class Servidor {
             InetAddress clientAddress = receive.getAddress();
             int clientPort = receive.getPort();
             // MyAppProtoOld msg = new MyAppProtoOld(receive.getData());   // o getdata da um array de bytes - bytes []
-            MyAppProto msg = new My
+            MyAppProto msg = new MyAppProto(receive.getData());
 
-            int result;
-            boolean op = msg.getFlags().toUpperCase().equals("S"); // se for True temos Adicao senao temos Multiplicacao
+            // int result;
+            // boolean op = msg.getFlags().toUpperCase().equals("S"); // se for True temos Adicao senao temos Multiplicacao
 
-            if (op) result = 0;
-            else result = 1;
+            // if (op) result = 0;
+            // else result = 1;
 
-            for (String s : msg.getNumbers().split(" "))
-            {
-                int num = Integer.parseInt(s.trim());
+            // for (String s : msg.getNumbers().split(" "))
+            // {
+            //     int num = Integer.parseInt(s.trim());
 
-                if (op)
-                    result += num;
-                else
-                    result *= num;
-            }
+            //     if (op)
+            //         result += num;
+            //     else
+            //         result *= num;
+            // }
 
-            int msgID = Integer.parseInt(msg.getMsgID()) + 1;
+            // int msgID = Integer.parseInt(msg.getMsgID()) + 1;
 
-            String pdu = new MyAppProtoOld(("" + msgID), "A", (""+result)).toString();
+            // String pdu = new MyAppProtoOld(("" + msgID), "A", (""+result)).toString();
 
             DatagramPacket send = new DatagramPacket(pdu.getBytes(), pdu.getBytes().length, clientAddress, clientPort);
 

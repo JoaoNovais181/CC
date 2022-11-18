@@ -1,3 +1,7 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class MyAppProto 
 {
     private Header header;
@@ -16,6 +20,38 @@ public class MyAppProto
         this.header = new Header(Msg, Flags, responseCode, numberOfValues, numberOfAuthorities, numberOfExtraValues);
         this.dataField = new DataField(Name, TypeOfValue, nrv, nav, nev);
         this.clientMSG = false;
+    }
+
+    public MyAppProto(byte[] bytes)
+    {
+        String msg = new String(bytes).trim();
+
+        String[] parts = msg.split(";");
+
+        this.header = new Header(parts[0]);
+        this.dataField = new DataField(parts[1]);
+
+        if (parts.length ==2)
+            this.clientMSG = true;
+        else
+        {
+            this.clientMSG = false;
+            String[] aux = parts[2].replace("\n","").trim().split(",");
+            for (String str : aux)
+            {
+                this.dataField.PutValue(str);
+            }
+            aux = parts[3].replace("\n","").trim().split(",");
+            for (String str : aux)
+            {
+                this.dataField.PutAuthority(str);
+            }
+            aux = parts[4].replace("\n","").trim().split(",");
+            for (String str : aux)
+            {
+                this.dataField.PutExtraValue(str);
+            }
+        }
     }
 
     public void PutValue (String value) {this.dataField.PutValue(value);}
@@ -46,5 +82,9 @@ public class MyAppProto
         r.PutExtraValue("ss1.nestle.sonso. CNAME ns2.nestle.sonso. 86400");
         r.PutExtraValue("ss2.nestle.sonso. CNAME ns3.nestle.sonso. 86400");
         System.out.println(r);
+
+        String[] test = "asdasd;\n;\n;asdasd;".split(";");
+        for (String str : test) System.out.println(Arrays.toString(str.replace("\n", "").split(",")));
+        System.out.println(Arrays.toString(test));
     }
 }

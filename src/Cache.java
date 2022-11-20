@@ -1,6 +1,8 @@
+import java.util.ArrayList;
 import java.util.Collection;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 public class Cache
 {
@@ -23,14 +25,14 @@ public class Cache
 
     public boolean put(CacheEntry entry)
     {
-        if ("FILE SP".indexOf(entry.getOrigin()) != -1)
+        if ("FILE SP".contains(entry.getOrigin()))
             return putFILEorSP(entry);
 
-        int i = this.get(entry.getName(), entry.getType(), 1);
+        int i = this.searchValid(entry.getName(), entry.getType(), 1);
         if (i != -1)
         {
             CacheEntry existing = this.values[i];
-            if ("FILE SP".indexOf(existing.getOrigin()) != -1)
+            if ("FILE SP".contains(existing.getOrigin()))
                 return false;
             
             existing.setTimeStamp(LocalDateTime.now());
@@ -57,7 +59,7 @@ public class Cache
         return r;
     }
 
-    public int get(String Name, String Type, int Index)
+    public int searchValid(String Name, String Type, int Index)
     {
         int r = -1;
         for (int i=0 ; i<this.values.length ; i++)
@@ -67,6 +69,25 @@ public class Cache
             if (curr.getName().equals(Name) && curr.getType().equals(Type)) r = index;
 
             if (curr.getOrigin().equals("OTHERS") && curr.getttl()>0 && ChronoUnit.SECONDS.between(curr.getTimeStamp(), LocalDateTime.now()) > curr.getttl())
+                curr.setStatus(CacheEntry.FREE);
+        }
+
+        return r;
+    }
+
+    public CacheEntry get(int index)
+    {
+        if (this.values[index].getStatus()==CacheEntry.VALID) return this.values[index];
+        return null;
+    }
+
+    public List<CacheEntry> get (String Name, String Type)
+    {
+        ArrayList<CacheEntry> r = new ArrayList<>();
+        for (CacheEntry curr : this.values) {
+            if (curr.getName().equals(Name) && curr.getType().equals(Type)) r.add(curr);
+
+            if (curr.getOrigin().equals("OTHERS") && curr.getttl() > 0 && ChronoUnit.SECONDS.between(curr.getTimeStamp(), LocalDateTime.now()) > curr.getttl())
                 curr.setStatus(CacheEntry.FREE);
         }
 

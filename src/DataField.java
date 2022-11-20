@@ -75,4 +75,14 @@ public class DataField
     
         return r;
     }
+
+    public String getName()
+    {
+        return this.Name;
+    }
+
+    public String getTypeOfValue()
+    {
+        return this.TypeOfValue;
+    }
 }

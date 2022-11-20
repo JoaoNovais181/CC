@@ -36,6 +36,11 @@ public class Header
         this.numberOfExtraValues = Integer.parseInt(params[5]);
     }
 
+    public String getMsgID()
+    {
+        return this.MsgID;
+    }
+
     // msgid -> 16 bits, flags -> 4 bits  (podia ser 2 mas nao consigo fazer com 2 por enquanto), rest -> 8 bits
     public byte[] Encode()
     {

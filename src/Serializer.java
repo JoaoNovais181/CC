@@ -24,6 +24,4 @@ public class Serializer
         return ByteBuffer.wrap(bytes).getInt();
     }
 
-    short int
-
 }

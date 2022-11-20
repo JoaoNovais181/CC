@@ -1,5 +1,8 @@
 import java.io.File;
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -9,7 +12,7 @@ import java.util.Map;
 
 public class SP
 {
-    private String serverName, configFile, databaseFile, logFile, STfile;
+    private String domain, configFile, databaseFile, logFile, STfile;
     private Cache cache;
     private Map<String,String> macros;
     private boolean debug;
@@ -19,9 +22,9 @@ public class SP
     private Map<String,List<String>> logFiles;
     private List<String> STs;
 
-    public SP (String serverName, String configFile, boolean debug) throws IOException, InvalidConfigException, InvalidDatabaseException, InvalidCacheEntryException
+    public SP (String configFile, boolean debug) throws IOException, InvalidConfigException, InvalidDatabaseException, InvalidCacheEntryException
     {
-        this.serverName = serverName;
+        this.domain = "";
         this.configFile = configFile;
         this.debug = debug;
 
@@ -32,10 +35,10 @@ public class SP
         this.STs    = new ArrayList<>();
         this.cache = new Cache(64000);//,this.configFile, this.debug);
         this.logger = new CCLogger(null, this.debug);
+        this.logFile = null;
     }
 
-    public void setup() throws IOException, InvalidConfigException, InvalidDatabaseException, InvalidCacheEntryException
-    {
+    public void setup() throws IOException, InvalidConfigException, InvalidDatabaseException, InvalidCacheEntryException, InvalidSTFile {
         this.ParseConfig();
         this.logger.log(new LogEntry("EV", "localhost", ("conf-file-read " + this.configFile)));
         
@@ -48,6 +51,9 @@ public class SP
         
         this.ParseDB();
         this.logger.log(new LogEntry("EV", "localhost", ("db-file-read " + this.configFile)));
+
+        this.ParseSTfile();
+        this.logger.log(new LogEntry("EV", "localhost", ("st-file-read " + this.STfile)));
     }
 
     public void ParseSTfile () throws IOException, InvalidSTFile
@@ -93,9 +99,6 @@ public class SP
             throw new IOException("Couldn't read DB file");
         }
 
-        int firstDot = this.serverName.indexOf('.');
-        String domain = this.serverName.substring(firstDot+1);
-
         for (String line : lines)
         {
             if (line.length() == 0 || line.charAt(0) == '#')
@@ -125,8 +128,11 @@ public class SP
 
             else if (tokens[1].equals("LG"))
             {
-                if (tokens[0].equals(domain))
+                if (this.logFile == null)
                 {
+                    this.domain = tokens[0];
+                    if (!this.domain.endsWith("."))
+                        this.domain += ".";
                     this.logFile = tokens[2];
                     this.logger.setLogFile(tokens[2]);
                 }
@@ -276,7 +282,7 @@ public class SP
             else if (tokens[1].equals("MX"))
             {
                 if (tokens.length < 4)
-                throw new InvalidDatabaseException("MX entry should have 4/5 arguments");
+                    throw new InvalidDatabaseException("MX entry should have 4/5 arguments");
                 
                 if (tokens.length == 4)
                     this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
@@ -288,7 +294,7 @@ public class SP
             else if (tokens[1].equals("A"))
             {
                 if (tokens.length < 4)
-                throw new InvalidDatabaseException("A entry should have 4/5 arguments");
+                    throw new InvalidDatabaseException("A entry should have 4/5 arguments");
                 
                 if (tokens.length == 4)
                     this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
@@ -302,23 +308,62 @@ public class SP
         this.cache.put(alias.values());
         // System.out.println(this.cache);
     }
-}
 
+    public void UDPreceiving () throws IOException {
+        boolean status = true;
+        DatagramSocket serverSocket = new DatagramSocket(5555);
 
-class MainSP
-{
-    public static void main(String[] args) throws IOException, InvalidConfigException, InvalidDatabaseException, InvalidCacheEntryException
-    {
-        if (args.length < 2)
+        while (status)
+        {
+            byte [] buf = new byte[256];
+            DatagramPacket receive = new DatagramPacket(buf,buf.length);
+            serverSocket.receive(receive) ;   // extrair ip cliente, Port Client, Payload UDP
+            InetAddress clientAddress = receive.getAddress();
+            int clientPort = receive.getPort();
+            // MyAppProtoOld msg = new MyAppProtoOld(receive.getData());   // o getdata da um array de bytes - bytes []
+            MyAppProto msg = new MyAppProto(receive.getData());
+            this.logger.log(new LogEntry("QR", clientAddress.toString(), msg.toString()));
+
+            List<CacheEntry> responseValues = this.cache.get(msg.getName(), msg.getTypeOfValue());
+            List<CacheEntry> authoritativeValues = this.cache.get(this.domain, "NS");
+            List<CacheEntry> extraValues = new ArrayList<>();
+
+            for (CacheEntry ce : responseValues)
+            {
+                int index = this.cache.searchValid(ce.getName(), "A", 1);
+                if (index != -1) extraValues.add(this.cache.get(index));
+            }
+
+            for (CacheEntry ce : authoritativeValues)
+            {
+                int index = this.cache.searchValid(ce.getName(), "A", 1);
+                if (index != -1) extraValues.add(this.cache.get(index));
+            }
+
+            MyAppProto answer = new MyAppProto(msg.getMsgID(), "A", 0, responseValues.size(), authoritativeValues.size(), extraValues.size(), msg.getName(), msg.getTypeOfValue());
+            String pdu = answer.toString();
+            DatagramPacket send = new DatagramPacket(pdu.getBytes(), pdu.getBytes().length, clientAddress, clientPort);
+
+            serverSocket.send(send);
+            this.logger.log(new LogEntry("RE", clientAddress.toString(), answer.toString()));
+        }
+
+        serverSocket.close();
+    }
+
+    public static void main(String[] args) throws IOException, InvalidConfigException, InvalidDatabaseException, InvalidCacheEntryException, InvalidSTFile {
+        if (args.length < 1)
             return;
 
         SP sp;
 
-        if (args.length == 3 && args[0].equals("-g"))
-            sp = new SP(args[1], args[2], true);
+        if (args.length == 2 && args[0].equals("-g"))
+            sp = new SP(args[1], true);
         else
-            sp = new SP(args[0], args[1], false);
+            sp = new SP(args[0], false);
 
         sp.setup();
+
+        sp.UDPreceiving();
     }
 }

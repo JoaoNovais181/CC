@@ -34,7 +34,7 @@ public class SP
         this.logFiles = new HashMap<>();
         this.macros = new HashMap<>();
         this.STs    = new ArrayList<>();
-        this.cache = new Cache(64000);//,this.configFile, this.debug);
+        this.cache  = new Cache(1000);//,this.configFile, this.debug);
         this.logger = new CCLogger(null, this.debug);
         this.logFile = null;
     }
@@ -52,7 +52,7 @@ public class SP
         }
         
         this.ParseDB();
-        this.logger.log(new LogEntry("EV", "localhost", ("db-file-read " + this.configFile)));
+        this.logger.log(new LogEntry("EV", "localhost", ("db-file-read " + this.databaseFile)));
 
         this.ParseSTfile();
         this.logger.log(new LogEntry("EV", "localhost", ("st-file-read " + this.STfile)));

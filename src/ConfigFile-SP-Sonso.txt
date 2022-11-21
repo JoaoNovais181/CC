@@ -1,0 +1,9 @@
+# Configuration file for primary server for sonso
+sonso DB /var/dns/BasedeDadosSPdomSonso.txt
+sonso SS 10.0.15.11
+sonso SS 10.0.21.11
+# Perguntar ao stor
+sonso DD 127.0.0.1  
+sonso LG /var/dns/sonsolog.txt
+all LG /var/dns/alllogs.txt
+root ST /var/dns/Universidade/3Ano/1Sem/CC/src/listaST.txt

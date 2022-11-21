@@ -12,8 +12,9 @@ public class Cliente {
         boolean recursive = false;
         if (args.length == 4 && args[3].equals("R")) recursive = true;
 
-        InetAddress serverAdress = InetAddress.getByName(args[0]);
-        int portServer = 5555;
+        String[] serverString = args[0].split(":");
+        InetAddress serverAdress = InetAddress.getByName(serverString[0]);
+        int portServer = Integer.parseInt(serverString[1]);
 		
 		Random r = new Random(ProcessHandle.current().pid());
         String pdu = new MyAppProto(""+r.nextInt(65535), "Q" + ((recursive) ?"+R" :""), args[1], args[2]).toString();
@@ -26,8 +27,8 @@ public class Cliente {
         DatagramPacket receive = new DatagramPacket(buf, buf.length);
         s.receive(receive);
 
-        MyAppProtoOld ans = new MyAppProtoOld(receive.getData());
-        System.out.println(new String(receive.getData()));
+        MyAppProto ans = new MyAppProto(receive.getData());
+        System.out.println(ans.toString());
 
         s.close();
     }

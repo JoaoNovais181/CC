@@ -52,27 +52,27 @@ public class DataField
     @Override
     public String toString()  // forma concisa
     {
-        String r = this.Name + "," + this.TypeOfValue + ";\n";
+        String r = this.Name + "," + this.TypeOfValue + ";";
 
 		if (this.responseValues.size() != 0)
 		{
 			for (int i=0 ; i<this.responseValues.size()-1 ; i++)
-				r += this.responseValues.get(i) + ",\n";
-			r += this.responseValues.get(this.responseValues.size()-1)+";\n";
+				r += this.responseValues.get(i) + ",";
+			r += this.responseValues.get(this.responseValues.size()-1)+";";
 		}
 
 		if (this.authoritiesValues.size() != 0)
 		{
 			for (int i=0 ; i<this.authoritiesValues.size()-1 ; i++)
-				r += this.authoritiesValues.get(i) + ",\n";
-			r += this.authoritiesValues.get(this.authoritiesValues.size()-1)+";\n";
+				r += this.authoritiesValues.get(i) + ",";
+			r += this.authoritiesValues.get(this.authoritiesValues.size()-1)+";";
 		}
 
 		if (this.extraValues.size() != 0)
 		{
 			for (int i=0 ; i<this.extraValues.size()-1 ; i++)
-				r += this.extraValues.get(i) + ",\n";
-			r += this.extraValues.get(this.extraValues.size()-1)+";\n";
+				r += this.extraValues.get(i) + ",";
+			r += this.extraValues.get(this.extraValues.size()-1)+";";
 		}
     
         return r;

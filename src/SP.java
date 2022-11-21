@@ -21,11 +21,13 @@ public class SP
     private Map<String,List<String>> DDlist;
     private Map<String,List<String>> logFiles;
     private List<String> STs;
+    private int timeout, port;
 
-    public SP (String configFile, boolean debug) throws IOException, InvalidConfigException, InvalidDatabaseException, InvalidCacheEntryException
+    public SP (int port, int timeout, String configFile, boolean debug) throws IOException, InvalidConfigException, InvalidDatabaseException, InvalidCacheEntryException
     {
+        this.port = port;
+        this.timeout = timeout;
         this.domain = "";
-		System.out.println(configFile);
 		this.configFile = configFile;
         this.debug = debug;
 
@@ -43,7 +45,6 @@ public class SP
         this.ParseConfig();
         this.logger.log(new LogEntry("EV", "localhost", ("conf-file-read " + this.configFile)));
         
-		System.out.println(this.logFile);
         File f = new File(this.logFile);
         if (!f.exists())
         {
@@ -315,7 +316,7 @@ public class SP
 
     public void UDPreceiving () throws IOException {
         boolean status = true;
-        DatagramSocket serverSocket = new DatagramSocket(5555, InetAddress.getByName("0.0.0.0"));
+        DatagramSocket serverSocket = new DatagramSocket(this.port, InetAddress.getByName("0.0.0.0"));
 
         while (status)
         {
@@ -381,10 +382,16 @@ public class SP
 
         SP sp;
 
-        if (args.length == 2 && args[0].equals("-g"))
-            sp = new SP(args[1], true);
-        else
-            sp = new SP(args[0], false);
+        if (args.length == 3 && args[args.length-2].equals("-g"))
+            sp = new SP(53, Integer.parseInt(args[0]), args[2], true);
+        else if (args.length == 3 && args[args.length-2].equals("-g"))
+            sp = new SP(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[3], true);
+        else if (args.length == 2)
+            sp = new SP(53, Integer.parseInt(args[0]), args[1], false);
+        else if (args.length == 3)
+            sp = new SP(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[2], false);
+        else 
+            return;
 
         sp.setup();
 

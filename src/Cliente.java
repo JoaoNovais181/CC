@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.net.*;
+import java.util.Random;
 
 public class Cliente {
 
@@ -13,7 +14,9 @@ public class Cliente {
 
         InetAddress serverAdress = InetAddress.getByName(args[0]);
         int portServer = 5555;
-        String pdu = new MyAppProto(null, "Q" + ((recursive) ?"+R" :""), args[1], args[2]).toString();
+		
+		Random r = new Random(ProcessHandle.current().pid());
+        String pdu = new MyAppProto(""+r.nextInt(65535), "Q" + ((recursive) ?"+R" :""), args[1], args[2]).toString();
         // String pdu = new MyAppProtoOld("1", "s", "5 5").toString();
         DatagramPacket req = new DatagramPacket(pdu.getBytes(), pdu.getBytes().length, serverAdress, portServer);
         DatagramSocket s = new DatagramSocket();
@@ -24,7 +27,7 @@ public class Cliente {
         s.receive(receive);
 
         MyAppProtoOld ans = new MyAppProtoOld(receive.getData());
-        System.out.println(ans.toString());
+        System.out.println(new String(receive.getData()));
 
         s.close();
     }

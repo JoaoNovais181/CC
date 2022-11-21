@@ -31,7 +31,7 @@ public class MyAppProto
         this.header = new Header(parts[0]);
         this.dataField = new DataField(parts[1]);
 
-        if (parts.length ==2)
+        if (parts.length == 2)
             this.clientMSG = true;
         else
         {

@@ -25,7 +25,8 @@ public class SP
     public SP (String configFile, boolean debug) throws IOException, InvalidConfigException, InvalidDatabaseException, InvalidCacheEntryException
     {
         this.domain = "";
-        this.configFile = configFile;
+		System.out.println(configFile);
+		this.configFile = configFile;
         this.debug = debug;
 
         this.SSlist = new ArrayList<>();
@@ -42,6 +43,7 @@ public class SP
         this.ParseConfig();
         this.logger.log(new LogEntry("EV", "localhost", ("conf-file-read " + this.configFile)));
         
+		System.out.println(this.logFile);
         File f = new File(this.logFile);
         if (!f.exists())
         {
@@ -306,7 +308,6 @@ public class SP
                 throw new InvalidDatabaseException("Type " + tokens[1] + " is invalid");
         }
         this.cache.put(alias.values());
-        // System.out.println(this.cache);
     }
 
     public void UDPreceiving () throws IOException {
@@ -320,7 +321,6 @@ public class SP
             serverSocket.receive(receive) ;   // extrair ip cliente, Port Client, Payload UDP
             InetAddress clientAddress = receive.getAddress();
             int clientPort = receive.getPort();
-            // MyAppProtoOld msg = new MyAppProtoOld(receive.getData());   // o getdata da um array de bytes - bytes []
             MyAppProto msg = new MyAppProto(receive.getData());
             this.logger.log(new LogEntry("QR", clientAddress.toString(), msg.toString()));
 
@@ -328,20 +328,42 @@ public class SP
             List<CacheEntry> authoritativeValues = this.cache.get(this.domain, "NS");
             List<CacheEntry> extraValues = new ArrayList<>();
 
+            System.out.println(this.cache.toString());
+
             for (CacheEntry ce : responseValues)
             {
-                int index = this.cache.searchValid(ce.getName(), "A", 1);
-                if (index != -1) extraValues.add(this.cache.get(index));
+                if (!extraValues.contains(ce))
+                {
+                    int index;
+                    if (msg.getTypeOfValue().equals("A")) index = this.cache.searchValid(ce.getName(), "A", 1);
+                    else index = this.cache.searchValid(ce.getValue(), "A", 1);
+                    if (index != -1) extraValues.add(this.cache.get(index));
+                }
             }
 
             for (CacheEntry ce : authoritativeValues)
             {
-                int index = this.cache.searchValid(ce.getName(), "A", 1);
-                if (index != -1) extraValues.add(this.cache.get(index));
+                if (!extraValues.contains(ce))
+                {
+                    int index;
+                    if (msg.getTypeOfValue().equals("A")) index = this.cache.searchValid(ce.getName(), "A", 1);
+                    else index = this.cache.searchValid(ce.getValue(),  "A", 1);
+                    if (index != -1) extraValues.add(this.cache.get(index));
+                }
             }
 
             MyAppProto answer = new MyAppProto(msg.getMsgID(), "A", 0, responseValues.size(), authoritativeValues.size(), extraValues.size(), msg.getName(), msg.getTypeOfValue());
-            String pdu = answer.toString();
+
+			for (CacheEntry ce : responseValues)
+				answer.PutValue(ce.dbString());
+
+			for (CacheEntry ce : authoritativeValues)
+				answer.PutAuthority(ce.dbString());
+			
+			for (CacheEntry ce : extraValues)
+				answer.PutExtraValue(ce.dbString());
+			
+			String pdu = answer.toString();
             DatagramPacket send = new DatagramPacket(pdu.getBytes(), pdu.getBytes().length, clientAddress, clientPort);
 
             serverSocket.send(send);

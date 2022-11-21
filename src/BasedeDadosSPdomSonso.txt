@@ -18,8 +18,8 @@ TTL DEFAULT 86400
 
 nestle.@ NS sp.nestle.sonso.
 
-@ MX mx1.sonso TTL 10
-@ MX mx2.sonso TTL 20
+@ MX mx1.sonso. TTL 10
+@ MX mx2.sonso. TTL 20
 
 ns1 A 10.0.20.10 TTL
 ns2 A 10.0.15.12 TTL

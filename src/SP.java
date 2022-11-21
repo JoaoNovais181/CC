@@ -196,77 +196,72 @@ public class SP
                 this.cache.put(new CacheEntry(tokens[0], tokens[1], tokens[2], "FILE"));
                 continue;
             }
-
-            else if (tokens[1].equals("CNAME"))
-            {
-                if (tokens.length != 4)
-                    throw new InvalidDatabaseException("CNAME entry should have 4 arguments");
-
-                if (!tokens[0].endsWith(".")) tokens[0] = tokens[0] + "." + this.macros.get("@");
-                if (!tokens[2].endsWith(".")) tokens[2] = tokens[2] + "." + this.macros.get("@");
-                
-
-                if (alias.containsKey(tokens[2]))
-                    throw new InvalidDatabaseException("A canonic name should not point to other canonic name");
-                
-                if (alias.containsKey(tokens[0]))
-                    throw new InvalidDatabaseException("The same canonic name should not be given to two different parameters");
-
-
-                alias.put(tokens[0], new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
-                continue;
-            }
             
             if (!tokens[0].endsWith(".")) tokens[0] = tokens[0] + "." + this.macros.get("@");
             
-            if (tokens[1].equals("SOASP"))
+            if (tokens[1].equals("A"))
             {
-                if (tokens.length != 4)
-                    throw new InvalidDatabaseException("SOASP field is not correct (too many arguments)");
 
-                this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
-            }
-
+                if (tokens.length < 4)
+                    throw new InvalidDatabaseException("A entry should have 4/5 arguments");
+                
+                if (tokens.length == 4)
+                    this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
+                else 
+                    this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]), "FILE"));
+                    continue;
+                }
             else if (tokens[1].equals("SOAADMIN"))
             {
                 if (tokens.length != 4)
                     throw new InvalidDatabaseException("SOASP field is not correct (too many arguments)");
                     
                 this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
+                continue;
             }
+            else if (tokens[1].equals("SOASERIAL"))
+            {
+                if (tokens.length != 4)
+                    throw new InvalidDatabaseException("SOASERIAL field is not correct");
 
+                    this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
+                    continue;
+                }
             else if (tokens[1].equals("SOAEXPIRE"))
             {
                 if (tokens.length != 4)
                 throw new InvalidDatabaseException("SOAEXPIRE field is not correct (too many arguments)");
                 
                 this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
+                continue;
             }
-
-            else if (tokens[1].equals("SOASERIAL"))
-            {
-                if (tokens.length != 4)
-                    throw new InvalidDatabaseException("SOASERIAL field is not correct");
-
-                this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
-            }
-
             else if (tokens[1].equals("SOAREFRESH"))
             {
                 if (tokens.length != 4)
                     throw new InvalidDatabaseException("SOAREFRESH field is not correct");
 
                 this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
+                continue;
             }
-
             else if (tokens[1].equals("SOARETRY"))
             {
                 if (tokens.length != 4)
                     throw new InvalidDatabaseException("SOARETRY field is not correct");
 
                 this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
+                continue;
             }
             
+            if (!tokens[2].endsWith(".")) tokens[0] = tokens[0] + "." + this.macros.get("@");
+            
+            if (tokens[1].equals("SOASP"))
+            {
+                if (tokens.length != 4)
+                throw new InvalidDatabaseException("SOASP field is not correct (too many arguments)");
+                
+                this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
+            }
+
             else if (tokens[1].equals("NS"))
             {
                 if (tokens.length < 3)
@@ -274,7 +269,7 @@ public class SP
                 
                 if (tokens.length == 3)
                     this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], "FILE"));
-                else if (tokens.length == 4)
+                    else if (tokens.length == 4)
                     this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
                 else 
                     this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]), "FILE"));
@@ -284,24 +279,32 @@ public class SP
             else if (tokens[1].equals("MX"))
             {
                 if (tokens.length < 4)
-                    throw new InvalidDatabaseException("MX entry should have 4/5 arguments");
+                throw new InvalidDatabaseException("MX entry should have 4/5 arguments");
                 
                 if (tokens.length == 4)
-                    this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
+                this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
                 else 
-                    this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]), "FILE"));
+                this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]), "FILE"));
                 
             }
-
-            else if (tokens[1].equals("A"))
+            
+            else if (tokens[1].equals("CNAME"))
             {
-                if (tokens.length < 4)
-                    throw new InvalidDatabaseException("A entry should have 4/5 arguments");
+                if (tokens.length != 4)
+                    throw new InvalidDatabaseException("CNAME entry should have 4 arguments");
+        
+                if (!tokens[0].endsWith(".")) tokens[0] = tokens[0] + "." + this.macros.get("@");
+                if (!tokens[2].endsWith(".")) tokens[2] = tokens[2] + "." + this.macros.get("@");
                 
-                if (tokens.length == 4)
-                    this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
-                else 
-                    this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]), "FILE"));
+        
+                if (alias.containsKey(tokens[2]))
+                    throw new InvalidDatabaseException("A canonic name should not point to other canonic name");
+                
+                if (alias.containsKey(tokens[0]))
+                    throw new InvalidDatabaseException("The same canonic name should not be given to two different parameters");
+        
+        
+                alias.put(tokens[0], new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
             }
 
             else 
@@ -328,7 +331,6 @@ public class SP
             List<CacheEntry> authoritativeValues = this.cache.get(this.domain, "NS");
             List<CacheEntry> extraValues = new ArrayList<>();
 
-            System.out.println(this.cache.toString());
 
             for (CacheEntry ce : responseValues)
             {

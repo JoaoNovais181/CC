@@ -6,4 +6,4 @@ sonso SS 10.0.21.11
 sonso DD 127.0.0.1  
 sonso LG /var/dns/sonsolog.txt
 all LG /var/dns/alllogs.txt
-root ST /var/dns/Universidade/3Ano/1Sem/CC/src/listaST.txt
+root ST /var/dns/listaST.txt

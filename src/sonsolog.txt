@@ -511,3 +511,104 @@ ns1.sonso. A 10.0.20.10 86400,
 ns2.sonso. A 10.0.15.12 86400,
 ns3.sonso. A 10.0.21.11 86400;
 
+2022-11-21 15:00:19 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
+2022-11-21 15:00:19 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
+2022-11-21 15:00:19 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
+2022-11-21 15:00:25 QR /127.0.0.1 41313,Q,0,0,0,0;sonso.,MX;
+
+2022-11-21 15:00:25 RE /127.0.0.1 41313,A,0,2,3,5;sonso.,MX;
+sonso. MX mx1.sonso. 86400 10,
+sonso. MX mx2.sonso. 86400 20;
+sonso. NS ns1.sonso. 86400,
+sonso. NS ns2.sonso. 86400,
+sonso. NS ns3.sonso. 86400;
+mx1.sonso. A 10.0.15.11 86400,
+mx2.sonso. A 10.0.21.10 86400,
+ns1.sonso. A 10.0.20.10 86400,
+ns2.sonso. A 10.0.15.12 86400,
+ns3.sonso. A 10.0.21.11 86400;
+
+2022-11-21 15:00:28 QR /127.0.0.1 43470,Q,0,0,0,0;sonso.,MX;
+
+2022-11-21 15:00:28 RE /127.0.0.1 43470,A,0,2,3,5;sonso.,MX;
+sonso. MX mx1.sonso. 86400 10,
+sonso. MX mx2.sonso. 86400 20;
+sonso. NS ns1.sonso. 86400,
+sonso. NS ns2.sonso. 86400,
+sonso. NS ns3.sonso. 86400;
+mx1.sonso. A 10.0.15.11 86400,
+mx2.sonso. A 10.0.21.10 86400,
+ns1.sonso. A 10.0.20.10 86400,
+ns2.sonso. A 10.0.15.12 86400,
+ns3.sonso. A 10.0.21.11 86400;
+
+2022-11-21 15:00:31 QR /127.0.0.1 56316,Q,0,0,0,0;sonso.,MX;
+
+2022-11-21 15:00:31 RE /127.0.0.1 56316,A,0,2,3,5;sonso.,MX;
+sonso. MX mx1.sonso. 86400 10,
+sonso. MX mx2.sonso. 86400 20;
+sonso. NS ns1.sonso. 86400,
+sonso. NS ns2.sonso. 86400,
+sonso. NS ns3.sonso. 86400;
+mx1.sonso. A 10.0.15.11 86400,
+mx2.sonso. A 10.0.21.10 86400,
+ns1.sonso. A 10.0.20.10 86400,
+ns2.sonso. A 10.0.15.12 86400,
+ns3.sonso. A 10.0.21.11 86400;
+
+2022-11-21 15:00:32 QR /127.0.0.1 33164,Q,0,0,0,0;sonso.,MX;
+
+2022-11-21 15:00:32 RE /127.0.0.1 33164,A,0,2,3,5;sonso.,MX;
+sonso. MX mx1.sonso. 86400 10,
+sonso. MX mx2.sonso. 86400 20;
+sonso. NS ns1.sonso. 86400,
+sonso. NS ns2.sonso. 86400,
+sonso. NS ns3.sonso. 86400;
+mx1.sonso. A 10.0.15.11 86400,
+mx2.sonso. A 10.0.21.10 86400,
+ns1.sonso. A 10.0.20.10 86400,
+ns2.sonso. A 10.0.15.12 86400,
+ns3.sonso. A 10.0.21.11 86400;
+
+2022-11-21 15:00:34 QR /127.0.0.1 53700,Q,0,0,0,0;sonso.,MX;
+
+2022-11-21 15:00:34 RE /127.0.0.1 53700,A,0,2,3,5;sonso.,MX;
+sonso. MX mx1.sonso. 86400 10,
+sonso. MX mx2.sonso. 86400 20;
+sonso. NS ns1.sonso. 86400,
+sonso. NS ns2.sonso. 86400,
+sonso. NS ns3.sonso. 86400;
+mx1.sonso. A 10.0.15.11 86400,
+mx2.sonso. A 10.0.21.10 86400,
+ns1.sonso. A 10.0.20.10 86400,
+ns2.sonso. A 10.0.15.12 86400,
+ns3.sonso. A 10.0.21.11 86400;
+
+2022-11-21 15:00:34 QR /127.0.0.1 24163,Q,0,0,0,0;sonso.,MX;
+
+2022-11-21 15:00:34 RE /127.0.0.1 24163,A,0,2,3,5;sonso.,MX;
+sonso. MX mx1.sonso. 86400 10,
+sonso. MX mx2.sonso. 86400 20;
+sonso. NS ns1.sonso. 86400,
+sonso. NS ns2.sonso. 86400,
+sonso. NS ns3.sonso. 86400;
+mx1.sonso. A 10.0.15.11 86400,
+mx2.sonso. A 10.0.21.10 86400,
+ns1.sonso. A 10.0.20.10 86400,
+ns2.sonso. A 10.0.15.12 86400,
+ns3.sonso. A 10.0.21.11 86400;
+
+2022-11-21 15:00:35 QR /127.0.0.1 32778,Q,0,0,0,0;sonso.,MX;
+
+2022-11-21 15:00:35 RE /127.0.0.1 32778,A,0,2,3,5;sonso.,MX;
+sonso. MX mx1.sonso. 86400 10,
+sonso. MX mx2.sonso. 86400 20;
+sonso. NS ns1.sonso. 86400,
+sonso. NS ns2.sonso. 86400,
+sonso. NS ns3.sonso. 86400;
+mx1.sonso. A 10.0.15.11 86400,
+mx2.sonso. A 10.0.21.10 86400,
+ns1.sonso. A 10.0.20.10 86400,
+ns2.sonso. A 10.0.15.12 86400,
+ns3.sonso. A 10.0.21.11 86400;
+

@@ -315,7 +315,7 @@ public class SP
 
     public void UDPreceiving () throws IOException {
         boolean status = true;
-        DatagramSocket serverSocket = new DatagramSocket(5555);
+        DatagramSocket serverSocket = new DatagramSocket(5555, InetAddress.getByName("0.0.0.0"));
 
         while (status)
         {

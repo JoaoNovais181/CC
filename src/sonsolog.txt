@@ -80,3 +80,15 @@ ns3.sonso. A 10.0.21.11 86400;
 2022-11-21 15:36:03 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
 2022-11-21 15:36:04 QR /127.0.0.1 60705,Q,0,0,0,0;sonso.,MX;
 2022-11-21 15:36:04 RE /127.0.0.1 60705,A,0,2,3,5;sonso.,MX;sonso. MX mx1.sonso. 86400 10,sonso. MX mx2.sonso. 86400 20;sonso. NS ns1.sonso. 86400,sonso. NS ns2.sonso. 86400,sonso. NS ns3.sonso. 86400;mx1.sonso. A 10.0.15.11 86400,mx2.sonso. A 10.0.21.10 86400,ns1.sonso. A 10.0.20.10 86400,ns2.sonso. A 10.0.15.12 86400,ns3.sonso. A 10.0.21.11 86400;
+2022-11-22 12:35:55 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
+2022-11-22 12:35:55 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
+2022-11-22 12:35:55 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
+2022-11-22 12:38:55 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
+2022-11-22 12:38:55 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
+2022-11-22 12:38:55 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
+2022-11-22 12:39:09 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
+2022-11-22 12:39:09 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
+2022-11-22 12:39:09 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
+2022-11-22 12:43:08 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
+2022-11-22 12:43:08 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
+2022-11-22 12:43:08 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt

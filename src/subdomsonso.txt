@@ -1,0 +1,7 @@
+2022-11-22 12:38:00 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSSdummy.txt
+2022-11-22 12:38:00 EV localhost log-file-create ./subdomsonso.txt
+2022-11-22 12:38:01 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSSdummy.txt
+2022-11-22 12:38:28 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSSdummy.txt
+2022-11-22 12:38:28 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
+2022-11-22 12:43:13 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSSdummy.txt
+2022-11-22 12:43:13 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt

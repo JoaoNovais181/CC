@@ -1,14 +1,19 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.net.Socket;
 
 public class SP
 {
@@ -21,7 +26,7 @@ public class SP
     private Map<String,List<String>> DDlist;
     private Map<String,List<String>> logFiles;
     private List<String> STs;
-    private int timeout, port;
+    private int timeout, port, NumDBentries;
 
     public SP (int port, int timeout, String configFile, boolean debug) throws IOException, InvalidConfigException, InvalidDatabaseException, InvalidCacheEntryException
     {
@@ -174,6 +179,7 @@ public class SP
         }
 
         Map<String, CacheEntry> alias = new HashMap<>();
+        this.NumDBentries = 0;
 
         for (String line : lines)
         {
@@ -195,123 +201,184 @@ public class SP
                 
                 this.macros.put(tokens[0], tokens[2]);
                 this.cache.put(new CacheEntry(tokens[0], tokens[1], tokens[2], "FILE"));
-                continue;
             }
-            
-            if (!tokens[0].endsWith(".")) tokens[0] = tokens[0] + "." + this.macros.get("@");
-            
-            if (tokens[1].equals("A"))
+            else
             {
-
-                if (tokens.length < 4)
-                    throw new InvalidDatabaseException("A entry should have 4/5 arguments");
-                
-                if (tokens.length == 4)
-                    this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
-                else 
-                    this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]), "FILE"));
-                    continue;
-                }
-            else if (tokens[1].equals("SOAADMIN"))
-            {
-                if (tokens.length != 4)
-                    throw new InvalidDatabaseException("SOASP field is not correct (too many arguments)");
-                    
-                this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
-                continue;
-            }
-            else if (tokens[1].equals("SOASERIAL"))
-            {
-                if (tokens.length != 4)
-                    throw new InvalidDatabaseException("SOASERIAL field is not correct");
-
-                    this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
-                    continue;
-                }
-            else if (tokens[1].equals("SOAEXPIRE"))
-            {
-                if (tokens.length != 4)
-                throw new InvalidDatabaseException("SOAEXPIRE field is not correct (too many arguments)");
-                
-                this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
-                continue;
-            }
-            else if (tokens[1].equals("SOAREFRESH"))
-            {
-                if (tokens.length != 4)
-                    throw new InvalidDatabaseException("SOAREFRESH field is not correct");
-
-                this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
-                continue;
-            }
-            else if (tokens[1].equals("SOARETRY"))
-            {
-                if (tokens.length != 4)
-                    throw new InvalidDatabaseException("SOARETRY field is not correct");
-
-                this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
-                continue;
-            }
-            
-            if (!tokens[2].endsWith(".")) tokens[0] = tokens[0] + "." + this.macros.get("@");
-            
-            if (tokens[1].equals("SOASP"))
-            {
-                if (tokens.length != 4)
-                throw new InvalidDatabaseException("SOASP field is not correct (too many arguments)");
-                
-                this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
-            }
-
-            else if (tokens[1].equals("NS"))
-            {
-                if (tokens.length < 3)
-                    throw new InvalidDatabaseException("NS entry should have 3/4/5 arguments");
-                
-                if (tokens.length == 3)
-                    this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], "FILE"));
-                    else if (tokens.length == 4)
-                    this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
-                else 
-                    this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]), "FILE"));
-            }
-            
-            
-            else if (tokens[1].equals("MX"))
-            {
-                if (tokens.length < 4)
-                throw new InvalidDatabaseException("MX entry should have 4/5 arguments");
-                
-                if (tokens.length == 4)
-                this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
-                else 
-                this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]), "FILE"));
-                
-            }
-            
-            else if (tokens[1].equals("CNAME"))
-            {
-                if (tokens.length != 4)
-                    throw new InvalidDatabaseException("CNAME entry should have 4 arguments");
-        
                 if (!tokens[0].endsWith(".")) tokens[0] = tokens[0] + "." + this.macros.get("@");
-                if (!tokens[2].endsWith(".")) tokens[2] = tokens[2] + "." + this.macros.get("@");
                 
-        
-                if (alias.containsKey(tokens[2]))
-                    throw new InvalidDatabaseException("A canonic name should not point to other canonic name");
-                
-                if (alias.containsKey(tokens[0]))
-                    throw new InvalidDatabaseException("The same canonic name should not be given to two different parameters");
-        
-        
-                alias.put(tokens[0], new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
-            }
+                if (tokens[1].equals("A"))
+                {
+    
+                    if (tokens.length < 4)
+                        throw new InvalidDatabaseException("A entry should have 4/5 arguments");
+                    
+                    if (tokens.length == 4)
+                        this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
+                    else 
+                        this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]), "FILE"));
+                    }
+                else if (tokens[1].equals("SOAADMIN"))
+                {
+                    if (tokens.length != 4)
+                        throw new InvalidDatabaseException("SOASP field is not correct (too many arguments)");
+                        
+                    this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
+                }
+                else if (tokens[1].equals("SOASERIAL"))
+                {
+                    if (tokens.length != 4)
+                        throw new InvalidDatabaseException("SOASERIAL field is not correct");
+    
+                        this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
+                    }
+                else if (tokens[1].equals("SOAEXPIRE"))
+                {
+                    if (tokens.length != 4)
+                    throw new InvalidDatabaseException("SOAEXPIRE field is not correct (too many arguments)");
+                    
+                    this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
+                }
+                else if (tokens[1].equals("SOAREFRESH"))
+                {
+                    if (tokens.length != 4)
+                        throw new InvalidDatabaseException("SOAREFRESH field is not correct");
+    
+                    this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
+                }
+                else if (tokens[1].equals("SOARETRY"))
+                {
+                    if (tokens.length != 4)
+                        throw new InvalidDatabaseException("SOARETRY field is not correct");
+    
+                    this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
+                }
+                else
+                {
 
-            else 
-                throw new InvalidDatabaseException("Type " + tokens[1] + " is invalid");
+                    if (!tokens[2].endsWith(".")) tokens[0] = tokens[0] + "." + this.macros.get("@");
+                    
+                    if (tokens[1].equals("SOASP"))
+                    {
+                        if (tokens.length != 4)
+                        throw new InvalidDatabaseException("SOASP field is not correct (too many arguments)");
+                        
+                        this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
+                    }
+        
+                    else if (tokens[1].equals("NS"))
+                    {
+                        if (tokens.length < 3)
+                            throw new InvalidDatabaseException("NS entry should have 3/4/5 arguments");
+                        
+                        if (tokens.length == 3)
+                            this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], "FILE"));
+                            else if (tokens.length == 4)
+                            this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
+                        else 
+                            this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]), "FILE"));
+                    }
+                    
+                    
+                    else if (tokens[1].equals("MX"))
+                    {
+                        if (tokens.length < 4)
+                        throw new InvalidDatabaseException("MX entry should have 4/5 arguments");
+                        
+                        if (tokens.length == 4)
+                        this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
+                        else 
+                        this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]), "FILE"));
+                        
+                    }
+                    
+                    else if (tokens[1].equals("CNAME"))
+                    {
+                        if (tokens.length != 4)
+                            throw new InvalidDatabaseException("CNAME entry should have 4 arguments");
+                
+                        if (!tokens[0].endsWith(".")) tokens[0] = tokens[0] + "." + this.macros.get("@");
+                        if (!tokens[2].endsWith(".")) tokens[2] = tokens[2] + "." + this.macros.get("@");
+                        
+                
+                        if (alias.containsKey(tokens[2]))
+                            throw new InvalidDatabaseException("A canonic name should not point to other canonic name");
+                        
+                        if (alias.containsKey(tokens[0]))
+                            throw new InvalidDatabaseException("The same canonic name should not be given to two different parameters");
+                
+                
+                        alias.put(tokens[0], new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
+                    }
+        
+                    else 
+                        throw new InvalidDatabaseException("Type " + tokens[1] + " is invalid");
+                }
+            }
+            this.NumDBentries++;
         }
         this.cache.put(alias.values());
+    }
+
+    public void TCPzonetransfer ()
+    {
+        try
+        {
+            ServerSocket serverSocket = new ServerSocket(this.port);
+            Socket socket = serverSocket.accept();
+
+            InetAddress receivingAddress = socket.getInetAddress();
+
+            boolean isSP = false;
+            for (String SS: this.SSlist)
+                if (receivingAddress.toString().equals(SS)) isSP = true;
+
+            if (!isSP) { serverSocket.close(); return; }
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintWriter out = new PrintWriter(socket.getOutputStream());
+
+            String line;
+            line = in.readLine();
+
+            if (!line.equals("domain: \"" + this.domain + "\"")) { serverSocket.close(); return; }
+
+            out.println("entries: "+this.NumDBentries);
+            out.flush();
+
+            line = in.readLine();
+
+            if (!line.equals("ok: "+this.NumDBentries)) { serverSocket.close(); return; }
+
+            List<String> lines = new ArrayList<String>();
+            try
+            {
+                lines = Files.readAllLines(Paths.get(this.databaseFile));
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+                serverSocket.close();
+                throw new IOException("Couldn't read DB file");
+            }
+
+            for (String l : lines)
+            {
+                if (l.isEmpty() || l.startsWith("#"))
+                    continue;
+
+                out.println(l);
+                out.flush();
+            }
+
+            socket.shutdownOutput();
+            socket.shutdownInput();
+            socket.close();
+            serverSocket.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public void UDPreceiving () throws IOException {
@@ -394,6 +461,8 @@ public class SP
             return;
 
         sp.setup();
+
+        sp.TCPzonetransfer();
 
         sp.UDPreceiving();
     }

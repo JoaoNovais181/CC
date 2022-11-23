@@ -12,24 +12,22 @@ TTL DEFAULT 86400
 @ SOARETRY 3600 TTL
 @ SOAEXPIRE 604800 TTL
 
-@ NS ns1.mafarrico. TTL
-@ NS ns2.mafarrico. TTL
-@ NS ns3.mafarrico. TTL
+@ NS ns1-mafa.mafarrico. TTL
+@ NS ns2-mafa.mafarrico. TTL
+@ NS ns3-mafa.mafarrico. TTL
 
-chocapic.@ NS sp.chocapic.mafarrico.
+chocapic.@ NS sp-choca.chocapic.mafarrico.
 
 @ MX mx1.mafarrico TTL 10
 @ MX mx2.mafarrico TTL 20
 
-ns1 A 10.0.17.10 TTL
-ns2 A 10.0.18.12 TTL
-ns3 A 10.0.19.11 TTL
-sp.chocapic A 10.0.22.10 TTL
-mx1 A 10.0.18.11 TTL
-mx2 A 10.0.19.12 TTL
+ns1-mafa A 10.0.17.10 TTL
+ns2-mafa A 10.0.18.12 TTL
+ns3-mafa A 10.0.19.11 TTL
+sp-choca.chocapic A 10.0.23.10 TTL
+mx1-mafa A 10.0.18.11 TTL
 
-sp CNAME ns1 TTL
-ss1 CNAME ns2 TTL
-ss2 CNAME ns3 TTL
-mail1 CNAME mx1 TTL
-mail2 CNAME mx2 TTL 
+spmafa CNAME ns1-mafa TTL
+ss1mafa CNAME ns2-mafa TTL
+ss2mafa CNAME ns3-mafa TTL
+mail1mafa CNAME mx1-mafa TTL

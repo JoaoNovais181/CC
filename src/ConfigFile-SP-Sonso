@@ -1,9 +1,9 @@
 # Configuration file for primary server for sonso
-sonso DB /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-sonso SS 10.0.15.11
-sonso SS 10.0.21.11
+sonso. DB /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
+sonso. SS 10.0.15.12
+sonso. SS 10.0.21.11
 # Perguntar ao stor
-sonso DD 127.0.0.1  
-sonso LG /home/tbag/Universidade/3Ano/1Sem/CC/src/sonsolog.txt
+sonso. DD 127.0.0.1  
+sonso. LG /home/tbag/Universidade/3Ano/1Sem/CC/src/sonsolog.txt
 all LG /home/tbag/alllogs.txt
 root ST /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt

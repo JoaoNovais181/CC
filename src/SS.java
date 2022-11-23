@@ -177,6 +177,7 @@ public class SS
             int entries = Integer.parseInt(response.split(": ")[1]);
 
             out.println("ok: " + entries);
+            out.flush();
 
             Map<String, CacheEntry> alias = new HashMap<>();
             

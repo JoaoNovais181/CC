@@ -327,10 +327,10 @@ public class SP
             Socket socket = serverSocket.accept();
 
             InetAddress receivingAddress = socket.getInetAddress();
-
+            String ra = (receivingAddress.toString().startsWith("/")) ?receivingAddress.toString().substring(1) :receivingAddress.toString();
             boolean isSP = false;
             for (String SS: this.SSlist)
-                if (receivingAddress.toString().equals(SS)) isSP = true;
+                if (ra.equals(SS)) isSP = true;
 
             if (!isSP) { serverSocket.close(); return; }
 
@@ -339,7 +339,6 @@ public class SP
 
             String line;
             line = in.readLine();
-
             if (!line.equals("domain: \"" + this.domain + "\"")) { serverSocket.close(); return; }
 
             out.println("entries: "+this.NumDBentries);

@@ -5,7 +5,7 @@
 @ DEFAULT mafarrico.
 TTL DEFAULT 86400
 
-@ SOASP ns1.mafarrico. TTL
+@ SOASP ns1-mafa.mafarrico. TTL
 @ SOAADMIN dns\.admin.mafarrico. TTL
 @ SOASERIAL 0112112022 TTL
 @ SOAREFRESH 14400 TTL

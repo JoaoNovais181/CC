@@ -3,28 +3,26 @@
 @ DEFAULT nestle.sonso.
 TTL DEFAULT 86400
 
-@ SOASP ns1.nestle.sonso. TTL
+@ SOASP ns1-nestle.nestle.sonso. TTL
 @ SOAADMIN dns\.admin.nestle.sonso. TTL
 @ SOASERIAL 0112112022 TTL
 @ SOAREFRESH 14400 TTL
 @ SOARETRY 3600 TTL
 @ SOAEXPIRE 604800 TTL
 
-@ NS ns1.nestle.sonso. TTL
-@ NS ns2.nestle.sonso. TTL
-@ NS ns3.nestle.sonso. TTL
+@ NS ns1-nestle.nestle.sonso. TTL
+@ NS ns2-nestle.nestle.sonso. TTL
+@ NS ns3-nestle.nestle.sonso. TTL
 
-@ MX mx1.nestle.sonso TTL 10
-@ MX mx2.nestle.sonso TTL 20
+@ MX mx1-nestle.nestle.sonso TTL 10
+@ MX mx2-nestle.nestle.sonso TTL 20
 
-ns1 A 10.0.26.10TTL
-ns2 A 10.0.28.10 TTL
-ns3 A 10.0.27.10 TTL
-mx1 A 10.0.28.11 TTL
-mx2 A 10.0.27.11 TTL
+ns1-nestle A 10.0.26.10 TTL
+ns2-nestle A 10.0.28.10 TTL
+ns3-nestle A 10.0.27.10 TTL
+mx1-nestle A 10.0.28.11 TTL
 
-sp CNAME ns1 TTL
-ss1 CNAME ns2 TTL
-ss2 CNAME ns3 TTL
-mail1 CNAME mx1 TTL
-mail2 CNAME mx2 TTL 
+spnestle CNAME ns1-nestle TTL
+ss1nestle CNAME ns2-nestle TTL
+ss2nestle CNAME ns3-nestle TTL
+mail1nestle CNAME mx1-nestle TTL

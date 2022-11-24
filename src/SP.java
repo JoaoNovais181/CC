@@ -264,7 +264,7 @@ public class SP
                 else
                 {
 
-                    if (!tokens[2].endsWith(".")) tokens[0] = tokens[0] + "." + this.macros.get("@");
+                    if (!tokens[2].endsWith(".")) tokens[2] = tokens[2] + "." + this.macros.get("@");
                     
                     if (tokens[1].equals("SOASP"))
                     {
@@ -302,10 +302,6 @@ public class SP
                     {
                         if (tokens.length != 4)
                             this.ThrowException(new InvalidDatabaseException("CNAME entry should have 4 arguments"));
-                
-                        if (!tokens[0].endsWith(".")) tokens[0] = tokens[0] + "." + this.macros.get("@");
-                        if (!tokens[2].endsWith(".")) tokens[2] = tokens[2] + "." + this.macros.get("@");
-                        
                 
                         if (alias.containsKey(tokens[2]))
                             this.ThrowException(new InvalidDatabaseException("A canonic name should not point to other canonic name"));
@@ -398,12 +394,12 @@ public class SP
             }
 
 
-            this.logger.log(new LogEntry("ZT", ra, "SP, totalBytes = " + totalLength + ", durations = " + ChronoUnit.MILLIS.between(start, LocalDateTime.now()) + "ms"));
 
             socket.shutdownOutput();
             socket.shutdownInput();
-            socket.close();
+            // socket.close();
             serverSocket.close();
+            this.logger.log(new LogEntry("ZT", ra, "SP, totalBytes = " + totalLength + ", durations = " + ChronoUnit.MILLIS.between(start, LocalDateTime.now()) + "ms"));
         }
         catch (IOException e)
         {
@@ -452,7 +448,12 @@ public class SP
                 }
             }
 
-            MyAppProto answer = new MyAppProto(msg.getMsgID(), "A", 0, responseValues.size(), authoritativeValues.size(), extraValues.size(), msg.getName(), msg.getTypeOfValue());
+            int responseCode = 0;
+            if (responseValues.size()==0) responseCode = 1;
+            if (authoritativeValues.size()==0) responseCode = 2;
+            // Falta ver valor 3
+
+            MyAppProto answer = new MyAppProto(msg.getMsgID(), "A", responseCode, responseValues.size(), authoritativeValues.size(), extraValues.size(), msg.getName(), msg.getTypeOfValue());
 
 			for (CacheEntry ce : responseValues)
 				answer.PutValue(ce.dbString());
@@ -482,13 +483,16 @@ public class SP
 
     public static void main(String[] args) throws Exception {
         if (args.length < 1)
+        {
+            System.out.println("<Usage> \nSP [portNumber] timeout [D] configFile\nArguments with [] are not mandatory\n");
             return;
+        }
 
         SP sp;
 
-        if (args.length == 3 && args[args.length-2].equals("-g"))
+        if (args.length == 3 && args[args.length-2].equals("D"))
             sp = new SP(53, Integer.parseInt(args[0]), args[2], true);
-        else if (args.length == 4 && args[args.length-2].equals("-g"))
+        else if (args.length == 4 && args[args.length-2].equals("D"))
             sp = new SP(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[3], true);
         else if (args.length == 2)
             sp = new SP(53, Integer.parseInt(args[0]), args[1], false);

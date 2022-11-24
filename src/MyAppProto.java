@@ -36,17 +36,17 @@ public class MyAppProto
         else
         {
             this.clientMSG = false;
-            String[] aux = parts[2].replace("\n","").trim().split(",");
+            String[] aux = parts[2].trim().split(",");
             for (String str : aux)
             {
                 this.dataField.PutValue(str);
             }
-            aux = parts[3].replace("\n","").trim().split(",");
+            aux = parts[3].trim().split(",");
             for (String str : aux)
             {
                 this.dataField.PutAuthority(str);
             }
-            aux = parts[4].replace("\n","").trim().split(",");
+            aux = parts[4].trim().split(",");
             for (String str : aux)
             {
                 this.dataField.PutExtraValue(str);
@@ -67,6 +67,11 @@ public class MyAppProto
     public String toString()
     {
         return this.header.toString() + this.dataField.toString();
+    }
+
+    public String prettyString()
+    {
+        return this.header.prettyString() + this.dataField.prettyString();
     }
 
 //    public static void main (String[] args)

@@ -1,0 +1,8 @@
+# Configuration file for primary server for sonso
+mafarrico. DB /home/core/dns/BasedeDadosSPdomMafarrico.txt
+mafarrico. SS 10.0.18.12
+mafarrico. SS 10.0.19.11
+# Perguntar ao stor
+mafarrico. LG /home/core/dns/mafarricolog.txt
+all LG /home/core/dns/alllogs.txt
+root ST /home/core/dns/listaST.txt

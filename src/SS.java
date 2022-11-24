@@ -322,10 +322,10 @@ public class SS
             }
             // this.cache.put(alias.values());
 
-            this.logger.log(new LogEntry("ZT", spIP, "SS, totalBytes = " + totalLength + ", duration = " + ChronoUnit.MILLIS.between(start, LocalDateTime.now()) + "ms"));
             socket.shutdownOutput();
             socket.shutdownInput();
             socket.close();
+            this.logger.log(new LogEntry("ZT", spIP, "SS, totalBytes = " + totalLength + ", duration = " + ChronoUnit.MILLIS.between(start, LocalDateTime.now()) + "ms"));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -403,13 +403,16 @@ public class SS
 
     public static void main(String[] args) throws Exception {
         if (args.length < 1)
+        {
+            System.out.println("<Usage> \nSP [portNumber] timeout [D] configFile\nArguments with [] are not mandatory\n");
             return;
+        }
 
         SS ss;
 
-        if (args.length == 3 && args[args.length-2].equals("-g"))
+        if (args.length == 3 && args[args.length-2].equals("D"))
             ss = new SS(53, Integer.parseInt(args[0]), args[2], true);
-        else if (args.length == 4 && args[args.length-2].equals("-g"))
+        else if (args.length == 4 && args[args.length-2].equals("D"))
             ss = new SS(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[3], true);
         else if (args.length == 2)
             ss = new SS(53, Integer.parseInt(args[0]), args[1], false);

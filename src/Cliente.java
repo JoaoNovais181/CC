@@ -28,7 +28,7 @@ public class Cliente {
         s.receive(receive);
 
         MyAppProto ans = new MyAppProto(receive.getData());
-        System.out.println(ans.toString());
+        System.out.println(ans.prettyString());
 
         s.close();
     }

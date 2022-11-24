@@ -60,6 +60,7 @@ public class DataField
 				r += this.responseValues.get(i) + ",";
 			r += this.responseValues.get(this.responseValues.size()-1)+";";
 		}
+        else r+=";";
 
 		if (this.authoritiesValues.size() != 0)
 		{
@@ -67,6 +68,7 @@ public class DataField
 				r += this.authoritiesValues.get(i) + ",";
 			r += this.authoritiesValues.get(this.authoritiesValues.size()-1)+";";
 		}
+        else r+=";";
 
 		if (this.extraValues.size() != 0)
 		{
@@ -74,6 +76,7 @@ public class DataField
 				r += this.extraValues.get(i) + ",";
 			r += this.extraValues.get(this.extraValues.size()-1)+";";
 		}
+        else r+=";";
     
         return r;
     }
@@ -86,5 +89,38 @@ public class DataField
     public String getTypeOfValue()
     {
         return this.TypeOfValue;
+    }
+
+    public String prettyString()
+    {
+        String r = "# Data: Query Info\nQUERY-INFO.NAME = " + this.Name + ", QUERY-INFO.TYPEOFVALUE = " + this.TypeOfValue + ";\n# Data: List of Response, Authorities and Extra Values\n";
+
+        for (String s : this.responseValues)
+
+        if (this.responseValues.size() != 0)
+		{
+			for (int i=0 ; i<this.responseValues.size()-1 ; i++)
+				r += "RESPONSE-VALUES = " + this.responseValues.get(i) + ",";
+			r += "RESPONSE-VALUES = " + this.responseValues.get(this.responseValues.size()-1)+";";
+		}
+        else r+=";";
+
+		if (this.authoritiesValues.size() != 0)
+		{
+			for (int i=0 ; i<this.authoritiesValues.size()-1 ; i++)
+				r += "AUTHORITIES-VALUES = " + this.authoritiesValues.get(i) + ",";
+			r += "AUTHORITIES-VALUES = " + this.authoritiesValues.get(this.authoritiesValues.size()-1)+";";
+		}
+        else r+=";";
+
+		if (this.extraValues.size() != 0)
+		{
+			for (int i=0 ; i<this.extraValues.size()-1 ; i++)
+				r += "EXTRA-VALUES = " + this.extraValues.get(i) + ",";
+			r += "EXTRA-VALUES = " + this.extraValues.get(this.extraValues.size()-1)+";";
+		}
+        else r+=";";
+
+        return r;
     }
 }

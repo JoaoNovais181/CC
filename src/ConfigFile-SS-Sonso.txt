@@ -1,2 +1,6 @@
-# Ficheiro de Config para SS1 e SS2 do dominio sonso
-mafarrico SP 10.0.20.10
+# Configuration file for secondary server for sonso
+sonso. SP 10.0.20.10:5555
+# Perguntar ao stor
+sonso. LG /home/core/dns/SSsonsolog.txt
+all LG /home/core/dns/alllogs.txt
+root ST /home/core/dns/listaST.txt

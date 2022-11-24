@@ -59,6 +59,6 @@ public class LogEntry
     public String toString()
     {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return this.TimeStamp.format(format) + " " + this.Type + " " + this.Address + " " + this.Entry + (this.Entry.endsWith("\n") ?"" :"\n");
+        return "[" + this.TimeStamp.format(format) + "] " + this.Type + " " + this.Address + ": " + this.Entry + (this.Entry.endsWith("\n") ?"" :"\n");
     }
 }

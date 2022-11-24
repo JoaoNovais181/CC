@@ -96,11 +96,9 @@ public class Header
                + this.numberOfValues + "," + this.numberOfAuthorities + "," + this.numberOfExtraValues + ";";
     }
 
-    public static void main(String[] args)
+    public String prettyString()
     {
-        Header header = new Header("9854", "Q+R");
-        byte[] encoded = header.Encode();
-        // System.out.println(Arrays.toString(header.Encode()));
-        System.out.println(Header.Decode(encoded));
+        return "# Header\nMESSAGE-ID = " + this.MsgID + ", FLAGS = " + this.Flags + ", RESPONSE-CODE = " + this.responseCode + ", N-VALUES = " + this.numberOfValues + 
+                ", N-AUTHORITIES = " + this.numberOfAuthorities + ", N-EXTRA-VALUES = " + this.numberOfExtraValues + ";\n";
     }
 }

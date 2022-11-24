@@ -1,6 +1,5 @@
 src/.idea
 src/out
 out
-*.class
 *.iml
 *.xml

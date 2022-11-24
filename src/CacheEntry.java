@@ -107,4 +107,15 @@ public class CacheEntry
     {
         return "" + this.Name + " " + this.Type + " " + this.Value + " " + this.TTL + " " + this.Order + " " + this.Origin + " " + this.TimeStamp.toString() + " " + this.Index + " " + ((this.Status) ?"FREE" :"VALID");
     }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == null) return false;
+
+        if (obj.getClass() != this.getClass()) return false;
+        CacheEntry ce = (CacheEntry) obj;
+        return this.Name.equals(ce.getName()) && this.Type.equals(ce.getType()) && this.Value.equals(ce.getValue()) && this.TTL==ce.getttl() &&
+                this.Order==ce.getOrder() && this.Origin.equals(ce.getOrigin()) && this.TimeStamp.equals(ce.getTimeStamp()) && this.Status==ce.getStatus(); 
+    }
 }

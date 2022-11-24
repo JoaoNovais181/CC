@@ -95,28 +95,26 @@ public class DataField
     {
         String r = "# Data: Query Info\nQUERY-INFO.NAME = " + this.Name + ", QUERY-INFO.TYPEOFVALUE = " + this.TypeOfValue + ";\n# Data: List of Response, Authorities and Extra Values\n";
 
-        for (String s : this.responseValues)
-
         if (this.responseValues.size() != 0)
 		{
 			for (int i=0 ; i<this.responseValues.size()-1 ; i++)
-				r += "RESPONSE-VALUES = " + this.responseValues.get(i) + ",";
-			r += "RESPONSE-VALUES = " + this.responseValues.get(this.responseValues.size()-1)+";";
+				r += "RESPONSE-VALUES = " + this.responseValues.get(i) + ",\n";
+			r += "RESPONSE-VALUES = " + this.responseValues.get(this.responseValues.size()-1)+";\n";
 		}
-        else r+=";";
+        else r+=";\n";
 
 		if (this.authoritiesValues.size() != 0)
 		{
 			for (int i=0 ; i<this.authoritiesValues.size()-1 ; i++)
-				r += "AUTHORITIES-VALUES = " + this.authoritiesValues.get(i) + ",";
-			r += "AUTHORITIES-VALUES = " + this.authoritiesValues.get(this.authoritiesValues.size()-1)+";";
+				r += "AUTHORITIES-VALUES = " + this.authoritiesValues.get(i) + ",\n";
+			r += "AUTHORITIES-VALUES = " + this.authoritiesValues.get(this.authoritiesValues.size()-1)+";\n";
 		}
-        else r+=";";
+        else r+=";\n";
 
 		if (this.extraValues.size() != 0)
 		{
 			for (int i=0 ; i<this.extraValues.size()-1 ; i++)
-				r += "EXTRA-VALUES = " + this.extraValues.get(i) + ",";
+				r += "EXTRA-VALUES = " + this.extraValues.get(i) + ",\n";
 			r += "EXTRA-VALUES = " + this.extraValues.get(this.extraValues.size()-1)+";";
 		}
         else r+=";";

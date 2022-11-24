@@ -425,32 +425,26 @@ public class SP
             List<CacheEntry> authoritativeValues = this.cache.get(this.domain, "NS");
             List<CacheEntry> extraValues = new ArrayList<>();
 
-
             for (CacheEntry ce : responseValues)
             {
-                if (!extraValues.contains(ce))
-                {
-                    int index;
-                    if (msg.getTypeOfValue().equals("A")) index = this.cache.searchValid(ce.getName(), "A", 1);
-                    else index = this.cache.searchValid(ce.getValue(), "A", 1);
-                    if (index != -1) extraValues.add(this.cache.get(index));
-                }
+                int index;
+                if ((index = this.cache.searchValid(ce.getValue(),  "A", 1)) != -1)
+                    ce =  this.cache.get(index);
+                if (ce.getType().equals("A") && !extraValues.contains(ce)) extraValues.add(ce);
             }
 
             for (CacheEntry ce : authoritativeValues)
             {
-                if (!extraValues.contains(ce))
-                {
-                    int index;
-                    if (msg.getTypeOfValue().equals("A")) index = this.cache.searchValid(ce.getName(), "A", 1);
-                    else index = this.cache.searchValid(ce.getValue(),  "A", 1);
-                    if (index != -1) extraValues.add(this.cache.get(index));
-                }
+                int index;
+                if ((index = this.cache.searchValid(ce.getValue(),  "A", 1)) != -1)
+                    ce =  this.cache.get(index);
+                if (ce.getType().equals("A") && !extraValues.contains(ce)) extraValues.add(ce);
             }
+
 
             int responseCode = 0;
             if (responseValues.size()==0) responseCode = 1;
-            if (authoritativeValues.size()==0) responseCode = 2;
+            if (responseValues.size()==0 && this.domain != ) responseCode = 2;
             // Falta ver valor 3
 
             MyAppProto answer = new MyAppProto(msg.getMsgID(), "A", responseCode, responseValues.size(), authoritativeValues.size(), extraValues.size(), msg.getName(), msg.getTypeOfValue());

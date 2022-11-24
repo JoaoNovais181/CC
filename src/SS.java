@@ -8,6 +8,8 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +44,7 @@ public class SS
         this.logFile = null;
     }
 
-    public void setup() throws IOException, InvalidConfigException, InvalidDatabaseException, InvalidCacheEntryException, InvalidSTFile {
+    public void setup() throws Exception {
         this.ParseConfig();
         this.logger.log(new LogEntry("EV", "localhost", ("conf-file-read " + this.configFile)));
         
@@ -57,7 +59,7 @@ public class SS
         this.logger.log(new LogEntry("EV", "localhost", ("st-file-read " + this.STfile)));
     }
 
-    public void ParseSTfile () throws IOException, InvalidSTFile
+    public void ParseSTfile () throws Exception
     {
         List<String> lines = new ArrayList<String>();
         try
@@ -67,7 +69,7 @@ public class SS
         catch (IOException e)
         {
             e.printStackTrace();
-            throw new IOException("Couldn't read DB file");
+            this.ThrowException(new IOException("Couldn't read DB file"));
         }
 
         for (String line : lines)
@@ -78,16 +80,16 @@ public class SS
             String[] tokens = line.split(" ");
             
             if (tokens.length != 2) 
-                throw new InvalidSTFile("Incorrect number of arguments for entry: " + line);
+                this.ThrowException(new InvalidSTFile("Incorrect number of arguments for entry: " + line));
 
             if (!tokens[1].equals("ST"))
-                throw new InvalidSTFile("Wrong type \"" + tokens[1] + "\"");
+                this.ThrowException(new InvalidSTFile("Wrong type \"" + tokens[1] + "\""));
 
             this.STs.add(tokens[0]);
         }            
     }
 
-    public void ParseConfig() throws IOException, InvalidConfigException
+    public void ParseConfig() throws Exception
     {
         List<String> lines = new ArrayList<String>();
         try
@@ -97,7 +99,7 @@ public class SS
         catch (IOException e)
         {
             e.printStackTrace();
-            throw new IOException("Couldn't read DB file");
+            this.ThrowException(new IOException("Couldn't read DB file"));
         }
 
         for (String line : lines)
@@ -108,7 +110,7 @@ public class SS
             String[] tokens = line.split(" ");
 
             if (tokens.length != 3)
-                throw new InvalidConfigException("Config file entry should have 3 arguments");
+                this.ThrowException(new InvalidConfigException("Config file entry should have 3 arguments"));
 
             else if (tokens[1].equals("SP"))
             {
@@ -143,13 +145,13 @@ public class SS
             else if (tokens[1].equals("ST"))
             {
                 if (!tokens[0].equals("root"))
-                    throw new InvalidConfigException("ST entry should have 'root' as its parameter");
+                    this.ThrowException(new InvalidConfigException("ST entry should have 'root' as its parameter"));
 
                 this.STfile = tokens[2];
             }
 
             else
-                throw new InvalidConfigException("Invalid type " + tokens[1]);
+                this.ThrowException(new InvalidConfigException("Invalid type " + tokens[1]));
         }
     }
 
@@ -165,15 +167,21 @@ public class SS
             }
 
             Socket socket = new Socket(spIP, porta);
-
+            
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter out = new PrintWriter(socket.getOutputStream());
-
+            
             out.println("domain: \"" + this.domain + "\"");
             out.flush();
+            LocalDateTime start = LocalDateTime.now();
             
             String response = in.readLine();
-            if (!response.startsWith("entries: ")) {socket.close(); return; }
+            if (!response.startsWith("entries: ")) 
+            {
+                this.logger.log(new LogEntry("EZ", spIP, "SS"));
+                socket.close(); 
+                return; 
+            }
             int entries = Integer.parseInt(response.split(": ")[1]);
 
             out.println("ok: " + entries);
@@ -181,9 +189,10 @@ public class SS
 
             Map<String, CacheEntry> alias = new HashMap<>();
             
-
+            int totalLength = 0;
             while ((response = in.readLine()) != null) 
             {
+                totalLength += response.length();
                 String[] tokens = response.split(" ");
 
                 for (int i=0 ; i<tokens.length ; i++)
@@ -194,10 +203,11 @@ public class SS
 
                 if (tokens[1].equals("DEFAULT"))
                 {
-                    if (tokens.length != 3) { socket.close(); throw new InvalidDatabaseException("Macro has too many arguments"); }
+                    // if (tokens.length != 3) { socket.close(); throw new InvalidDatabaseException("Macro has too many arguments"); }
                     
                     this.macros.put(tokens[0], tokens[2]);
                     this.cache.put(new CacheEntry(tokens[0], tokens[1], tokens[2], "SP"));
+                    this.logger.log(new LogEntry("EV", "localhost", "DataBase entry from Zone Transfer added to cache. Entry: " + response));
                 }
                 else
                 {
@@ -206,42 +216,49 @@ public class SS
                     if (tokens[1].equals("A"))
                     {
         
-                        if (tokens.length < 4) { socket.close(); throw new InvalidDatabaseException("A entry should have 4/5 arguments");}
+                        // if (tokens.length < 4) { socket.close(); throw new InvalidDatabaseException("A entry should have 4/5 arguments");}
                         
                         if (tokens.length == 4)
                             this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "SP"));
                         else 
                             this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]), "SP"));
-                        }
+                        this.logger.log(new LogEntry("EV", "localhost", "DataBase entry from Zone Transfer added to cache. Entry: " + response));
+                    }
                     else if (tokens[1].equals("SOAADMIN"))
                     {
-                        if (tokens.length != 4) { socket.close(); throw new InvalidDatabaseException("SOASP field is not correct (too many arguments)"); }
+                        // if (tokens.length != 4) { socket.close(); throw new InvalidDatabaseException("SOASP field is not correct (too many arguments)"); }
                             
                         this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "SP"));
+                        this.logger.log(new LogEntry("EV", "localhost", "DataBase entry from Zone Transfer added to cache. Entry: " + response));
                     }
                     else if (tokens[1].equals("SOASERIAL"))
                     {
-                        if (tokens.length != 4) { socket.close(); throw new InvalidDatabaseException("SOASERIAL field is not correct");}
+                        // if (tokens.length != 4) { socket.close(); throw new InvalidDatabaseException("SOASERIAL field is not correct");}
         
-                            this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "SP"));
-                        }
+                        this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "SP"));
+                        this.logger.log(new LogEntry("EV", "localhost", "DataBase entry from Zone Transfer added to cache. Entry: " + response));
+                        
+                    }
                     else if (tokens[1].equals("SOAEXPIRE"))
                     {
-                        if (tokens.length != 4) {socket.close(); throw new InvalidDatabaseException("SOAEXPIRE field is not correct (too many arguments)"); }
+                        // if (tokens.length != 4) {socket.close(); throw new InvalidDatabaseException("SOAEXPIRE field is not correct (too many arguments)"); }
                         
                         this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "SP"));
+                        this.logger.log(new LogEntry("EV", "localhost", "DataBase entry from Zone Transfer added to cache. Entry: " + response));
                     }
                     else if (tokens[1].equals("SOAREFRESH"))
                     {
-                        if (tokens.length != 4) {socket.close(); throw new InvalidDatabaseException("SOAREFRESH field is not correct");}
+                        // if (tokens.length != 4) {socket.close(); throw new InvalidDatabaseException("SOAREFRESH field is not correct");}
         
                         this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "SP"));
+                        this.logger.log(new LogEntry("EV", "localhost", "DataBase entry from Zone Transfer added to cache. Entry: " + response));
                     }
                     else if (tokens[1].equals("SOARETRY"))
                     {
-                        if (tokens.length != 4) {socket.close(); throw new InvalidDatabaseException("SOARETRY field is not correct");}
+                        // if (tokens.length != 4) {socket.close(); throw new InvalidDatabaseException("SOARETRY field is not correct");}
         
                         this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "SP"));
+                        this.logger.log(new LogEntry("EV", "localhost", "DataBase entry from Zone Transfer added to cache. Entry: " + response));
                     }
                     else
                     {
@@ -250,33 +267,35 @@ public class SS
                         
                         if (tokens[1].equals("SOASP"))
                         {
-                            if (tokens.length != 4) {socket.close(); throw new InvalidDatabaseException("SOASP field is not correct (too many arguments)");}
+                            // if (tokens.length != 4) {socket.close(); throw new InvalidDatabaseException("SOASP field is not correct (too many arguments)");}
                             
                             this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "SP"));
+                            this.logger.log(new LogEntry("EV", "localhost", "DataBase entry from Zone Transfer added to cache. Entry: " + response));
                         }
             
                         else if (tokens[1].equals("NS"))
                         {
-                            if (tokens.length < 3) {socket.close(); throw new InvalidDatabaseException("NS entry should have 3/4/5 arguments");}
+                            // if (tokens.length < 3) {socket.close(); throw new InvalidDatabaseException("NS entry should have 3/4/5 arguments");}
                             
                             if (tokens.length == 3)
                                 this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], "SP"));
-                                else if (tokens.length == 4)
+                            else if (tokens.length == 4)
                                 this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "SP"));
                             else 
                                 this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]), "SP"));
+                            this.logger.log(new LogEntry("EV", "localhost", "DataBase entry from Zone Transfer added to cache. Entry: " + response));
                         }
                         
                         
                         else if (tokens[1].equals("MX"))
                         {
-                            if (tokens.length < 4) {socket.close(); throw new InvalidDatabaseException("MX entry should have 4/5 arguments");}
+                            // if (tokens.length < 4) {socket.close(); throw new InvalidDatabaseException("MX entry should have 4/5 arguments");}
                             
                             if (tokens.length == 4)
-                            this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "SP"));
+                                this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "SP"));
                             else 
-                            this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]), "SP"));
-                            
+                                this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]), "SP"));
+                            this.logger.log(new LogEntry("EV", "localhost", "DataBase entry from Zone Transfer added to cache. Entry: " + response));
                         }
                         
                         else if (tokens[1].equals("CNAME"))
@@ -287,20 +306,23 @@ public class SS
                             if (!tokens[2].endsWith(".")) tokens[2] = tokens[2] + "." + this.macros.get("@");
                             
                     
-                            if (alias.containsKey(tokens[2])) {socket.close();throw new InvalidDatabaseException("A canonic name should not point to other canonic name");}
+                            // if (alias.containsKey(tokens[2])) {socket.close();throw new InvalidDatabaseException("A canonic name should not point to other canonic name");}
                             
-                            if (alias.containsKey(tokens[0])) {socket.close(); throw new InvalidDatabaseException("The same canonic name should not be given to two different parameters");}
+                            // if (alias.containsKey(tokens[0])) {socket.close(); throw new InvalidDatabaseException("The same canonic name should not be given to two different parameters");}
                     
-                    
-                            alias.put(tokens[0], new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "SP"));
+                            CacheEntry ce = new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "SP");
+                            alias.put(tokens[0], ce);
+                            this.cache.put(ce);
+                            this.logger.log(new LogEntry("EV", "localhost", "DataBase entry from Zone Transfer added to cache. Entry: " + response));
                         }
             
-                        else {socket.close(); throw new InvalidDatabaseException("Type " + tokens[1] + " is invalid");}
+                        // else {socket.close(); throw new InvalidDatabaseException("Type " + tokens[1] + " is invalid");}
                     }
                 }
             }
-            this.cache.put(alias.values());
+            // this.cache.put(alias.values());
 
+            this.logger.log(new LogEntry("ZT", spIP, "SS, totalBytes = " + totalLength + ", duration = " + ChronoUnit.MILLIS.between(start, LocalDateTime.now()) + "ms"));
             socket.shutdownOutput();
             socket.shutdownInput();
             socket.close();
@@ -372,7 +394,14 @@ public class SS
         serverSocket.close();
     }
 
-    public static void main(String[] args) throws IOException, InvalidConfigException, InvalidDatabaseException, InvalidCacheEntryException, InvalidSTFile {
+    public void ThrowException(Exception e) throws Exception
+    {
+        this.logger.log(new LogEntry("FL", "localhost", e.getMessage()));
+        e.printStackTrace();
+        throw e;
+    }
+
+    public static void main(String[] args) throws Exception {
         if (args.length < 1)
             return;
 
@@ -380,7 +409,7 @@ public class SS
 
         if (args.length == 3 && args[args.length-2].equals("-g"))
             ss = new SS(53, Integer.parseInt(args[0]), args[2], true);
-        else if (args.length == 3 && args[args.length-2].equals("-g"))
+        else if (args.length == 4 && args[args.length-2].equals("-g"))
             ss = new SS(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[3], true);
         else if (args.length == 2)
             ss = new SS(53, Integer.parseInt(args[0]), args[1], false);

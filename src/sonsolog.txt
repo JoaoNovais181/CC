@@ -1,133 +1,27 @@
-2022-11-21 15:04:46 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-21 15:04:46 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-21 15:04:46 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-21 15:04:48 QR /127.0.0.1 20218,Q,0,0,0,0;sonso.,MX;
-
-2022-11-21 15:04:48 RE /127.0.0.1 20218,A,0,2,3,5;sonso.,MX;
-sonso. MX mx1.sonso. 86400 10,
-sonso. MX mx2.sonso. 86400 20;
-sonso. NS ns1.sonso. 86400,
-sonso. NS ns2.sonso. 86400,
-sonso. NS ns3.sonso. 86400;
-mx1.sonso. A 10.0.15.11 86400,
-mx2.sonso. A 10.0.21.10 86400,
-ns1.sonso. A 10.0.20.10 86400,
-ns2.sonso. A 10.0.15.12 86400,
-ns3.sonso. A 10.0.21.11 86400;
-2022-11-21 15:07:04 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-21 15:07:04 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-21 15:07:04 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-21 15:07:07 QR /127.0.0.1 17057,Q,0,0,0,0;sonso.,MX;
-
-2022-11-21 15:07:07 RE /127.0.0.1 17057,A,0,2,3,5;sonso.,MX;
-sonso. MX mx1.sonso. 86400 10,
-sonso. MX mx2.sonso. 86400 20;
-sonso. NS ns1.sonso. 86400,
-sonso. NS ns2.sonso. 86400,
-sonso. NS ns3.sonso. 86400;
-mx1.sonso. A 10.0.15.11 86400,
-mx2.sonso. A 10.0.21.10 86400,
-ns1.sonso. A 10.0.20.10 86400,
-ns2.sonso. A 10.0.15.12 86400,
-ns3.sonso. A 10.0.21.11 86400;
-
-2022-11-21 15:07:21 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-21 15:07:21 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-21 15:07:21 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-21 15:07:23 QR /127.0.0.1 18888,Q,0,0,0,0;sonso.,MX;
-
-2022-11-21 15:07:23 RE /127.0.0.1 18888,A,0,2,3,5;sonso.,MX;
-sonso. MX mx1.sonso. 86400 10,
-sonso. MX mx2.sonso. 86400 20;
-sonso. NS ns1.sonso. 86400,
-sonso. NS ns2.sonso. 86400,
-sonso. NS ns3.sonso. 86400;
-mx1.sonso. A 10.0.15.11 86400,
-mx2.sonso. A 10.0.21.10 86400,
-ns1.sonso. A 10.0.20.10 86400,
-ns2.sonso. A 10.0.15.12 86400,
-ns3.sonso. A 10.0.21.11 86400;
-
-2022-11-21 15:17:33 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-21 15:17:33 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-21 15:17:33 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-21 15:17:37 QR /127.0.0.1 45763,Q,0,0,0,0;sonso.,MX;
-2022-11-21 15:17:37 RE /127.0.0.1 45763,A,0,2,3,5;sonso.,MX;sonso. MX mx1.sonso. 86400 10,sonso. MX mx2.sonso. 86400 20;sonso. NS ns1.sonso. 86400,sonso. NS ns2.sonso. 86400,sonso. NS ns3.sonso. 86400;mx1.sonso. A 10.0.15.11 86400,mx2.sonso. A 10.0.21.10 86400,ns1.sonso. A 10.0.20.10 86400,ns2.sonso. A 10.0.15.12 86400,ns3.sonso. A 10.0.21.11 86400;
-2022-11-21 15:32:59 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-21 15:32:59 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-21 15:32:59 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-21 15:33:12 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-21 15:33:12 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-21 15:33:12 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-21 15:33:16 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-21 15:33:16 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-21 15:33:16 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-21 15:33:32 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-21 15:33:32 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-21 15:33:32 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-21 15:34:23 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-21 15:34:23 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-21 15:34:23 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-21 15:34:34 QR /127.0.0.1 12866,Q,0,0,0,0;sonso.,MX;
-2022-11-21 15:34:34 RE /127.0.0.1 12866,A,0,2,3,5;sonso.,MX;sonso. MX mx1.sonso. 86400 10,sonso. MX mx2.sonso. 86400 20;sonso. NS ns1.sonso. 86400,sonso. NS ns2.sonso. 86400,sonso. NS ns3.sonso. 86400;mx1.sonso. A 10.0.15.11 86400,mx2.sonso. A 10.0.21.10 86400,ns1.sonso. A 10.0.20.10 86400,ns2.sonso. A 10.0.15.12 86400,ns3.sonso. A 10.0.21.11 86400;
-2022-11-21 15:35:21 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-21 15:35:21 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-21 15:35:21 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-21 15:35:24 QR /127.0.0.1 13565,Q,0,0,0,0;sonso.,MX;
-2022-11-21 15:35:24 RE /127.0.0.1 13565,A,0,2,3,5;sonso.,MX;sonso. MX mx1.sonso. 86400 10,sonso. MX mx2.sonso. 86400 20;sonso. NS ns1.sonso. 86400,sonso. NS ns2.sonso. 86400,sonso. NS ns3.sonso. 86400;mx1.sonso. A 10.0.15.11 86400,mx2.sonso. A 10.0.21.10 86400,ns1.sonso. A 10.0.20.10 86400,ns2.sonso. A 10.0.15.12 86400,ns3.sonso. A 10.0.21.11 86400;
-2022-11-21 15:36:03 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-21 15:36:03 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-21 15:36:03 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-21 15:36:04 QR /127.0.0.1 60705,Q,0,0,0,0;sonso.,MX;
-2022-11-21 15:36:04 RE /127.0.0.1 60705,A,0,2,3,5;sonso.,MX;sonso. MX mx1.sonso. 86400 10,sonso. MX mx2.sonso. 86400 20;sonso. NS ns1.sonso. 86400,sonso. NS ns2.sonso. 86400,sonso. NS ns3.sonso. 86400;mx1.sonso. A 10.0.15.11 86400,mx2.sonso. A 10.0.21.10 86400,ns1.sonso. A 10.0.20.10 86400,ns2.sonso. A 10.0.15.12 86400,ns3.sonso. A 10.0.21.11 86400;
-2022-11-22 12:35:55 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-22 12:35:55 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-22 12:35:55 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-22 12:38:55 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-22 12:38:55 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-22 12:38:55 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-22 12:39:09 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-22 12:39:09 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-22 12:39:09 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-22 12:43:08 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-22 12:43:08 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-22 12:43:08 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-23 12:42:38 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-23 12:42:38 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-23 12:42:38 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-23 12:43:50 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-23 12:43:50 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-23 12:43:50 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-23 12:43:59 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-23 12:43:59 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-23 12:43:59 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-23 12:45:02 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-23 12:45:02 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-23 12:45:02 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-23 12:45:48 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-23 12:45:48 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-23 12:45:48 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-23 12:48:07 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-23 12:48:07 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-23 12:48:07 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-23 12:48:44 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-23 12:48:44 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-23 12:48:44 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-23 12:49:05 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-23 12:49:05 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-23 12:49:05 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-23 12:49:15 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-23 12:49:15 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-23 12:49:15 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-23 12:50:51 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-23 12:50:51 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-23 12:50:51 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-23 12:51:32 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-23 12:51:32 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-23 12:51:32 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-23 12:52:06 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-23 12:52:06 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-23 12:52:06 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
-2022-11-23 12:53:59 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
-2022-11-23 12:53:59 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
-2022-11-23 12:53:59 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
+2022-11-24 12:08:17 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSPdummy.txt
+2022-11-24 12:08:17 EV localhost DataBase entry added to cache. Entry: @ DEFAULT sonso.
+2022-11-24 12:08:17 EV localhost DataBase entry added to cache. Entry: TTL DEFAULT 86400
+2022-11-24 12:08:17 EV localhost DataBase entry added to cache. Entry: @ SOASP ns1-sonso.sonso. TTL
+2022-11-24 12:08:17 EV localhost DataBase entry added to cache. Entry: @ SOAADMIN dns\.admin.sonso. TTL
+2022-11-24 12:08:17 EV localhost DataBase entry added to cache. Entry: @ SOASERIAL 0112112022 TTL
+2022-11-24 12:08:17 EV localhost DataBase entry added to cache. Entry: @ SOAREFRESH 14400 TTL
+2022-11-24 12:08:17 EV localhost DataBase entry added to cache. Entry: @ SOARETRY 3600 TTL
+2022-11-24 12:08:17 EV localhost DataBase entry added to cache. Entry: @ SOAEXPIRE 604800 TTL
+2022-11-24 12:08:17 EV localhost DataBase entry added to cache. Entry: @ NS ns1-sonso.sonso. TTL
+2022-11-24 12:08:17 EV localhost DataBase entry added to cache. Entry: @ NS ns2-sonso.sonso. TTL
+2022-11-24 12:08:17 EV localhost DataBase entry added to cache. Entry: @ NS ns3-sonso.sonso. TTL
+2022-11-24 12:08:17 EV localhost DataBase entry added to cache. Entry: nestle.@ NS sp-nestle.nestle.sonso.
+2022-11-24 12:08:17 EV localhost DataBase entry added to cache. Entry: @ MX mx1-sonso.sonso. TTL 10
+2022-11-24 12:08:17 EV localhost DataBase entry added to cache. Entry: @ MX mx2-sonso.sonso. TTL 20
+2022-11-24 12:08:17 EV localhost DataBase entry added to cache. Entry: ns1-sonso A 10.0.20.10 TTL
+2022-11-24 12:08:17 EV localhost DataBase entry added to cache. Entry: ns2-sonso A 10.0.15.12 TTL
+2022-11-24 12:08:17 EV localhost DataBase entry added to cache. Entry: ns3-sonso A 10.0.21.11 TTL
+2022-11-24 12:08:17 EV localhost DataBase entry added to cache. Entry: sp-nestle.nestle A 10.0.26.10 TTL
+2022-11-24 12:08:17 EV localhost DataBase entry added to cache. Entry: mx1-sonso A 10.0.15.11 TTL
+2022-11-24 12:08:17 EV localhost DataBase entry added to cache. Entry: spsonso CNAME ns1-sonso TTL
+2022-11-24 12:08:17 EV localhost DataBase entry added to cache. Entry: ss1sonso CNAME ns2-sonso TTL
+2022-11-24 12:08:17 EV localhost DataBase entry added to cache. Entry: ss2sonso CNAME ns3-sonso TTL
+2022-11-24 12:08:17 EV localhost DataBase entry added to cache. Entry: mail1sonso CNAME mx1-sonso TTL
+2022-11-24 12:08:17 EV localhost db-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/BasedeDadosSPdomSonso.txt
+2022-11-24 12:08:17 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
+2022-11-24 12:08:18 ZT 127.0.0.1 SP, totalBytes = 598, durations = 19ms

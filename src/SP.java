@@ -444,7 +444,7 @@ public class SP
 
             int responseCode = 0;
             if (responseValues.size()==0) responseCode = 1;
-            if (responseValues.size()==0 && this.domain != ) responseCode = 2;
+            // if (responseValues.size()==0 && this.domain != ) responseCode = 2;
             // Falta ver valor 3
 
             MyAppProto answer = new MyAppProto(msg.getMsgID(), "A", responseCode, responseValues.size(), authoritativeValues.size(), extraValues.size(), msg.getName(), msg.getTypeOfValue());

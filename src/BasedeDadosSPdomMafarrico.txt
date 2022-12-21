@@ -1,0 +1,33 @@
+# DNS database file for domain mafarrico
+# It also includes a pointer to the primary server
+# of the chocapic.mafarrico subdomain
+
+@ DEFAULT mafarrico.
+TTL DEFAULT 86400
+
+@ SOASP ns1-mafa.mafarrico. TTL
+@ SOAADMIN dns\.admin.mafarrico. TTL
+@ SOASERIAL 0112112022 TTL
+@ SOAREFRESH 14400 TTL
+@ SOARETRY 3600 TTL
+@ SOAEXPIRE 604800 TTL
+
+@ NS ns1-mafa.mafarrico. TTL
+@ NS ns2-mafa.mafarrico. TTL
+@ NS ns3-mafa.mafarrico. TTL
+
+chocapic.@ NS sp-choca.chocapic.mafarrico.
+
+@ MX mx1.mafarrico TTL 10
+@ MX mx2.mafarrico TTL 20
+
+ns1-mafa A 10.0.17.10 TTL
+ns2-mafa A 10.0.18.12 TTL
+ns3-mafa A 10.0.19.11 TTL
+sp-choca.chocapic A 10.0.23.10 TTL
+mx1-mafa A 10.0.18.11 TTL
+
+spmafa CNAME ns1-mafa TTL
+ss1mafa CNAME ns2-mafa TTL
+ss2mafa CNAME ns3-mafa TTL
+mail1mafa CNAME mx1-mafa TTL

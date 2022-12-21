@@ -1,0 +1,4 @@
+# Ficheiro de Config para SS1 e SS2 do dominio sonso
+sonso SP 127.0.0.1:5558
+sonso LG ./subdomsonso.txt
+root ST /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt

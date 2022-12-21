@@ -1,0 +1,26 @@
+2022-11-24 12:08:18 EV localhost conf-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/configFileSSdummy.txt
+2022-11-24 12:08:18 EV localhost st-file-read /home/tbag/Universidade/3Ano/1Sem/CC/src/listaST.txt
+2022-11-24 12:08:18 EV localhost DataBase entry from Zone Transfer added to cache. Entry: @ DEFAULT sonso.
+2022-11-24 12:08:18 EV localhost DataBase entry from Zone Transfer added to cache. Entry: TTL DEFAULT 86400
+2022-11-24 12:08:18 EV localhost DataBase entry from Zone Transfer added to cache. Entry: @ SOASP ns1-sonso.sonso. TTL
+2022-11-24 12:08:18 EV localhost DataBase entry from Zone Transfer added to cache. Entry: @ SOAADMIN dns\.admin.sonso. TTL
+2022-11-24 12:08:18 EV localhost DataBase entry from Zone Transfer added to cache. Entry: @ SOASERIAL 0112112022 TTL
+2022-11-24 12:08:18 EV localhost DataBase entry from Zone Transfer added to cache. Entry: @ SOAREFRESH 14400 TTL
+2022-11-24 12:08:18 EV localhost DataBase entry from Zone Transfer added to cache. Entry: @ SOARETRY 3600 TTL
+2022-11-24 12:08:18 EV localhost DataBase entry from Zone Transfer added to cache. Entry: @ SOAEXPIRE 604800 TTL
+2022-11-24 12:08:18 EV localhost DataBase entry from Zone Transfer added to cache. Entry: @ NS ns1-sonso.sonso. TTL
+2022-11-24 12:08:18 EV localhost DataBase entry from Zone Transfer added to cache. Entry: @ NS ns2-sonso.sonso. TTL
+2022-11-24 12:08:18 EV localhost DataBase entry from Zone Transfer added to cache. Entry: @ NS ns3-sonso.sonso. TTL
+2022-11-24 12:08:18 EV localhost DataBase entry from Zone Transfer added to cache. Entry: nestle.@ NS sp-nestle.nestle.sonso.
+2022-11-24 12:08:18 EV localhost DataBase entry from Zone Transfer added to cache. Entry: @ MX mx1-sonso.sonso. TTL 10
+2022-11-24 12:08:18 EV localhost DataBase entry from Zone Transfer added to cache. Entry: @ MX mx2-sonso.sonso. TTL 20
+2022-11-24 12:08:18 EV localhost DataBase entry from Zone Transfer added to cache. Entry: ns1-sonso A 10.0.20.10 TTL
+2022-11-24 12:08:18 EV localhost DataBase entry from Zone Transfer added to cache. Entry: ns2-sonso A 10.0.15.12 TTL
+2022-11-24 12:08:18 EV localhost DataBase entry from Zone Transfer added to cache. Entry: ns3-sonso A 10.0.21.11 TTL
+2022-11-24 12:08:18 EV localhost DataBase entry from Zone Transfer added to cache. Entry: sp-nestle.nestle A 10.0.26.10 TTL
+2022-11-24 12:08:18 EV localhost DataBase entry from Zone Transfer added to cache. Entry: mx1-sonso A 10.0.15.11 TTL
+2022-11-24 12:08:18 EV localhost DataBase entry from Zone Transfer added to cache. Entry: spsonso CNAME ns1-sonso TTL
+2022-11-24 12:08:18 EV localhost DataBase entry from Zone Transfer added to cache. Entry: ss1sonso CNAME ns2-sonso TTL
+2022-11-24 12:08:18 EV localhost DataBase entry from Zone Transfer added to cache. Entry: ss2sonso CNAME ns3-sonso TTL
+2022-11-24 12:08:18 EV localhost DataBase entry from Zone Transfer added to cache. Entry: mail1sonso CNAME mx1-sonso TTL
+2022-11-24 12:08:18 ZT 127.0.0.1 SS, totalBytes = 598, duration = 30ms

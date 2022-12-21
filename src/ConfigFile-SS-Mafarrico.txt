@@ -1,0 +1,6 @@
+# Configuration file for secondary server for mafarrico
+mafarrico. SP 10.0.17.10
+# Perguntar ao stor
+mafarrico. LG /home/core/dns/SSmafarricolog.txt
+all LG /home/core/dns/alllogs.txt
+root ST /home/core/dns/listaST.txt

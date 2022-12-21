@@ -18,12 +18,12 @@ public class CCLogger
         this.stagedEntries = new ArrayList<LogEntry>();
     }
 
-    public void setLogFile(String logFile)
+    public synchronized void setLogFile(String logFile)
     {
         this.logFile = logFile;
     }
 
-    public void log(LogEntry log) throws IOException
+    public synchronized void log(LogEntry log) throws IOException
     {
         if (this.debugMode)
         {

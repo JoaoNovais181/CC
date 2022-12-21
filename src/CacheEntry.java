@@ -68,48 +68,48 @@ public class CacheEntry
         this.Status = FREE;
     }
 
-    public String getName() {return this.Name;}
+    public synchronized String getName() {return this.Name;}
     
-    public String getType() {return this.Type;}
+    public synchronized String getType() {return this.Type;}
     
-    public String getValue() {return this.Value;}
+    public synchronized String getValue() {return this.Value;}
     
-    public int getttl() {return this.TTL;}
+    public synchronized int getttl() {return this.TTL;}
     
-    public int getOrder() {return this.Order;}
+    public synchronized int getOrder() {return this.Order;}
     
-    public String getOrigin() {return this.Origin;}
+    public synchronized String getOrigin() {return this.Origin;}
     
-    public LocalDateTime getTimeStamp() {return this.TimeStamp;}
+    public synchronized LocalDateTime getTimeStamp() {return this.TimeStamp;}
 
-    public int getIndex() {return this.Index;}
+    public synchronized int getIndex() {return this.Index;}
 
     /** 
      * 
      * @return  true if Free
      * @return  false if Valid
      */
-    public boolean getStatus() {return this.Status;}
+    public synchronized boolean getStatus() {return this.Status;}
 
-    public void setIndex(int Index) { this.Index = Index; }
+    public synchronized void setIndex(int Index) { this.Index = Index; }
 
-    public void setStatus(boolean Status) { this.Status = Status; }
+    public synchronized void setStatus(boolean Status) { this.Status = Status; }
 
-    public void setTimeStamp(LocalDateTime TimeStamp) { this.TimeStamp = TimeStamp; }
+    public synchronized void setTimeStamp(LocalDateTime TimeStamp) { this.TimeStamp = TimeStamp; }
 
-    public String dbString()
+    public synchronized String dbString()
     {
         return "" + this.Name + " " + this.Type + " " + this.Value + ((this.TTL>0) ?" "+this.TTL :"") + ((this.Order>0) ?" "+this.Order :"");
     }
 
     @Override
-    public String toString() 
+    public synchronized String toString() 
     {
         return "" + this.Name + " " + this.Type + " " + this.Value + " " + this.TTL + " " + this.Order + " " + this.Origin + " " + this.TimeStamp.toString() + " " + this.Index + " " + ((this.Status) ?"FREE" :"VALID");
     }
 
     @Override
-    public boolean equals(Object obj)
+    public synchronized boolean equals(Object obj)
     {
         if (obj == null) return false;
 

@@ -158,7 +158,7 @@ public class SS
     public void TCPzonetransfer ()
     {
         try {
-            int porta = 53;
+            int porta = this.port;
             String spIP = this.SP;
             if (this.SP.contains(":"))
             {

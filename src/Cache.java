@@ -16,14 +16,14 @@ public class Cache
             this.values[i] = new CacheEntry();
     }
 
-    private boolean putFILEorSP (CacheEntry entry)
+    private synchronized boolean putFILEorSP (CacheEntry entry)
     {
         for (int i=0 ; i<this.values.length ; i++)
             if (this.values[i].getStatus() == CacheEntry.FREE) { this.values[i] = entry; entry.setIndex(i); entry.setTimeStamp(LocalDateTime.now()); return true;}
         return false;
     }
 
-    public boolean put(CacheEntry entry)
+    public synchronized boolean put(CacheEntry entry)
     {
         if ("FILE SP".contains(entry.getOrigin()))
             return putFILEorSP(entry);
@@ -51,7 +51,7 @@ public class Cache
         return true;
     }
 
-    public boolean put(Collection<CacheEntry> entries)
+    public synchronized boolean put(Collection<CacheEntry> entries)
     {
         boolean r = true;
         for (CacheEntry entry : entries)
@@ -59,7 +59,7 @@ public class Cache
         return r;
     }
 
-    public int searchValid(String Name, String Type, int Index)
+    public synchronized int searchValid(String Name, String Type, int Index)
     {
         int r = -1;
         for (int i=0 ; i<this.values.length ; i++)
@@ -75,13 +75,13 @@ public class Cache
         return r;
     }
 
-    public CacheEntry get(int index)
+    public synchronized CacheEntry get(int index)
     {
         if (this.values[index].getStatus()==CacheEntry.VALID) return this.values[index];
         return null;
     }
 
-    public List<CacheEntry> get (String Name, String Type)
+    public synchronized List<CacheEntry> get (String Name, String Type)
     {
         ArrayList<CacheEntry> r = new ArrayList<>();
         for (CacheEntry curr : this.values) {
@@ -95,7 +95,7 @@ public class Cache
     }
 
     @Override
-    public String toString()
+    public synchronized String toString()
     {
         String r = "";
         int free = 0;

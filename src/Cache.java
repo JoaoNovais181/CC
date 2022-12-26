@@ -94,6 +94,15 @@ public class Cache
         return r;
     }
 
+    public synchronized List<CacheEntry> getEntriesByOrigin(String origin)
+    {
+        ArrayList<CacheEntry> r = new ArrayList<>();
+        for (CacheEntry curr : this.values)
+            if (curr.getOrigin().equals(origin))
+                r.add(curr);
+        return r;
+    }
+
     @Override
     public synchronized String toString()
     {

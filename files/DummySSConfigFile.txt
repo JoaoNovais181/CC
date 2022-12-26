@@ -1,0 +1,6 @@
+# Dummy configuration file for a secondary server
+mafarrico. SP 127.0.0.1:5555
+# Perguntar ao stor
+mafarrico. LG ../files/mafarricolog.txt
+all LG ../files/alllogs.txt
+root ST ../files/listaST.txt

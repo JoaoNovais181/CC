@@ -1,21 +1,14 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.net.Socket;
 
 public class Servidor
 {
@@ -31,7 +24,8 @@ public class Servidor
     private Map<String,List<String>> DDlist;
     private Map<String,List<String>> logFiles;
     private List<String> STs;
-    private int timeout, port, NumDBentries;
+    private TransferenciaZonaManager tzm;
+    private int timeout, port;
 
     public Servidor (int port, int timeout, String configFile, boolean debug) throws IOException, InvalidConfigException, InvalidDatabaseException, InvalidCacheEntryException
     {
@@ -51,6 +45,7 @@ public class Servidor
         this.cache  = new Cache(1000);//,this.configFile, this.debug);
         this.logger = new CCLogger(null, this.debug);
         this.logFile = null;
+        this.tzm = null;
     }
 
     public void setup() throws Exception {
@@ -72,6 +67,22 @@ public class Servidor
 
         this.ParseSTfile();
         this.logger.log(new LogEntry("EV", "localhost", ("st-file-read " + this.STfile)));
+
+        if (this.tipo == Tipo.SP)
+        {
+            List<CacheEntry> DBentries = this.cache.getEntriesByOrigin("FILE");
+            this.tzm = new TransferenciaZonaSPManager(  this.SSlist, 
+                                                        this.port, 
+                                                        this.logger, 
+                                                        this.domain,
+                                                        DBentries);
+        }
+        else
+            this.tzm = new TransferenciaZonaSSManager(  this.SP, 
+                                                        this.cache, 
+                                                        this.port, 
+                                                        this.logger, 
+                                                        this.domain);
     }
 
     public void ParseSTfile () throws Exception
@@ -129,18 +140,28 @@ public class Servidor
 
             if (tokens[1].equals("DB"))
             {
+                if (this.tipo == Tipo.SS)
+                    this.ThrowException(new InvalidConfigException("Secondary Server cannot have DB entries"));
+                else if (this.tipo == Tipo.UNDEFINED)
+                    this.tipo = Tipo.SP;
                 this.databaseFile = tokens[2];
             }
 
             else if (tokens[1].equals("SS"))
             {
-                this.tipo = Tipo.SP;
+                if (this.tipo == Tipo.SS)
+                    this.ThrowException(new InvalidConfigException("Secondary Server cannot have SS entries"));
+                else if (this.tipo == Tipo.UNDEFINED)
+                    this.tipo = Tipo.SP;
                 this.SSlist.add(tokens[2]);
             }
 
             else if (tokens[1].equals("SP"))
             {
-                this.tipo = Tipo.SS;
+                if (this.tipo == Tipo.SP)
+                    this.ThrowException(new InvalidConfigException("Primary Server cannot have SP entries"));
+                else if (this.tipo == Tipo.UNDEFINED)
+                    this.tipo = Tipo.SS;
                 this.SP = tokens[2];
             }
 
@@ -199,7 +220,6 @@ public class Servidor
             }
     
             Map<String, CacheEntry> alias = new HashMap<>();
-            this.NumDBentries = 0;
     
             for (String line : lines)
             {
@@ -338,7 +358,6 @@ public class Servidor
                         this.ThrowException(new InvalidDatabaseException("Type " + tokens[1] + " is invalid"));
                     }
                 }
-                this.NumDBentries++;
             }
         }
     }
@@ -352,53 +371,7 @@ public class Servidor
             byte [] buf = new byte[256];
             DatagramPacket receive = new DatagramPacket(buf,buf.length);
             serverSocket.receive(receive) ;   // extrair ip cliente, Port Client, Payload UDP
-            InetAddress clientAddress = receive.getAddress();
-            int clientPort = receive.getPort();
-            MyAppProto msg = new MyAppProto(receive.getData());
-            this.logger.log(new LogEntry("QR", clientAddress.toString(), msg.toString()));
-
-            List<CacheEntry> responseValues = this.cache.get(msg.getName(), msg.getTypeOfValue());
-            List<CacheEntry> authoritativeValues = this.cache.get(this.domain, "NS");
-            List<CacheEntry> extraValues = new ArrayList<>();
-
-            for (CacheEntry ce : responseValues)
-            {
-                int index;
-                if ((index = this.cache.searchValid(ce.getValue(),  "A", 1)) != -1)
-                    ce =  this.cache.get(index);
-                if (ce.getType().equals("A") && !extraValues.contains(ce)) extraValues.add(ce);
-            }
-
-            for (CacheEntry ce : authoritativeValues)
-            {
-                int index;
-                if ((index = this.cache.searchValid(ce.getValue(),  "A", 1)) != -1)
-                    ce =  this.cache.get(index);
-                if (ce.getType().equals("A") && !extraValues.contains(ce)) extraValues.add(ce);
-            }
-
-
-            int responseCode = 0;
-            if (responseValues.size()==0) responseCode = 1;
-            // if (responseValues.size()==0 && this.domain != ) responseCode = 2;
-            // Falta ver valor 3
-
-            MyAppProto answer = new MyAppProto(msg.getMsgID(), "A", responseCode, responseValues.size(), authoritativeValues.size(), extraValues.size(), msg.getName(), msg.getTypeOfValue());
-
-			for (CacheEntry ce : responseValues)
-				answer.PutValue(ce.dbString());
-
-			for (CacheEntry ce : authoritativeValues)
-				answer.PutAuthority(ce.dbString());
-			
-			for (CacheEntry ce : extraValues)
-				answer.PutExtraValue(ce.dbString());
-			
-			String pdu = answer.toString();
-            DatagramPacket send = new DatagramPacket(pdu.getBytes(), pdu.getBytes().length, clientAddress, clientPort);
-
-            serverSocket.send(send);
-            this.logger.log(new LogEntry("RE", clientAddress.toString(), answer.toString()));
+            Thread t = new Thread(new ServerWorker(serverSocket, receive, this.logger, this.cache, this.domain));
         }
 
         serverSocket.close();
@@ -418,35 +391,10 @@ public class Servidor
         try
         {
             this.setup();
-    
-            if (this.tipo == Tipo.SP)
-            {
-                TransferenciaZonaSPManager tzspm = new TransferenciaZonaSPManager(  this.SSlist, 
-                                                                                    this.port, 
-                                                                                    this.logger, 
-                                                                                    this.domain,
-                                                                                    this.NumDBentries,
-                                                                                    this.databaseFile);
-    
-                Thread  zoneTransfer = new Thread(tzspm, "Zone Transfer Manager (SP)");
-                zoneTransfer.start();
-    
-                this.UDPreceiving();
-            }
-            else if (this.tipo == Tipo.SS)
-            {
-                TransferenciaZonaSSManager tzssm = new TransferenciaZonaSSManager(  this.SP, 
-                                                                                    this.cache, 
-                                                                                    this.macros, 
-                                                                                    this.port, 
-                                                                                    this.logger, 
-                                                                                    this.domain);
-                
-                Thread zoneTransfer = new Thread(tzssm, "Zone Transfer Manager (SS)");
-                zoneTransfer.start();
+            Thread t = new Thread(this.tzm);
+            t.start();
 
-                this.UDPreceiving();
-            }
+            this.UDPreceiving();
         }
         catch (Exception e)
         {
@@ -457,7 +405,7 @@ public class Servidor
     public static void main(String[] args) throws Exception {
         if (args.length < 1)
         {
-            System.out.println("<Usage> \nSP [portNumber] timeout [D] configFile\nArguments with [] are not mandatory\n");
+            System.out.println("<Usage> : SP [portNumber] timeout [D] configFile");
             return;
         }
 

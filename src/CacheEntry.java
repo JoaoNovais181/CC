@@ -97,6 +97,15 @@ public class CacheEntry
 
     public synchronized void setTimeStamp(LocalDateTime TimeStamp) { this.TimeStamp = TimeStamp; }
 
+    public synchronized String tcpString()
+    {
+        return "" + this.Name + ";" +
+                    this.Type + ";" +
+                    this.Value + ";" +
+                    this.TTL + ";" +
+                    this.Order;
+    }
+
     public synchronized String dbString()
     {
         return "" + this.Name + " " + this.Type + " " + this.Value + ((this.TTL>0) ?" "+this.TTL :"") + ((this.Order>0) ?" "+this.Order :"");

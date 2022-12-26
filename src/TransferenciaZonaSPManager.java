@@ -5,29 +5,25 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 
 class TransferenciaZonaSPWorker implements Runnable
 {
     private Socket socket;
     private List<String> SSlist;
-    private int NumDBentries;
     private CCLogger logger;
-    private String domain, databaseFile;
+    private String domain;
+    private List<CacheEntry> DBentries;
 
-    public TransferenciaZonaSPWorker(Socket socket, List<String> SSlist, CCLogger logger, String domain, int NumDBentries, String databaseFile)
+    public TransferenciaZonaSPWorker(Socket socket, List<String> SSlist, CCLogger logger, String domain, List<CacheEntry> DBentries)
     {
         this.socket = socket;
         this.SSlist = SSlist;
         this.logger = logger;
         this.domain = domain;
-        this.NumDBentries = NumDBentries;
-        this.databaseFile = databaseFile;
+        this.DBentries = DBentries;
     }
 
     @Override
@@ -59,40 +55,25 @@ class TransferenciaZonaSPWorker implements Runnable
                 return; 
             }
 
-            out.println("entries: "+this.NumDBentries);
+            out.println("entries: " + this.DBentries.size());
             out.flush();
 
             line = in.readLine();
 
-            if (!line.equals("ok: "+this.NumDBentries)) 
+            if (!line.equals("ok: "+this.DBentries.size())) 
             {
                 this.logger.log(new LogEntry("EZ", ra, "SP"));
                 return; 
             }
 
-            List<String> lines = new ArrayList<String>();
-            try
-            {
-                lines = Files.readAllLines(Paths.get(this.databaseFile));
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-                throw new IOException("Couldn't read DB file");
-            }
-
             int totalLength = 0;
-            for (String l : lines)
+            for (CacheEntry ce : this.DBentries)
             {
-                if (l.isEmpty() || l.startsWith("#"))
-                    continue;
-
-                totalLength += l.length();
+                String l = ce.tcpString();
+                totalLength += l.length() + 1;
                 out.println(l);
                 out.flush();
             }
-
-
 
             socket.shutdownOutput();
             socket.shutdownInput();
@@ -106,34 +87,38 @@ class TransferenciaZonaSPWorker implements Runnable
 
 }
 
-public class TransferenciaZonaSPManager implements Runnable {
+public class TransferenciaZonaSPManager extends TransferenciaZonaManager {
 
     private List<String> SSlist;
-    private int port, NumDBentries;
+    private int port;
     private CCLogger logger;
-    private String domain, databaseFile;
+    private String domain;
+    private List<CacheEntry> DBentries;
+    private boolean running;
 
-    public TransferenciaZonaSPManager(List<String> SSlist, int port, CCLogger logger, String domain, int NumDBentries, String databaseFile) 
+    public TransferenciaZonaSPManager(List<String> SSlist, int port, CCLogger logger, String domain, List<CacheEntry> DBentries) 
     {
         this.SSlist = SSlist;
         this.port = port;
         this.logger = logger;
         this.domain = domain;
-        this.NumDBentries = NumDBentries;
-        this.databaseFile = databaseFile;
+        this.DBentries = DBentries;
+        this.running = true;
     }
 
     @Override
-    public void run() {
+    public synchronized void run() {
         try
         {
             ServerSocket serverSocket = new ServerSocket(this.port);
-            while (true)
+            while (this.running)
             {
                 Socket socket = serverSocket.accept();
-                Thread thread = new Thread(new TransferenciaZonaSPWorker(socket, this.SSlist, this.logger, this.domain, this.NumDBentries, this.databaseFile));
+                Thread thread = new Thread(new TransferenciaZonaSPWorker(socket, this.SSlist, this.logger, this.domain, this.DBentries));
                 thread.start();
             }
+
+            serverSocket.close();
         }
         catch (IOException e)
         {
@@ -141,4 +126,6 @@ public class TransferenciaZonaSPManager implements Runnable {
         }
     }
     
+    @Override
+    public synchronized void turnOff() { this.running = false; }
 }

@@ -83,9 +83,27 @@ public class Cache
 
     public synchronized List<CacheEntry> get (String Name, String Type)
     {
+        String currentMatch = null;
         ArrayList<CacheEntry> r = new ArrayList<>();
-        for (CacheEntry curr : this.values) {
-            if (curr.getName().equals(Name) && curr.getType().equals(Type)) r.add(curr);
+        for (CacheEntry curr : this.values) 
+        {
+            if (curr.getStatus() == CacheEntry.FREE) continue;
+            String currName = curr.getName();
+            if (currentMatch == null)
+            {
+                if (Name.endsWith(currName))
+                    currentMatch = currName;
+            }    
+            else if (Name.endsWith(currName) && currName.length() > currentMatch.length())
+            {
+                r.clear();
+                currentMatch = currName;
+            }
+            
+            if (currentMatch != null && currName.equals(currentMatch) && curr.getType().equals(Type))
+            {
+                r.add(curr);
+            }
 
             if (curr.getOrigin().equals("OTHERS") && curr.getttl() > 0 && ChronoUnit.SECONDS.between(curr.getTimeStamp(), LocalDateTime.now()) > curr.getttl())
                 curr.setStatus(CacheEntry.FREE);
@@ -101,6 +119,13 @@ public class Cache
             if (curr.getOrigin().equals(origin))
                 r.add(curr);
         return r;
+    }
+
+    public synchronized void removeEntries(String origin)
+    {
+        for (CacheEntry curr : this.values)
+            if (curr.getOrigin().equals(origin))
+                curr.setStatus(CacheEntry.FREE);
     }
 
     @Override

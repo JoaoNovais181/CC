@@ -54,6 +54,8 @@ class TransferenciaZonaSSWorker implements Runnable
             out.flush();
             LocalDateTime start = LocalDateTime.now();
             
+            this.cache.removeEntries("SP");
+
             String response = in.readLine();
             if (!response.startsWith("entries: ")) 
             {
@@ -148,8 +150,10 @@ public class TransferenciaZonaSSManager extends TransferenciaZonaManager {
 
     public synchronized void renewTimeouts()
     {
-        System.out.println("\n\nHEYYY\n");
         List<CacheEntry> l = this.cache.get(this.domain, "SOAREFRESH");
+        for (CacheEntry entry : l)
+            System.out.println(entry.toString());
+        
         if (l.size()==0)
             this.SOAREFRESH = 10000;
         else 
@@ -167,7 +171,7 @@ public class TransferenciaZonaSSManager extends TransferenciaZonaManager {
     public void run() {
         
         Object lock = new Object();
-
+        boolean zt = true;
         while (this.running)
         {
             Thread thread = new Thread(new TransferenciaZonaSSWorker(this.SP, this.cache, this.port, this.logger, this.domain, this.SOARETRY, this));

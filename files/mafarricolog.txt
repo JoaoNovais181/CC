@@ -135,3 +135,29 @@
 [2022-12-26 18:00:18] EV localhost: DataBase entry added to cache. Entry: mail1mafa CNAME mx1-mafa TTL
 [2022-12-26 18:00:18] EV localhost: db-file-read ../files/BasedeDadosSPdomMafarrico.txt
 [2022-12-26 18:00:18] EV localhost: st-file-read ../files/listaST.txt
+[2022-12-27 12:24:03] EV localhost: conf-file-read ..\files\DummySPConfigFile.txt
+[2022-12-27 12:24:03] EV localhost: DataBase entry added to cache. Entry: @ DEFAULT mafarrico.
+[2022-12-27 12:24:03] EV localhost: DataBase entry added to cache. Entry: TTL DEFAULT 86400
+[2022-12-27 12:24:03] EV localhost: DataBase entry added to cache. Entry: @ SOASP ns1-mafa.mafarrico. TTL
+[2022-12-27 12:24:03] EV localhost: DataBase entry added to cache. Entry: @ SOAADMIN dns\.admin.mafarrico. TTL
+[2022-12-27 12:24:03] EV localhost: DataBase entry added to cache. Entry: @ SOASERIAL 0112112022 TTL
+[2022-12-27 12:24:03] EV localhost: DataBase entry added to cache. Entry: @ SOAREFRESH 14400 TTL
+[2022-12-27 12:24:03] EV localhost: DataBase entry added to cache. Entry: @ SOARETRY 3600 TTL
+[2022-12-27 12:24:03] EV localhost: DataBase entry added to cache. Entry: @ SOAEXPIRE 604800 TTL
+[2022-12-27 12:24:03] EV localhost: DataBase entry added to cache. Entry: @ NS ns1-mafa.mafarrico. TTL
+[2022-12-27 12:24:03] EV localhost: DataBase entry added to cache. Entry: @ NS ns2-mafa.mafarrico. TTL
+[2022-12-27 12:24:03] EV localhost: DataBase entry added to cache. Entry: @ NS ns3-mafa.mafarrico. TTL
+[2022-12-27 12:24:03] EV localhost: DataBase entry added to cache. Entry: chocapic.@ NS sp-choca.chocapic.mafarrico.
+[2022-12-27 12:24:03] EV localhost: DataBase entry added to cache. Entry: @ MX mx1.mafarrico TTL 10
+[2022-12-27 12:24:03] EV localhost: DataBase entry added to cache. Entry: @ MX mx2.mafarrico TTL 20
+[2022-12-27 12:24:03] EV localhost: DataBase entry added to cache. Entry: ns1-mafa A 10.0.17.10 TTL
+[2022-12-27 12:24:03] EV localhost: DataBase entry added to cache. Entry: ns2-mafa A 10.0.18.12 TTL
+[2022-12-27 12:24:03] EV localhost: DataBase entry added to cache. Entry: ns3-mafa A 10.0.19.11 TTL
+[2022-12-27 12:24:03] EV localhost: DataBase entry added to cache. Entry: sp-choca.chocapic A 10.0.23.10 TTL
+[2022-12-27 12:24:03] EV localhost: DataBase entry added to cache. Entry: mx1-mafa A 10.0.18.11 TTL
+[2022-12-27 12:24:03] EV localhost: DataBase entry added to cache. Entry: spmafa CNAME ns1-mafa TTL
+[2022-12-27 12:24:03] EV localhost: DataBase entry added to cache. Entry: ss1mafa CNAME ns2-mafa TTL
+[2022-12-27 12:24:03] EV localhost: DataBase entry added to cache. Entry: ss2mafa CNAME ns3-mafa TTL
+[2022-12-27 12:24:03] EV localhost: DataBase entry added to cache. Entry: mail1mafa CNAME mx1-mafa TTL
+[2022-12-27 12:24:03] EV localhost: db-file-read ../files/BasedeDadosSPdomMafarrico.txt
+[2022-12-27 12:24:03] EV localhost: st-file-read ../files/listaST.txt

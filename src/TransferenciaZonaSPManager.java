@@ -70,7 +70,7 @@ class TransferenciaZonaSPWorker implements Runnable
             for (CacheEntry ce : this.DBentries)
             {
                 String l = ce.tcpString();
-                totalLength += l.length() + 1;
+                totalLength += l.length();
                 out.println(l);
                 out.flush();
             }

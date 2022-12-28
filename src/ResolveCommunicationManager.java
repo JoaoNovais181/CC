@@ -155,17 +155,24 @@ class ResolveServerWorker implements Runnable
                 sentAddress = (String)rv.get(0);
                 answer = (MyAppProto)rv.get(1);
 
-                authoritiesNames = answer.getAuthoritiesValues();
-                authoritiesNames.stream().map((entry) -> { return entry.split(" ")[2];}).collect(Collectors.toList());
-                extraValues = answer.getExtraValues();
-                for (String extraValue : extraValues)
+                if (answer.getResponseCode() == 0)
+                    break;
+                if (answer.getResponseCode() == 1)
                 {
-                    String[] parts = extraValue.split(" ");
-                    if (authoritiesNames.contains(parts[0]))
-                        nextAddress = parts[2];
-                    else
-                        extraValues.remove(extraValue);
+                    authoritiesNames = answer.getAuthoritiesValues();
+                    authoritiesNames.stream().map((entry) -> { return entry.split(" ")[2];}).collect(Collectors.toList());
+                    extraValues = answer.getExtraValues();
+                    for (String extraValue : extraValues)
+                    {
+                        String[] parts = extraValue.split(" ");
+                        if (authoritiesNames.contains(parts[0]))
+                            nextAddress = parts[2];
+                        else
+                            extraValues.remove(extraValue);
+                    }
                 }
+                else
+                    break;
             }
 
         }

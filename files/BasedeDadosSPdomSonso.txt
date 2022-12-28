@@ -31,3 +31,5 @@ spsonso CNAME ns1-sonso TTL
 ss1sonso CNAME ns2-sonso TTL
 ss2sonso CNAME ns3-sonso TTL
 mail1sonso CNAME mx1-sonso TTL
+
+10.20.0.10.inaddress.reverse. PTR ns1-sonso.sonso.

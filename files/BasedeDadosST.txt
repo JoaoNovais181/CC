@@ -1,0 +1,20 @@
+# DNS database file for ST
+
+@ DEFAULT .
+TTL DEFAULT 86400
+
+@ SOASERIAL 0112112022 TTL
+
+mafarrico. NS ns1-mafa.mafarrico. TTL
+mafarrico. NS ns2-mafa.mafarrico. TTL
+mafarrico. NS ns3-mafa.mafarrico. TTL
+sonso. NS ns1-sonso.sonso. TTL
+sonso. NS ns2-sonso.sonso. TTL
+sonso. NS ns3-sonso.sonso. TTL
+
+ns1-mafa.mafarrico A 10.0.17.10:5555 TTL
+ns2-mafa.mafarrico A 10.0.18.12 TTL
+ns3-mafa.mafarrico A 10.0.19.11 TTL
+ns1-sonso.sonso A 10.0.20.10:5555 TTL
+ns2-sonso.sonso A 10.0.15.12 TTL
+ns3-sonso.sonso A 10.0.21.11 TTL

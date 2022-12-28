@@ -16,7 +16,7 @@ TTL DEFAULT 86400
 
 @ MX mx1-choca.chocapic.mafarrico TTL 10
 
-ns1-choca A 10.0.23.10 TTL
+ns1-choca A 10.0.23.10:5555 TTL
 ns2-choca A 10.0.24.12 TTL
 ns3-choca A 10.0.22.12 TTL
 mx1-choca A 10.0.24.11 TTL

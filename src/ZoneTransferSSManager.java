@@ -1,12 +1,13 @@
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.io.InputStreamReader;
+import java.net.DatagramSocket;
 import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-class TransferenciaZonaSSWorker implements Runnable
+class ZoneTransferSSWorker implements Runnable
 {
     private String SP;
     private Cache cache;
@@ -14,9 +15,9 @@ class TransferenciaZonaSSWorker implements Runnable
     private CCLogger logger;
     private String domain;
     private int SOARETRY;
-    private TransferenciaZonaSSManager manager;
+    private ZoneTransferSSManager manager;
 
-    public TransferenciaZonaSSWorker(String SP, Cache cache, int port, CCLogger logger, String domain, int SOARETRY, TransferenciaZonaSSManager manager) 
+    public ZoneTransferSSWorker(String SP, Cache cache, int port, CCLogger logger, String domain, int SOARETRY, ZoneTransferSSManager manager) 
     {
         this.SP = SP;
         this.cache = cache;
@@ -80,11 +81,10 @@ class TransferenciaZonaSSWorker implements Runnable
                     totalLength += response.length();
     
                     String[] tokens = response.split(";");
-                    
-                    synchronized(cache)
-                    {
-                        this.cache.put(new CacheEntry(tokens[0], tokens[1], tokens[2], Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]), "SP"));
-                    }
+
+                    CacheEntry ce = new CacheEntry(tokens[0], tokens[1], tokens[2], Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]), "SP");
+                    this.cache.put(ce);
+                    this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + ce.dbString()));
 
                     receivedLines++;   
                 }
@@ -117,17 +117,17 @@ class TransferenciaZonaSSWorker implements Runnable
     }
 }
 
-public class TransferenciaZonaSSManager extends TransferenciaZonaManager {
+public class ZoneTransferSSManager extends ZoneTransferManager {
 
     private String SP;
     private Cache cache;
     private int port;
     private CCLogger logger;
     private String domain;
-    private int SOAREFRESH, SOARETRY;
+    private int SOAREFRESH, SOARETRY, SOASERIAL;
     private boolean running;
 
-    public TransferenciaZonaSSManager(String SP, Cache cache, int port, CCLogger logger, String domain) 
+    public ZoneTransferSSManager(String SP, Cache cache, int port, CCLogger logger, String domain) 
     {
         this.SP = SP;
         this.cache = cache;
@@ -145,14 +145,13 @@ public class TransferenciaZonaSSManager extends TransferenciaZonaManager {
             this.SOARETRY = 300;
         else 
             this.SOARETRY = Integer.parseInt(l.get(0).getValue());
+        this.SOASERIAL = -1;
         this.running = true;
     }
 
     public synchronized void renewTimeouts()
     {
         List<CacheEntry> l = this.cache.get(this.domain, "SOAREFRESH");
-        for (CacheEntry entry : l)
-            System.out.println(entry.toString());
         
         if (l.size()==0)
             this.SOAREFRESH = 10000;
@@ -167,15 +166,56 @@ public class TransferenciaZonaSSManager extends TransferenciaZonaManager {
             this.SOARETRY = Integer.parseInt(l.get(0).getValue());
     }
 
+    public synchronized boolean needsZT()
+    {
+        List<CacheEntry> l = this.cache.get(this.domain, "SOASERIAL");
+
+        if (l.size() == 0)
+            return true;
+        
+        this.SOASERIAL = Integer.parseInt(l.get(0).getValue());
+
+        MyAppProto pdu = new MyAppProto("Q", this.domain, "SOASERIAL");
+        int porta = this.port;
+        String spIP = this.SP;
+        if (this.SP.contains(":"))
+        {
+            spIP = this.SP.substring(0, this.SP.indexOf(":"));
+            porta = Integer.parseInt(this.SP.substring(this.SP.indexOf(":") + 1, this.SP.length()));
+        }
+        
+        try
+        {
+            DatagramSocket s = UDPCommunication.sendUDP(pdu, spIP, porta);
+            MyAppProto ans = UDPCommunication.receiveUDP(s);
+            List<String> rv = ans.getResponseValues();
+    
+            if (rv.size()==0)
+                return true;
+            
+            String[] parsedString = rv.get(0).split(" ");
+            int soaSerial = Integer.parseInt(parsedString[2]);
+    
+            return this.SOASERIAL != soaSerial;
+        }
+        catch (Exception e)
+        {
+            return true;
+        }
+    }
+
     @Override
     public void run() {
         
         Object lock = new Object();
-        boolean zt = true;
+        boolean zt = this.needsZT();
         while (this.running)
         {
-            Thread thread = new Thread(new TransferenciaZonaSSWorker(this.SP, this.cache, this.port, this.logger, this.domain, this.SOARETRY, this));
-            thread.start();
+            if (zt)
+            {
+                Thread thread = new Thread(new ZoneTransferSSWorker(this.SP, this.cache, this.port, this.logger, this.domain, this.SOARETRY, this));
+                thread.start();
+            }
             
             synchronized (lock)
             {
@@ -188,7 +228,7 @@ public class TransferenciaZonaSSManager extends TransferenciaZonaManager {
                     e.printStackTrace();
                 }
             }
-            
+            zt = this.needsZT();
         }
     }
 

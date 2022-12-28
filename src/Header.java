@@ -36,10 +36,12 @@ public class Header
         this.numberOfExtraValues = Integer.parseInt(params[5]);
     }
 
-    public String getMsgID()
-    {
-        return this.MsgID;
-    }
+    public String getMsgID() { return this.MsgID; }
+    public String getFlags() { return this.Flags; }
+    public int getResponseCode() { return this.responseCode; }
+    public int getNumberOfValues() { return this.numberOfValues; }
+    public int getNumberOfAuthorities() { return this.numberOfAuthorities; }
+    public int getNumberOfExtraValues() { return this.numberOfExtraValues; }
 
     // msgid -> 16 bits, flags -> 4 bits  (podia ser 2 mas nao consigo fazer com 2 por enquanto), rest -> 8 bits
     public byte[] Encode()
@@ -101,4 +103,6 @@ public class Header
         return "# Header\nMESSAGE-ID = " + this.MsgID + ", FLAGS = " + this.Flags + ", RESPONSE-CODE = " + this.responseCode + ", N-VALUES = " + this.numberOfValues + 
                 ", N-AUTHORITIES = " + this.numberOfAuthorities + ", N-EXTRA-VALUES = " + this.numberOfExtraValues + ";\n";
     }
+
+    public void setResponseCode(int responseCode) { this.responseCode = responseCode; }
 }

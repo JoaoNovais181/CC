@@ -91,6 +91,12 @@ public class DataField
         return this.TypeOfValue;
     }
 
+    public List<String> getResponseValues() { return this.responseValues; }
+
+    public List<String> getAuthoritiesValues() { return this.authoritiesValues; }
+
+    public List<String> getExtraValues() { return this.extraValues; }
+
     public String prettyString()
     {
         String r = "# Data: Query Info\nQUERY-INFO.NAME = " + this.Name + ", QUERY-INFO.TYPEOFVALUE = " + this.TypeOfValue + ";\n# Data: List of Response, Authorities and Extra Values\n";

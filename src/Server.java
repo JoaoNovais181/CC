@@ -1,8 +1,5 @@
 import java.io.File;
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -10,10 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Servidor
+public class Server
 {
-    public enum Tipo {SP, SS, UNDEFINED};
-    private Tipo tipo;
+    public enum Type {SP, SS, SR, UNDEFINED};
+    private Type type;
     private String domain, configFile, databaseFile, logFile, STfile;
     private Cache cache;
     private Map<String,String> macros;
@@ -21,15 +18,16 @@ public class Servidor
     private CCLogger logger;
     private List<String> SSlist;
     private String SP;
-    private Map<String,List<String>> DDlist;
+    private Map<String, String> DDlist;
     private Map<String,List<String>> logFiles;
     private List<String> STs;
-    private TransferenciaZonaManager tzm;
+    private ZoneTransferManager tzm;
+    private CommunicationManager cm;
     private int timeout, port;
 
-    public Servidor (int port, int timeout, String configFile, boolean debug) throws IOException, InvalidConfigException, InvalidDatabaseException, InvalidCacheEntryException
+    public Server (int port, int timeout, String configFile, boolean debug) throws IOException, InvalidConfigException, InvalidDatabaseException, InvalidCacheEntryException
     {
-        this.tipo = Tipo.UNDEFINED;
+        this.type = Type.UNDEFINED;
         this.port = port;
         this.timeout = timeout;
         this.domain = "";
@@ -46,6 +44,7 @@ public class Servidor
         this.logger = new CCLogger(null, this.debug);
         this.logFile = null;
         this.tzm = null;
+        this.cm = null;
     }
 
     public void setup() throws Exception {
@@ -59,7 +58,7 @@ public class Servidor
             this.logger.log(new LogEntry("EV", "localhost", ("log-file-create " + this.logFile)));
         }
         
-        if (this.tipo == Tipo.SP)
+        if (this.type == Type.SP)
         {
             this.ParseDB();
             this.logger.log(new LogEntry("EV", "localhost", ("db-file-read " + this.databaseFile)));
@@ -68,21 +67,27 @@ public class Servidor
         this.ParseSTfile();
         this.logger.log(new LogEntry("EV", "localhost", ("st-file-read " + this.STfile)));
 
-        if (this.tipo == Tipo.SP)
+        if (this.type == Type.SP)
         {
             List<CacheEntry> DBentries = this.cache.getEntriesByOrigin("FILE");
-            this.tzm = new TransferenciaZonaSPManager(  this.SSlist, 
+            this.tzm = new ZoneTransferSPManager(  this.SSlist, 
                                                         this.port, 
                                                         this.logger, 
                                                         this.domain,
                                                         DBentries);
         }
-        else
-            this.tzm = new TransferenciaZonaSSManager(  this.SP, 
+        else if (this.type == Type.SS)
+            this.tzm = new ZoneTransferSSManager(  this.SP, 
                                                         this.cache, 
                                                         this.port, 
                                                         this.logger, 
                                                         this.domain);
+
+
+        if (this.type == Type.SR)
+            this.cm = new ResolveCommunicationManager(logger, cache, domain, port, SSlist, this.DDlist.get(this.domain));
+        else
+            this.cm = new AuthoritativeCommunicationManager(this.logger, this.cache, this.domain, this.port);
     }
 
     public void ParseSTfile () throws Exception
@@ -140,36 +145,34 @@ public class Servidor
 
             if (tokens[1].equals("DB"))
             {
-                if (this.tipo == Tipo.SS)
+                if (this.type == Type.SS)
                     this.ThrowException(new InvalidConfigException("Secondary Server cannot have DB entries"));
-                else if (this.tipo == Tipo.UNDEFINED)
-                    this.tipo = Tipo.SP;
+                else if (this.type == Type.UNDEFINED)
+                    this.type = Type.SP;
                 this.databaseFile = tokens[2];
             }
 
             else if (tokens[1].equals("SS"))
             {
-                if (this.tipo == Tipo.SS)
+                if (this.type == Type.SS)
                     this.ThrowException(new InvalidConfigException("Secondary Server cannot have SS entries"));
-                else if (this.tipo == Tipo.UNDEFINED)
-                    this.tipo = Tipo.SP;
+                else if (this.type == Type.UNDEFINED)
+                    this.type = Type.SP;
                 this.SSlist.add(tokens[2]);
             }
 
             else if (tokens[1].equals("SP"))
             {
-                if (this.tipo == Tipo.SP)
+                if (this.type == Type.SP)
                     this.ThrowException(new InvalidConfigException("Primary Server cannot have SP entries"));
-                else if (this.tipo == Tipo.UNDEFINED)
-                    this.tipo = Tipo.SS;
+                else if (this.type == Type.UNDEFINED)
+                    this.type = Type.SS;
                 this.SP = tokens[2];
             }
 
             else if (tokens[1].equals("DD"))
             {
-                if (!this.DDlist.containsKey(tokens[0]))
-                    this.DDlist.put(tokens[0],new ArrayList<>());
-                this.DDlist.get(tokens[0]).add(tokens[1]);
+                this.DDlist.put(tokens[0], tokens[1]);
             }
 
             else if (tokens[1].equals("LG"))
@@ -205,7 +208,7 @@ public class Servidor
 
     public void ParseDB () throws Exception 
     {
-        if (this.tipo == Tipo.SP)
+        if (this.type == Type.SP)
         {
 
             List<String> lines = new ArrayList<String>();
@@ -362,20 +365,6 @@ public class Servidor
         }
     }
 
-    public void UDPreceiving () throws IOException {
-        boolean status = true;
-        DatagramSocket serverSocket = new DatagramSocket(this.port, InetAddress.getByName("0.0.0.0"));
-
-        while (status)
-        {
-            byte [] buf = new byte[256];
-            DatagramPacket receive = new DatagramPacket(buf,buf.length);
-            serverSocket.receive(receive) ;   // extrair ip cliente, Port Client, Payload UDP
-            Thread t = new Thread(new ServerWorker(serverSocket, receive, this.logger, this.cache, this.domain));
-        }
-
-        serverSocket.close();
-    }
 
     public void ThrowException(Exception e) throws Exception
     {
@@ -384,17 +373,16 @@ public class Servidor
         throw e;
     }
 
-    public Tipo getTipo() { return this.tipo; }
+    public Type getType() { return this.type; }
 
     public void run()
     {
         try
         {
             this.setup();
-            Thread t = new Thread(this.tzm);
-            t.start();
-
-            this.UDPreceiving();
+            Thread ztThread = new Thread(this.tzm), communicationThread = new Thread(this.cm);
+            ztThread.start();
+            communicationThread.start();
         }
         catch (Exception e)
         {
@@ -409,16 +397,16 @@ public class Servidor
             return;
         }
 
-        Servidor servidor;
+        Server servidor;
 
         if (args.length == 3 && args[args.length-2].equals("D"))
-            servidor = new Servidor(53, Integer.parseInt(args[0]), args[2], true);
+            servidor = new Server(53, Integer.parseInt(args[0]), args[2], true);
         else if (args.length == 4 && args[args.length-2].equals("D"))
-            servidor = new Servidor(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[3], true);
+            servidor = new Server(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[3], true);
         else if (args.length == 2)
-            servidor = new Servidor(53, Integer.parseInt(args[0]), args[1], false);
+            servidor = new Server(53, Integer.parseInt(args[0]), args[1], false);
         else if (args.length == 3)
-            servidor = new Servidor(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[2], false);
+            servidor = new Server(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[2], false);
         else 
             return;
 

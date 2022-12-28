@@ -1,22 +1,28 @@
+import java.util.List;
+import java.util.Random;
 
 public class MyAppProto 
 {
     private Header header;
     private DataField dataField;
-    private boolean clientMSG;
 
     public MyAppProto(String MsgID, String Flags, String Name, String TypeOfValue)
     {
         this.header = new Header(MsgID, Flags);
         this.dataField = new DataField(Name, TypeOfValue);
-        this.clientMSG = true;
+    }
+
+    public MyAppProto(String Flags, String Name, String TypeOfValue)
+    {
+        Random r = new Random(ProcessHandle.current().pid());
+        this.header = new Header(""+r.nextInt(65535), Flags);
+        this.dataField = new DataField(Name, TypeOfValue);
     }
 
     public MyAppProto(String Msg, String Flags, int responseCode, int numberOfValues, int numberOfAuthorities, int numberOfExtraValues, String Name, String TypeOfValue)
     {
         this.header = new Header(Msg, Flags, responseCode, numberOfValues, numberOfAuthorities, numberOfExtraValues);
         this.dataField = new DataField(Name, TypeOfValue, numberOfValues, numberOfAuthorities, numberOfExtraValues);
-        this.clientMSG = false;
     }
 
     public MyAppProto(byte[] bytes)
@@ -28,11 +34,8 @@ public class MyAppProto
         this.header = new Header(parts[0]);
         this.dataField = new DataField(parts[1]);
 
-        if (parts.length == 2)
-            this.clientMSG = true;
-        else
+        if (parts.length > 2)
         {
-            this.clientMSG = false;
             String[] aux = parts[2].trim().split(",");
             for (String str : aux)
             {
@@ -52,9 +55,18 @@ public class MyAppProto
     }
 
     public String getMsgID() { return this.header.getMsgID(); }
+    public String getFlags() { return this.header.getFlags(); }
+    public int getResponseCode() { return this.header.getResponseCode(); }
+    public int getNumberOfValues() { return this.header.getNumberOfValues(); }
+    public int getNumberOfAuthorities() { return this.header.getNumberOfAuthorities(); }
+    public int getNumberOfExtraValues() { return this.header.getNumberOfExtraValues(); }
     public String getName() { return this.dataField.getName(); }
-
     public String getTypeOfValue() { return this.dataField.getTypeOfValue(); }
+    public List<String> getResponseValues() { return this.dataField.getResponseValues(); }
+    public List<String> getAuthoritiesValues() { return this.dataField.getAuthoritiesValues(); }
+    public List<String> getExtraValues() { return this.dataField.getExtraValues(); }
+
+    public void setResponseCode(int responseCode) { this.header.setResponseCode(responseCode); }
 
     public void PutValue (String value) {this.dataField.PutValue(value);}
     public void PutAuthority (String value) {this.dataField.PutAuthority(value);}

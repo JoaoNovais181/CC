@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-class TransferenciaZonaSPWorker implements Runnable
+class ZoneTransferSPWorker implements Runnable
 {
     private Socket socket;
     private List<String> SSlist;
@@ -17,7 +17,7 @@ class TransferenciaZonaSPWorker implements Runnable
     private String domain;
     private List<CacheEntry> DBentries;
 
-    public TransferenciaZonaSPWorker(Socket socket, List<String> SSlist, CCLogger logger, String domain, List<CacheEntry> DBentries)
+    public ZoneTransferSPWorker(Socket socket, List<String> SSlist, CCLogger logger, String domain, List<CacheEntry> DBentries)
     {
         this.socket = socket;
         this.SSlist = SSlist;
@@ -87,7 +87,7 @@ class TransferenciaZonaSPWorker implements Runnable
 
 }
 
-public class TransferenciaZonaSPManager extends TransferenciaZonaManager {
+public class ZoneTransferSPManager extends ZoneTransferManager {
 
     private List<String> SSlist;
     private int port;
@@ -96,7 +96,7 @@ public class TransferenciaZonaSPManager extends TransferenciaZonaManager {
     private List<CacheEntry> DBentries;
     private boolean running;
 
-    public TransferenciaZonaSPManager(List<String> SSlist, int port, CCLogger logger, String domain, List<CacheEntry> DBentries) 
+    public ZoneTransferSPManager(List<String> SSlist, int port, CCLogger logger, String domain, List<CacheEntry> DBentries) 
     {
         this.SSlist = SSlist;
         this.port = port;
@@ -114,7 +114,7 @@ public class TransferenciaZonaSPManager extends TransferenciaZonaManager {
             while (this.running)
             {
                 Socket socket = serverSocket.accept();
-                Thread thread = new Thread(new TransferenciaZonaSPWorker(socket, this.SSlist, this.logger, this.domain, this.DBentries));
+                Thread thread = new Thread(new ZoneTransferSPWorker(socket, this.SSlist, this.logger, this.domain, this.DBentries));
                 thread.start();
             }
 

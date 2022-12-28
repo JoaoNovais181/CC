@@ -3,6 +3,6 @@ sonso. DB /home/core/dns/BasedeDadosSPdomSonso.txt
 sonso. SS 10.0.15.12
 sonso. SS 10.0.21.11
 # Perguntar ao stor
-sonso. LG /home/core/dns/SPsonsolog.txt
-all LG /home/core/dns/alllogs.txt
+sonso. LG /home/core/dns/logs/SPsonsolog.txt
+all LG /home/core/dns/logs/alllogs.txt
 root ST /home/core/dns/listaST.txt

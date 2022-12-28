@@ -11,6 +11,7 @@ public class Server
 {
     public enum Type {SP, SS, SR, UNDEFINED};
     private Type type;
+    private boolean isST;
     private String domain, configFile, databaseFile, logFile, STfile;
     private Cache cache;
     private Map<String,String> macros;
@@ -43,6 +44,7 @@ public class Server
         this.cache  = new Cache(1000);//,this.configFile, this.debug);
         this.logger = new CCLogger(null, this.debug);
         this.logFile = null;
+        this.STfile = null;
         this.tzm = null;
         this.cm = null;
     }
@@ -64,8 +66,11 @@ public class Server
             this.logger.log(new LogEntry("EV", "localhost", ("db-file-read " + this.databaseFile)));
         }
 
-        this.ParseSTfile();
-        this.logger.log(new LogEntry("EV", "localhost", ("st-file-read " + this.STfile)));
+        if (!this.isST)
+        {
+            this.ParseSTfile();
+            this.logger.log(new LogEntry("EV", "localhost", ("st-file-read " + this.STfile)));
+        }
 
         if (this.type == Type.SP)
         {
@@ -204,6 +209,10 @@ public class Server
             else
                 this.ThrowException(new InvalidConfigException("Invalid type " + tokens[1]));
         }
+        if (this.STfile == null)
+            this.isST = true;
+        else 
+            this.isST = false;
     }
 
     public void ParseDB () throws Exception 

@@ -1,0 +1,5 @@
+# Configuration file for primary server for sonso
+. DB /home/core/dns/BasedeDadosST.txt
+# Perguntar ao stor
+. LG /home/core/dns/logs/STlog.txt
+all LG /home/core/dns/logs/alllogs.txt

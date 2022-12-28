@@ -1,3 +1,3 @@
 # Ficheiro de Config para SS1 e SS2 do subdominio de sonso nestle.sonso
-nestle.sonso. SP 10.0.26.10:5555
-nestle.sonso. LG /home/core/dns/SSnestlesonso.txt
+nestle.sonso. SP 10.0.26.10
+nestle.sonso. LG /home/core/dns/logs/SSnestlesonso.txt

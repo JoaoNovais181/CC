@@ -49,7 +49,6 @@ public class ServerWorker implements Runnable
             if (ce.getType().equals("A") && !extraValues.contains(ce)) extraValues.add(ce);
         }
 
-        System.out.println(this.domain + " " + authoritativeValuesDomain);
         int responseCode = 0;
         if (responseValues.size()==0 && !authoritativeValuesDomain.equals(this.domain)) responseCode = 1;
         else if (responseValues.size() == 0) responseCode = 2;
@@ -106,7 +105,7 @@ public class ServerWorker implements Runnable
                 boolean success = false;
                 List<String> extraValues = answer.getExtraValues();
                 int indx  = 0;
-                do
+                while(!success && indx < extraValues.size())
                 {
                     success = true;
                     String entry = extraValues.get(indx++);
@@ -122,13 +121,15 @@ public class ServerWorker implements Runnable
                     try
                     {
                         DatagramSocket s = UDPCommunication.sendUDP(msg, address, port);
+                        this.logger.log(new LogEntry("QE", tokenizedEntry[2], msg.toString()));
                         answer = UDPCommunication.receiveUDP(s);
+                        this.logger.log(new LogEntry("QR", tokenizedEntry[2], answer.toString()));
                     }
                     catch (Exception e)
                     {
                         success = false;
                     }
-                } while(!success && indx < extraValues.size());
+                }
             }
         }
 
@@ -136,7 +137,7 @@ public class ServerWorker implements Runnable
         DatagramPacket send = new DatagramPacket(pdu.getBytes(), pdu.getBytes().length, clientAddress, clientPort);
         try {
             this.serverSocket.send(send);
-            this.logger.log(new LogEntry("RE", clientAddress.toString(), answer.toString()));    
+            this.logger.log(new LogEntry("QE", clientAddress.toString(), answer.toString()));    
         } catch (IOException e) {
             e.printStackTrace();
         }

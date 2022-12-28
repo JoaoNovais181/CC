@@ -24,12 +24,10 @@ nestle.@ NS sp-nestle.nestle.sonso.
 ns1-sonso A 10.0.20.10:5555 TTL
 ns2-sonso A 10.0.15.12 TTL
 ns3-sonso A 10.0.21.11 TTL
-sp-nestle.nestle A 10.0.26.10 TTL
+sp-nestle.nestle A 10.0.26.10:5555 TTL
 mx1-sonso A 10.0.15.11 TTL
 
 spsonso CNAME ns1-sonso TTL
 ss1sonso CNAME ns2-sonso TTL
 ss2sonso CNAME ns3-sonso TTL
 mail1sonso CNAME mx1-sonso TTL
-
-10.20.0.10.inaddress.reverse. PTR ns1-sonso.sonso.

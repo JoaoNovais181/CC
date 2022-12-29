@@ -1,0 +1,5 @@
+# Configuration file for primary server for root
+. DB /home/core/dns/STDB.txt
+. LG /home/core/dns/logs/STlog.txt
+. SS 10.0.14.10 
+all LG /home/core/dns/logs/alllogs.txt

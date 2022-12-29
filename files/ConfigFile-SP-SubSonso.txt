@@ -1,8 +1,7 @@
 # Configuration file for primary server for nestle.sonso
-nestle.sonso. DB /home/core/dns/BasedeDadosdoSubdomdeSonso.txt
+nestle.sonso. DB /home/core/dns/NestleSonsoDB.txt
 nestle.sonso. SS 10.0.28.10
 nestle.sonso. SS 10.0.27.10
-# Perguntar ao stor
 nestle.sonso. LG /home/core/dns/logs/SPnestle_sonsolog.txt
 all LG /home/core/dns/logs/alllogs.txt
 root ST /home/core/dns/listaST.txt

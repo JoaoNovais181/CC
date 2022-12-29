@@ -1,9 +1,17 @@
-# DNS database file for ST
+# DNS database file for the ST's
 
 @ DEFAULT .
 TTL DEFAULT 86400
 
-@ SOASERIAL 0112112022 TTL
+@ SOASP Root-a TTL
+@ SOAADMIN dns\.admin.root. TTL
+@ SOASERIAL 1 TTL
+@ SOAREFRESH 14400 TTL
+@ SOARETRY 3600 TTL
+@ SOAEXPIRE 604800 TTL
+
+@ NS Root-a. TTL
+@ NS Root-b. TTL
 
 mafarrico. NS ns1-mafa.mafarrico. TTL
 mafarrico. NS ns2-mafa.mafarrico. TTL
@@ -11,6 +19,9 @@ mafarrico. NS ns3-mafa.mafarrico. TTL
 sonso. NS ns1-sonso.sonso. TTL
 sonso. NS ns2-sonso.sonso. TTL
 sonso. NS ns3-sonso.sonso. TTL
+
+Root-a A 10.0.12.10 TTL
+Root-b A 10.0.14.10 TTL
 
 ns1-mafa.mafarrico A 10.0.17.10:5555 TTL
 ns2-mafa.mafarrico A 10.0.18.12 TTL

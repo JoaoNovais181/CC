@@ -1,0 +1,4 @@
+# Configuration file for secondary server for root
+. LG /home/core/dns/logs/STlogSecondary.txt
+. SP 10.0.12.10
+all LG /home/core/dns/logs/alllogs.txt

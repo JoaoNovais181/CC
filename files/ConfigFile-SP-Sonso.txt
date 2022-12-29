@@ -1,8 +1,7 @@
 # Configuration file for primary server for sonso
-sonso. DB /home/core/dns/BasedeDadosSPdomSonso.txt
+sonso. DB /home/core/dns/SonsoDB.txt
 sonso. SS 10.0.15.12
 sonso. SS 10.0.21.11
-# Perguntar ao stor
 sonso. LG /home/core/dns/logs/SPsonsolog.txt
 all LG /home/core/dns/logs/alllogs.txt
 root ST /home/core/dns/listaST.txt

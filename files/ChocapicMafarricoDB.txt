@@ -20,6 +20,8 @@ ns1-choca A 10.0.23.10:5555 TTL
 ns2-choca A 10.0.24.12 TTL
 ns3-choca A 10.0.22.12 TTL
 mx1-choca A 10.0.24.11 TTL
+mx2-choca A 10.0.22.11 TTL
+Cliente A 10.0.23.20 TTL
 
 spchoca CNAME ns1-choca TTL
 ss1choca CNAME ns2-choca TTL

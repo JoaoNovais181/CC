@@ -49,7 +49,7 @@ public class Server
         this.cm = null;
     }
 
-    public void setup() throws Exception {
+    private void setup() throws Exception {
         this.ParseConfig();
         this.logger.log(new LogEntry("EV", "localhost", ("conf-file-read " + this.configFile)));
         
@@ -90,12 +90,12 @@ public class Server
 
 
         if (this.type == Type.SR)
-            this.cm = new ResolveCommunicationManager(logger, cache, domain, port, SSlist, this.DDlist.get(this.domain));
+            this.cm = new ResolveCommunicationManager(this.logger, this.cache, this.domain, this.port, this.timeout, this.STs, this.DDlist);
         else
-            this.cm = new AuthoritativeCommunicationManager(this.logger, this.cache, this.domain, this.port);
+            this.cm = new AuthoritativeCommunicationManager(this.logger, this.cache, this.domain, this.port, this.timeout);
     }
 
-    public void ParseSTfile () throws Exception
+    private void ParseSTfile () throws Exception
     {
         List<String> lines = new ArrayList<String>();
         try
@@ -125,7 +125,7 @@ public class Server
         }            
     }
 
-    public void ParseConfig() throws Exception
+    private void ParseConfig() throws Exception
     {
         List<String> lines = new ArrayList<String>();
         try
@@ -197,6 +197,7 @@ public class Server
                     this.logFiles.get(tokens[0]).add(tokens[2]);
                 }
             }
+
             
             else if (tokens[1].equals("ST"))
             {
@@ -209,13 +210,15 @@ public class Server
             else
                 this.ThrowException(new InvalidConfigException("Invalid type " + tokens[1]));
         }
-        if (this.STfile == null)
+        if (this.type == Type.UNDEFINED)
+            this.type = Type.SR;
+        else if (this.STfile == null)
             this.isST = true;
         else 
             this.isST = false;
     }
 
-    public void ParseDB () throws Exception 
+    private void ParseDB () throws Exception 
     {
         if (this.type == Type.SP)
         {
@@ -253,6 +256,15 @@ public class Server
                     
                     CacheEntry entry = new CacheEntry(tokens[0], tokens[1], tokens[2], "FILE");
                     this.macros.put(tokens[0], tokens[2]);
+                    this.cache.put(entry);
+                    this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + entry.dbString()));
+                }
+                else if (tokens[1].equals("PTR"))
+                {
+                    if (tokens.length != 3)
+                        this.ThrowException(new InvalidDatabaseException("PTR entry should have 3 arguments"));
+
+                    CacheEntry entry = new CacheEntry(tokens[0], tokens[1], tokens[2], "File");
                     this.cache.put(entry);
                     this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + entry.dbString()));
                 }
@@ -390,7 +402,7 @@ public class Server
     }
 
 
-    public void ThrowException(Exception e) throws Exception
+    private void ThrowException(Exception e) throws Exception
     {
         this.logger.log(new LogEntry("FL", "localhost", e.getMessage()));
         e.printStackTrace();

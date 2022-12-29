@@ -1,0 +1,21 @@
+# DNS database for reverse domain
+
+@ DEFAULT reverse.
+TTL DEFAULT 86400
+
+@ SOASP ns1-reverse TTL
+@ SOAADMIN dns\.admin.reverse. TTL
+@ SOASERIAL 1 TTL
+@ SOAREFRESH 14400 TTL
+@ SOARETRY 3600 TTL
+@ SOAEXPIRE 604800 TTL
+
+@ NS ns1-reverse TTL
+
+0.10.inaddr.@ NS ns1-subreverse.0.10.inaddr.@ TTL
+
+ns1-reverse A 10.0.30.10 TTL
+ns1-subreverse.0.10.inaddr A 10.0.29.10 TTL
+
+spreverse CNAME ns1-reverse TTL
+spsubreverse CNAME ns1-subreverse.0.10.inaddr TTL

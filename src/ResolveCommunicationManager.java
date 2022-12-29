@@ -3,6 +3,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 class ResolveServerWorker implements Runnable
@@ -11,17 +13,15 @@ class ResolveServerWorker implements Runnable
     private DatagramPacket receive; 
     private CCLogger logger;   
     private Cache cache;
-    private String domain;
     private List<String> STlist;
-    private String DD;
+    private Map<String,String> DD;
 
-    public ResolveServerWorker(DatagramSocket serverSocket, DatagramPacket receive, CCLogger logger, Cache cache, String domain, List<String> STlist, String DD)
+    public ResolveServerWorker(DatagramSocket serverSocket, DatagramPacket receive, CCLogger logger, Cache cache, List<String> STlist, Map<String,String> DD)
     {
         this.serverSocket = serverSocket;
         this.receive = receive;
         this.logger = logger;
         this.cache = cache;
-        this.domain = domain;
         this.STlist = STlist;
         this.DD = DD;
     }
@@ -32,7 +32,7 @@ class ResolveServerWorker implements Runnable
         MyAppProto answer = null;
         int indx = 0;
 
-        Aentries.stream().map((entry) -> { return entry.split(" ")[2];}).collect(Collectors.toList());
+        Aentries = Aentries.stream().map((entry) -> { return entry.split(" ")[2];}).collect(Collectors.toList());
 
         boolean success = false;
         do
@@ -78,28 +78,36 @@ class ResolveServerWorker implements Runnable
         {
             if (this.DD != null)
             {
-                String address = this.DD;
-                sentAddress = address;
-                int port = 53;
-                if (this.DD.contains(":"))
+                String DD = null;
+                for (String key : this.DD.keySet())
+                    if (msg.getName().contains(key))
+                        DD = this.DD.get(key);
+                if (DD != null)
                 {
-                    String[] partes = this.DD.split(":");
-                    address = partes[0];
-                    port = Integer.parseInt(partes[1]);
-                }
-
-                try
-                {
-                    DatagramSocket s = UDPCommunication.sendUDP(msg, address, port);
-                    answer = UDPCommunication.receiveUDP(s);
-                }
-                catch (IOException e)
-                {
-                    e.printStackTrace();
+                    String address = DD;
+                    sentAddress = address;
+                    int port = 53;
+                    if (DD.contains(":"))
+                    {
+                        String[] partes = DD.split(":");
+                        address = partes[0];
+                        port = Integer.parseInt(partes[1]);
+                    }
+    
+                    try
+                    {
+                        DatagramSocket s = UDPCommunication.sendUDP(msg, address, port);
+                        answer = UDPCommunication.receiveUDP(s);
+                    }
+                    catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
                 }
             }
-            else
+            if (answer == null)
             {
+                System.out.println("ST");
                 int indx = 0;
                 boolean success = false;
                 do
@@ -127,36 +135,39 @@ class ResolveServerWorker implements Runnable
             String nextAddress = null;
             List<String> authoritiesNames = answer.getAuthoritiesValues();
             authoritiesNames.stream().map((entry) -> { return entry.split(" ")[2];}).collect(Collectors.toList());
-            List<String> extraValues = answer.getExtraValues();
+            List<String> extraValues = answer.getExtraValues(), sendto = new ArrayList<>();
+            System.out.println(extraValues.toString() + " " + extraValues.size());
             for (String extraValue : extraValues)
             {
+                System.out.println(extraValue);
                 String[] parts = extraValue.split(" ");
                 if (authoritiesNames.contains(parts[0]))
-                nextAddress = parts[2];
+                    nextAddress = parts[2];
                 else
-                extraValues.remove(extraValue);
+                   sendto.add(extraValue);
             }
             
             while (sentAddress != nextAddress)
             {
-                List<Object> rv = this.sendTo(msg, extraValues);
+                List<Object> rv = this.sendTo(msg, sendto);
                 sentAddress = (String)rv.get(0);
                 answer = (MyAppProto)rv.get(1);
                 
                 if (answer.getResponseCode() == 0)
-                break;
+                    break;
                 if (answer.getResponseCode() == 1)
                 {
                     authoritiesNames = answer.getAuthoritiesValues();
                     authoritiesNames.stream().map((entry) -> { return entry.split(" ")[2];}).collect(Collectors.toList());
                     extraValues = answer.getExtraValues();
+                    sendto.clear();
                     for (String extraValue : extraValues)
                     {
                         String[] parts = extraValue.split(" ");
                         if (authoritiesNames.contains(parts[0]))
-                        nextAddress = parts[2];
+                            nextAddress = parts[2];
                         else
-                        extraValues.remove(extraValue);
+                            sendto.add(extraValue);
                     }
                 }
                 else
@@ -173,6 +184,7 @@ class ResolveServerWorker implements Runnable
     @Override
     public void run()
     {
+        System.out.println("HEYYY");
         InetAddress clientAddress = receive.getAddress();
         int clientPort = receive.getPort();
         boolean successfullDecode = true;
@@ -213,11 +225,11 @@ class ResolveServerWorker implements Runnable
 public class ResolveCommunicationManager extends CommunicationManager 
 {
     private List<String> STlist;
-    private String DD;
+    private Map<String,String> DD;
 
-    public ResolveCommunicationManager(CCLogger logger, Cache cache, String domain, int port, List<String> STlist, String DD)
+    public ResolveCommunicationManager(CCLogger logger, Cache cache, String domain, int port, int timeout, List<String> STlist, Map<String,String> DD)
     {
-        super(logger, cache, domain, port);
+        super(logger, cache, domain, port, timeout);
         this.STlist = STlist;
         this.DD = DD;
     }
@@ -233,11 +245,13 @@ public class ResolveCommunicationManager extends CommunicationManager
             
             while (status)
             {
+                System.out.println("HELLO\n");
                 byte [] buf = new byte[256];
                 DatagramPacket receive = new DatagramPacket(buf,buf.length);
                 serverSocket.receive(receive) ;   // extrair ip cliente, Port Client, Payload UDP
-                Thread t = new Thread(new ResolveServerWorker(serverSocket, receive, this.logger, this.cache, this.domain, this.STlist, this.DD));
+                Thread t = new Thread(new ResolveServerWorker(serverSocket, receive, this.logger, this.cache, this.STlist, this.DD));
                 t.run();
+                System.out.println("Goodbye\n");
             }
             
             serverSocket.close();

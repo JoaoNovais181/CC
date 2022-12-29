@@ -1,4 +1,0 @@
-# Configuration file for primary server for sonso
-. DB /home/core/dns/BasedeDadosST.txt
-. LG /home/core/dns/logs/STlog.txt
-all LG /home/core/dns/logs/alllogs.txtshutdo

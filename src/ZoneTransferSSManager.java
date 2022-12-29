@@ -224,7 +224,7 @@ public class ZoneTransferSSManager extends ZoneTransferManager {
             {
                 try
                 {
-                    lock.wait(this.SOAREFRESH);
+                    lock.wait(this.SOAREFRESH*1000);
                 }
                 catch (InterruptedException e)
                 {
@@ -232,6 +232,7 @@ public class ZoneTransferSSManager extends ZoneTransferManager {
                 }
             }
             zt = this.needsZT();
+            System.out.println(this.SOAREFRESH);
         }
     }
 

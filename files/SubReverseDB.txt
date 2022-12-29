@@ -1,0 +1,45 @@
+# DNS database for 0.10.inaddr.reverse domain
+
+@ DEFAULT 0.10.inaddr.reverse.
+TTL DEFAULT 86400
+
+@ SOASP ns1-subreverse TTL
+@ SOAADMIN dns\.admin.0.10.inaddr.reverse. TTL
+@ SOASERIAL 1 TTL
+@ SOAREFRESH 14400 TTL
+@ SOARETRY 3600 TTL
+@ SOAEXPIRE 604800 TTL
+
+@ NS ns1-subreverse TTL
+
+ns1-subreverse A 10.0.29.10:5555 TTL
+
+spsubreverse CNAME ns1-subreverse TTL
+
+10.20 PTR ns1-sonso.sonso.
+10.21 PTR mx2-sonso.sonso.
+11.21 PTR ns3-sonso.sonso.
+12.21 PTR sr-sonso.sonso.
+11.15 PTR mx1-sonso.sonso.
+12.15 PTR ns2-sonso.sonso.
+
+10.17 PTR ns1-mafa.mafarrico.
+12.19 PTR mx2-mafa.mafarrico.
+11.19 PTR ns3-mafa.mafarrico.
+11.18 PTR mx1-mafa.mafarrico.
+12.18 PTR ns2-mafa.mafarrico.
+
+10.26 PTR ns1-nestle.nestle.sonso.
+12.27 PTR mx2-nestle.nestle.sonso.
+11.27 PTR ns3-nestle.nestle.sonso.
+11.28 PTR mx1-nestle.nestle.sonso.
+10.28 PTR ns2-nestle.nestle.sonso.
+
+10.23 PTR ns1-choca.chocapic.mafarrico.
+11.22 PTR mx2-choca.chocapic.mafarrico.
+12.22 PTR ns3-choca.chocapic.mafarrico.
+11.24 PTR mx1-choca.chocapic.mafarrico.
+12.24 PTR ns2-choca.chocapic.mafarrico.
+20.23 PTR Cliente.choca.chocapic.mafarrico.
+
+12.27 PTR mx2-nextle.nestle.sonso.

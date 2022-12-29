@@ -51,7 +51,9 @@ class ResolveServerWorker implements Runnable
             try
             {
                 DatagramSocket s = UDPCommunication.sendUDP(pdu, address, port);
+                this.logger.log(new LogEntry("QE", sentAddress, pdu.toString()));
                 answer = UDPCommunication.receiveUDP(s);
+                this.logger.log(new LogEntry("RR", sentAddress, answer.toString()));
             }
             catch (IOException e)
             {
@@ -62,25 +64,10 @@ class ResolveServerWorker implements Runnable
         return List.of(sentAddress, answer);
     }
 
-    @Override
-    public void run()
+    public MyAppProto treatQuery(MyAppProto msg, boolean recursive, boolean successfullDecode)
     {
-        InetAddress clientAddress = receive.getAddress();
-        int clientPort = receive.getPort();
-        boolean successfullDecode = true;
-        boolean recursive = false;
-        MyAppProto msg = null;
-        try
-        {
-            msg = new MyAppProto(receive.getData());
-        }
-        catch (Exception e)
-        {
-            successfullDecode = false;
-        }
-
         if (msg.getFlags().contains("+R"))
-            recursive = true;
+        recursive = true;
 
         MyAppProto answer = null;
         List<CacheEntry> cachedQuery = this.cache.get(msg.getName() + " " + msg.getTypeOfValue(), "Query");
@@ -132,8 +119,9 @@ class ResolveServerWorker implements Runnable
                     }
                 } while(!success && indx < this.STlist.size());
             }
-        }
 
+        }
+        
         if (answer.getResponseCode() == 1 && !recursive)
         {
             String nextAddress = null;
@@ -144,9 +132,9 @@ class ResolveServerWorker implements Runnable
             {
                 String[] parts = extraValue.split(" ");
                 if (authoritiesNames.contains(parts[0]))
-                    nextAddress = parts[2];
+                nextAddress = parts[2];
                 else
-                    extraValues.remove(extraValue);
+                extraValues.remove(extraValue);
             }
             
             while (sentAddress != nextAddress)
@@ -154,9 +142,9 @@ class ResolveServerWorker implements Runnable
                 List<Object> rv = this.sendTo(msg, extraValues);
                 sentAddress = (String)rv.get(0);
                 answer = (MyAppProto)rv.get(1);
-
+                
                 if (answer.getResponseCode() == 0)
-                    break;
+                break;
                 if (answer.getResponseCode() == 1)
                 {
                     authoritiesNames = answer.getAuthoritiesValues();
@@ -166,25 +154,57 @@ class ResolveServerWorker implements Runnable
                     {
                         String[] parts = extraValue.split(" ");
                         if (authoritiesNames.contains(parts[0]))
-                            nextAddress = parts[2];
+                        nextAddress = parts[2];
                         else
-                            extraValues.remove(extraValue);
+                        extraValues.remove(extraValue);
                     }
                 }
                 else
                     break;
-            }
+                }
 
         }
         else if (!successfullDecode)
             answer.setResponseCode(3);
+        
+            return answer;
+    }
+
+    @Override
+    public void run()
+    {
+        InetAddress clientAddress = receive.getAddress();
+        int clientPort = receive.getPort();
+        boolean successfullDecode = true;
+        boolean recursive = false;
+        MyAppProto msg = null;
+        try
+        {
+            msg = new MyAppProto(receive.getData());
+        }
+        catch (Exception e)
+        {
+            successfullDecode = false;
+        }
+
+        List<CacheEntry> cachedQuery = this.cache.get(msg.getName() + " " + msg.getTypeOfValue(), "QUERY");
+        
+        MyAppProto answer = null;
+        if (cachedQuery.size() != 0)
+        {
+            answer = new MyAppProto(cachedQuery.get(0).getValue().getBytes()); 
+            answer.setMsgID(""+(Integer.parseInt(answer.getMsgID())+1));
+        }
+        else
+            answer = this.treatQuery(msg, recursive, successfullDecode);
 
         String pdu = answer.toString();
         DatagramPacket send = new DatagramPacket(pdu.getBytes(), pdu.getBytes().length, clientAddress, clientPort);
         try {
             this.serverSocket.send(send);
             this.logger.log(new LogEntry("RE", clientAddress.toString(), answer.toString()));    
-        } catch (IOException e) {
+            this.cache.put(new CacheEntry(answer.getName() + " " + answer.getTypeOfValue(), "QUERY", answer.toString(), "OTHERS"));
+        } catch (IOException | InvalidCacheEntryException e) {
             e.printStackTrace();
         }
     }

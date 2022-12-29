@@ -251,65 +251,74 @@ public class Server
                     if (tokens.length != 3)
                         this.ThrowException(new InvalidDatabaseException("Macro has too many arguments"));
                     
+                    CacheEntry entry = new CacheEntry(tokens[0], tokens[1], tokens[2], "FILE");
                     this.macros.put(tokens[0], tokens[2]);
-                    this.cache.put(new CacheEntry(tokens[0], tokens[1], tokens[2], "FILE"));
-                    this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + line));
+                    this.cache.put(entry);
+                    this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + entry.dbString()));
                 }
                 else
                 {
-                    if (!tokens[0].endsWith(".")) tokens[0] = tokens[0] + "." + this.macros.get("@");
-                    
+                    if (!tokens[0].endsWith(".") && !this.isST) tokens[0] = tokens[0] + "." + this.macros.get("@");
+                    else if (!tokens[0].endsWith(".")) tokens[0] = tokens[0] + ".";
+
                     if (tokens[1].equals("A"))
                     {
         
                         if (tokens.length < 4)
                             this.ThrowException(new InvalidDatabaseException("A entry should have 4/5 arguments"));
                         
+                        CacheEntry entry;
                         if (tokens.length == 4)
-                            this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
+                            entry = new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE");
                         else 
-                            this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]), "FILE"));
-                        this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + line));
+                            entry = new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]), "FILE");
+                        this.cache.put(entry);
+                        this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + entry.dbString()));
                     }
                     else if (tokens[1].equals("SOAADMIN"))
                     {
                         if (tokens.length != 4)
                             this.ThrowException(new InvalidDatabaseException("SOASP field is not correct (too many arguments)"));
-                            
-                        this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
-                        this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + line));
+                        
+                        CacheEntry entry = new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE");
+                        this.cache.put(entry);
+                        this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + entry.dbString()));
                     }
                     else if (tokens[1].equals("SOASERIAL"))
                     {
                         if (tokens.length != 4)
                             this.ThrowException(new InvalidDatabaseException("SOASERIAL field is not correct"));
         
-                        this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
-                        this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + line));
+                        CacheEntry entry = new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE");
+                        this.cache.put(entry);
+                        this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + entry.dbString()));
                     }
                     else if (tokens[1].equals("SOAEXPIRE"))
                     {
                         if (tokens.length != 4)
                             this.ThrowException(new InvalidDatabaseException("SOAEXPIRE field is not correct (too many arguments)"));
                         
-                        this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
-                        this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + line));
+                        CacheEntry entry = new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"); 
+                        this.cache.put(entry);
+                        this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + entry.dbString()));
                     }
                     else if (tokens[1].equals("SOAREFRESH"))
                     {
                         if (tokens.length != 4)
                             this.ThrowException(new InvalidDatabaseException("SOAREFRESH field is not correct"));
         
-                        this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
-                        this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + line));
+                        CacheEntry entry = new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE");
+                        this.cache.put(entry);
+                        this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + entry.dbString()));
                     }
                     else if (tokens[1].equals("SOARETRY"))
                     {
                         if (tokens.length != 4)
                             this.ThrowException(new InvalidDatabaseException("SOARETRY field is not correct"));
-        
-                        this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
-                        this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + line));
+                        
+                        CacheEntry entry = new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE");
+                        this.cache.put(entry);
+                        this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + entry.dbString()));
                     }
                     else
                     {
@@ -321,32 +330,38 @@ public class Server
                             if (tokens.length != 4)
                                 this.ThrowException(new InvalidDatabaseException("SOASP field is not correct (too many arguments)"));
                             
-                            this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
-                            this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + line));
+                            CacheEntry entry = new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE");
+                            this.cache.put(entry);
+                            this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + entry.dbString()));
                         }
                         else if (tokens[1].equals("NS"))
                         {
                             if (tokens.length < 3)
                                 this.ThrowException(new InvalidDatabaseException("NS entry should have 3/4/5 arguments"));
                             
+                            CacheEntry entry;
                             if (tokens.length == 3)
-                                this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], "FILE"));
+                                entry = new CacheEntry(tokens[0],tokens[1], tokens[2], "FILE");
                             else if (tokens.length == 4)
-                                this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
+                                entry = new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE");
                             else 
-                                this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]), "FILE"));
-                            this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + line));
+                                entry = new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]), "FILE");
+                            this.cache.put(entry);
+                            this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + entry.dbString()));
                         }
                         else if (tokens[1].equals("MX"))
                         {
                             if (tokens.length < 4)
                                 this.ThrowException(new InvalidDatabaseException("MX entry should have 4/5 arguments"));
                             
+                            CacheEntry entry;
                             if (tokens.length == 4)
-                                this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE"));
+                                entry = new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE");
                             else 
-                                this.cache.put(new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]), "FILE"));
-                            this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + line));    
+                                entry = new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]), "FILE");
+                            
+                            this.cache.put(entry);
+                            this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + entry.dbString()));    
                         }
                         else if (tokens[1].equals("CNAME"))
                         {
@@ -363,7 +378,7 @@ public class Server
                             CacheEntry ce = new CacheEntry(tokens[0],tokens[1], tokens[2], Integer.parseInt(tokens[3]), "FILE");
                             alias.put(tokens[0], ce);
                             this.cache.put(ce);
-                            this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + line));    
+                            this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + ce.dbString()));    
                         }
             
                         else 

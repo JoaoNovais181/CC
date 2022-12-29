@@ -168,6 +168,7 @@ public class ZoneTransferSSManager extends ZoneTransferManager {
 
     public synchronized boolean needsZT()
     {
+        this.renewTimeouts();
         List<CacheEntry> l = this.cache.get(this.domain, "SOASERIAL");
 
         if (l.size() == 0)
@@ -187,7 +188,9 @@ public class ZoneTransferSSManager extends ZoneTransferManager {
         try
         {
             DatagramSocket s = UDPCommunication.sendUDP(pdu, spIP, porta);
+            this.logger.log(new LogEntry("QE", spIP + ":" + porta, pdu.toString()));
             MyAppProto ans = UDPCommunication.receiveUDP(s);
+            this.logger.log(new LogEntry("RR", spIP + ":" + porta, ans.toString()));
             List<String> rv = ans.getResponseValues();
     
             if (rv.size()==0)

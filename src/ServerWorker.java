@@ -54,7 +54,7 @@ public class ServerWorker implements Runnable
         else if (responseValues.size() == 0) responseCode = 2;
         if (!successfullDecode) responseCode = 3;
         
-        MyAppProto answer = new MyAppProto( msg.getMsgID(),"A", responseCode, responseValues.size(), authoritativeValues.size(), extraValues.size(), msg.getName(), msg.getTypeOfValue());
+        MyAppProto answer = new MyAppProto( ""+(Integer.parseInt(msg.getMsgID())+1),"A", responseCode, responseValues.size(), authoritativeValues.size(), extraValues.size(), msg.getName(), msg.getTypeOfValue());
         
         for (CacheEntry ce : responseValues)
         answer.PutValue(ce.dbString());
@@ -85,59 +85,70 @@ public class ServerWorker implements Runnable
         }   
 
         String flags = msg.getFlags();
-
-        boolean recursive = false;
-        if (flags.endsWith("+R"))
-            recursive = true;
-
-        try {
-            this.logger.log(new LogEntry("QR", clientAddress.toString(), msg.toString()));
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-
-        MyAppProto answer = this.generateAnswer(msg, successfullDecode);
-
-        if (recursive)
+        
+        List<CacheEntry> cachedQuery = this.cache.get(msg.getName() + " " + msg.getTypeOfValue(), "QUERY");
+        MyAppProto answer = null;
+        if (cachedQuery.size() != 0)
         {
-            if (answer.getResponseCode() == 1)
+            answer = new MyAppProto(cachedQuery.get(0).getValue().getBytes()); 
+            answer.setMsgID(""+(Integer.parseInt(answer.getMsgID())+1));
+        }
+        else
+        {
+            boolean recursive = false;
+            if (flags.endsWith("+R"))
+                recursive = true;
+    
+            try {
+                this.logger.log(new LogEntry("QR", clientAddress.toString(), msg.toString()));
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+    
+            answer = this.generateAnswer(msg, successfullDecode);
+    
+            if (recursive)
             {
-                boolean success = false;
-                List<String> extraValues = answer.getExtraValues();
-                int indx  = 0;
-                while(!success && indx < extraValues.size())
+                if (answer.getResponseCode() == 1)
                 {
-                    success = true;
-                    String entry = extraValues.get(indx++);
-                    String[] tokenizedEntry = entry.split(" ");
-                    String address = tokenizedEntry[2];
-                    int port = 53;
-                    if (address.contains(":"))
+                    boolean success = false;
+                    List<String> extraValues = answer.getExtraValues();
+                    int indx  = 0;
+                    while(!success && indx < extraValues.size())
                     {
-                        String[] tokenizedAdress = address.split(":");
-                        address = tokenizedAdress[0];
-                        port = Integer.parseInt(tokenizedAdress[1]);
-                    }
-                    try
-                    {
-                        DatagramSocket s = UDPCommunication.sendUDP(msg, address, port);
-                        this.logger.log(new LogEntry("QE", tokenizedEntry[2], msg.toString()));
-                        answer = UDPCommunication.receiveUDP(s);
-                        this.logger.log(new LogEntry("QR", tokenizedEntry[2], answer.toString()));
-                    }
-                    catch (Exception e)
-                    {
-                        success = false;
+                        success = true;
+                        String entry = extraValues.get(indx++);
+                        String[] tokenizedEntry = entry.split(" ");
+                        String address = tokenizedEntry[2];
+                        int port = 53;
+                        if (address.contains(":"))
+                        {
+                            String[] tokenizedAdress = address.split(":");
+                            address = tokenizedAdress[0];
+                            port = Integer.parseInt(tokenizedAdress[1]);
+                        }
+                        try
+                        {
+                            DatagramSocket s = UDPCommunication.sendUDP(msg, address, port);
+                            this.logger.log(new LogEntry("QE", tokenizedEntry[2], msg.toString()));
+                            answer = UDPCommunication.receiveUDP(s);
+                            this.logger.log(new LogEntry("RR", tokenizedEntry[2], answer.toString()));
+                        }
+                        catch (Exception e)
+                        {
+                            success = false;
+                        }
                     }
                 }
             }
         }
+        
 
         String pdu = answer.toString();
         DatagramPacket send = new DatagramPacket(pdu.getBytes(), pdu.getBytes().length, clientAddress, clientPort);
         try {
             this.serverSocket.send(send);
-            this.logger.log(new LogEntry("QE", clientAddress.toString(), answer.toString()));    
+            this.logger.log(new LogEntry("RE", clientAddress.toString(), answer.toString()));    
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -105,4 +105,5 @@ public class Header
     }
 
     public void setResponseCode(int responseCode) { this.responseCode = responseCode; }
+    public void setMsgID(String MsgID) { this.MsgID = MsgID; }
 }

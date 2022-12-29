@@ -67,6 +67,7 @@ public class MyAppProto
     public List<String> getExtraValues() { return this.dataField.getExtraValues(); }
 
     public void setResponseCode(int responseCode) { this.header.setResponseCode(responseCode); }
+    public void setMsgID(String MsgID) { this.header.setMsgID(MsgID); }
 
     public void PutValue (String value) {this.dataField.PutValue(value);}
     public void PutAuthority (String value) {this.dataField.PutAuthority(value);}
@@ -82,6 +83,7 @@ public class MyAppProto
     {
         return this.header.prettyString() + this.dataField.prettyString();
     }
+
 
 //    public static void main (String[] args)
 //    {

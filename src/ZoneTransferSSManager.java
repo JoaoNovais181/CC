@@ -136,7 +136,7 @@ public class ZoneTransferSSManager extends ZoneTransferManager {
         this.domain = domain;
         List<CacheEntry> l = this.cache.get(this.domain, "SOAREFRESH");
         if (l.size()==0)
-            this.SOAREFRESH = 10000;
+            this.SOAREFRESH = 1000;
         else 
             this.SOAREFRESH = Integer.parseInt(l.get(0).getValue());
         l = this.cache.get(this.domain, "SOARETRY");
@@ -154,7 +154,7 @@ public class ZoneTransferSSManager extends ZoneTransferManager {
         List<CacheEntry> l = this.cache.get(this.domain, "SOAREFRESH");
         
         if (l.size()==0)
-            this.SOAREFRESH = 10000;
+            this.SOAREFRESH = 1000;
         else 
             this.SOAREFRESH = Integer.parseInt(l.get(0).getValue());
 

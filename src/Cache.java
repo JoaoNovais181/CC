@@ -85,16 +85,18 @@ public class Cache
     {
         String currentMatch = null;
         ArrayList<CacheEntry> r = new ArrayList<>();
+        boolean cname = Type.equals("CNAME");
         for (CacheEntry curr : this.values) 
         {
             if (curr.getStatus() == CacheEntry.FREE) continue;
-            String currName = curr.getName();
+            String currName = (cname) ?curr.getValue() :curr.getName();
+            String currType = curr.getType();
             if (currentMatch == null)
             {
-                if (Name.endsWith(currName))
+                if (Name.endsWith(currName) && currType.equals(Type))
                     currentMatch = currName;
             }    
-            else if (Name.endsWith(currName) && currName.length() > currentMatch.length())
+            else if (Name.endsWith(currName) && currName.length() > currentMatch.length() && currType.equals(Type))
             {
                 r.clear();
                 currentMatch = currName;

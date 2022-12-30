@@ -1,0 +1,7 @@
+# Configuration file for primary server for chocapic.mafarrico.  
+chocapic.mafarrico. DB /home/core/dns/ChocapicMafarricoDB.txt
+chocapic.mafarrico. SS 10.0.24.12
+chocapic.mafarrico. SS 10.0.22.12
+chocapic.mafarrico. LG /home/core/dns/logs/SPchocapicmafarricolog.txt
+all LG /home/core/dns/logs/alllogs.txt
+root ST /home/core/dns/listaST.txt

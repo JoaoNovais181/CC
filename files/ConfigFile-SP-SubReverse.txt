@@ -1,0 +1,5 @@
+# Configuration file for primary server for 0.10.inaddr.reverse
+reverse. DB /home/core/dns/SubReverseDB.txt
+reverse. LG /home/core/dns/logs/SP010inaddrreverselog.txt
+all LG /home/core/dns/logs/alllogs.txt
+root ST /home/core/dns/listaST.txt

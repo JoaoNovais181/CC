@@ -1,0 +1,5 @@
+# Configuration file for primary server for reverse
+reverse. DB /home/core/dns/ReverseDB.txt
+reverse. LG /home/core/dns/logs/SPreverselog.txt
+all LG /home/core/dns/logs/alllogs.txt
+root ST /home/core/dns/listaST.txt

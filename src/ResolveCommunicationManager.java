@@ -107,7 +107,7 @@ class ResolveServerWorker implements Runnable
             }
             if (answer == null)
             {
-                System.out.println("ST");
+                // System.out.println("ST");
                 int indx = 0;
                 boolean success = false;
                 do
@@ -136,10 +136,10 @@ class ResolveServerWorker implements Runnable
             List<String> authoritiesNames = answer.getAuthoritiesValues();
             authoritiesNames.stream().map((entry) -> { return entry.split(" ")[2];}).collect(Collectors.toList());
             List<String> extraValues = answer.getExtraValues(), sendto = new ArrayList<>();
-            System.out.println(extraValues.toString() + " " + extraValues.size());
+            // System.out.println(extraValues.toString() + " " + extraValues.size());
             for (String extraValue : extraValues)
             {
-                System.out.println(extraValue);
+                // System.out.println(extraValue);
                 String[] parts = extraValue.split(" ");
                 if (authoritiesNames.contains(parts[0]))
                     nextAddress = parts[2];
@@ -184,7 +184,7 @@ class ResolveServerWorker implements Runnable
     @Override
     public void run()
     {
-        System.out.println("HEYYY");
+        // System.out.println("HEYYY");
         InetAddress clientAddress = receive.getAddress();
         int clientPort = receive.getPort();
         boolean successfullDecode = true;
@@ -193,6 +193,7 @@ class ResolveServerWorker implements Runnable
         try
         {
             msg = new MyAppProto(receive.getData());
+            this.logger.log(new LogEntry("QR", clientAddress.toString(), msg.toString()));
         }
         catch (Exception e)
         {
@@ -245,13 +246,13 @@ public class ResolveCommunicationManager extends CommunicationManager
             
             while (status)
             {
-                System.out.println("HELLO\n");
+                // System.out.println("HELLO\n");
                 byte [] buf = new byte[256];
                 DatagramPacket receive = new DatagramPacket(buf,buf.length);
                 serverSocket.receive(receive) ;   // extrair ip cliente, Port Client, Payload UDP
                 Thread t = new Thread(new ResolveServerWorker(serverSocket, receive, this.logger, this.cache, this.STlist, this.DD));
                 t.run();
-                System.out.println("Goodbye\n");
+                // System.out.println("Goodbye\n");
             }
             
             serverSocket.close();

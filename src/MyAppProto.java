@@ -28,7 +28,6 @@ public class MyAppProto
     public MyAppProto(byte[] bytes)
     {
         String msg = new String(bytes).trim();
-
         String[] parts = msg.split(";");
 
         this.header = new Header(parts[0]);

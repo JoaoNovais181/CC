@@ -24,6 +24,7 @@ class ServerWorker implements Runnable
 
     public MyAppProto generateAnswer(MyAppProto msg, boolean successfullDecode)
     {
+        
         List<CacheEntry> responseValues = this.cache.get(msg.getName(), msg.getTypeOfValue());
         List<CacheEntry> authoritativeValues = this.cache.get(msg.getName(), "NS");
         if (authoritativeValues.size() == 0)
@@ -78,6 +79,7 @@ class ServerWorker implements Runnable
         try
         {
             msg = new MyAppProto(receive.getData());
+            this.logger.log(new LogEntry("QR", clientAddress.toString(), msg.toString()));
         }
         catch (Exception e)
         {
@@ -98,12 +100,6 @@ class ServerWorker implements Runnable
             boolean recursive = false;
             if (flags.endsWith("+R"))
                 recursive = true;
-    
-            try {
-                this.logger.log(new LogEntry("QR", clientAddress.toString(), msg.toString()));
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
     
             answer = this.generateAnswer(msg, successfullDecode);
     

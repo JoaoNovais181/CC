@@ -1,6 +1,6 @@
 # Configuration file for Resolve Server (SR) contained in sonso domain
 nestle.sonso. DD 10.0.26.10:5555
 sonso. DD 10.0.20.10:5555
-sonso. LG /home/core/dns/logs/srLog.txt
+sonso. LG /home/core/dns/logs/SRlog.txt
 root ST /home/core/dns/listaST.txt
 all LG /home/core/dns/logs/alllogs.txt

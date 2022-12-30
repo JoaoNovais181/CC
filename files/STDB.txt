@@ -19,6 +19,7 @@ mafarrico. NS ns3-mafa.mafarrico. TTL
 sonso. NS ns1-sonso.sonso. TTL
 sonso. NS ns2-sonso.sonso. TTL
 sonso. NS ns3-sonso.sonso. TTL
+reverse. NS ns1-reverse.reverse. TTL
 
 Root-a A 10.0.12.10 TTL
 Root-b A 10.0.14.10 TTL
@@ -29,3 +30,4 @@ ns3-mafa.mafarrico A 10.0.19.11 TTL
 ns1-sonso.sonso A 10.0.20.10:5555 TTL
 ns2-sonso.sonso A 10.0.15.12 TTL
 ns3-sonso.sonso A 10.0.21.11 TTL
+ns1-reverse.reverse. A 10.0.30.10:5555 TTL

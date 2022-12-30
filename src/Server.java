@@ -259,15 +259,6 @@ public class Server
                     this.cache.put(entry);
                     this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + entry.dbString()));
                 }
-                else if (tokens[1].equals("PTR"))
-                {
-                    if (tokens.length != 3)
-                        this.ThrowException(new InvalidDatabaseException("PTR entry should have 3 arguments"));
-
-                    CacheEntry entry = new CacheEntry(tokens[0], tokens[1], tokens[2], "File");
-                    this.cache.put(entry);
-                    this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + entry.dbString()));
-                }
                 else
                 {
                     if (!tokens[0].endsWith(".") && !this.isST) tokens[0] = tokens[0] + "." + this.macros.get("@");
@@ -392,9 +383,18 @@ public class Server
                             this.cache.put(ce);
                             this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + ce.dbString()));    
                         }
+                        else if (tokens[1].equals("PTR"))
+                        {
+                            if (tokens.length != 3)
+                                this.ThrowException(new InvalidDatabaseException("PTR entry should have 3 arguments"));
+
+                            CacheEntry entry = new CacheEntry(tokens[0], tokens[1], tokens[2], "FILE");
+                            this.cache.put(entry);
+                            this.logger.log(new LogEntry("EV", "localhost", "DataBase entry added to cache. Entry: " + entry.dbString()));
+                        }
             
                         else 
-                        this.ThrowException(new InvalidDatabaseException("Type " + tokens[1] + " is invalid"));
+                            this.ThrowException(new InvalidDatabaseException("Type " + tokens[1] + " is invalid"));
                     }
                 }
             }

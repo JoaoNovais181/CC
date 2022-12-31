@@ -1,6 +1,4 @@
 # DNS database file for domain sonso
-# It also includes a pointer to the primary server
-# of the nestle.sonso subdomain
 
 @ DEFAULT sonso.
 TTL DEFAULT 86400
@@ -16,7 +14,9 @@ TTL DEFAULT 86400
 @ NS ns2-sonso.sonso. TTL
 @ NS ns3-sonso.sonso. TTL
 
-nestle.@ NS sp-nestle.nestle.sonso.
+nestle.@ NS spnestle.nestle.sonso.
+nestle.@ NS ss1nestle.nestle.sonso.
+nestle.@ NS ss2nestle.nestle.sonso.
 
 @ MX mx1-sonso.sonso. TTL 10
 @ MX mx2-sonso.sonso. TTL 20
@@ -24,10 +24,14 @@ nestle.@ NS sp-nestle.nestle.sonso.
 ns1-sonso A 10.0.20.10:5555 TTL
 ns2-sonso A 10.0.15.12 TTL
 ns3-sonso A 10.0.21.11 TTL
-sp-nestle.nestle A 10.0.26.10:5555 TTL
+spnestle.nestle A 10.0.26.10:5555 TTL
+ss1nestle.nestle A 10.0.28.10 TTL
+ss2nestle.nestle A 10.0.27.11 TTL
 mx1-sonso A 10.0.15.11 TTL
+mx2-sonso A 10.0.21.10 TTL
 
 spsonso CNAME ns1-sonso TTL
 ss1sonso CNAME ns2-sonso TTL
 ss2sonso CNAME ns3-sonso TTL
 mail1sonso CNAME mx1-sonso TTL
+mail2sonso CNAME mx2-sonso TTL

@@ -19,10 +19,12 @@ TTL DEFAULT 86400
 
 ns1-nestle A 10.0.26.10:5555 TTL
 ns2-nestle A 10.0.28.10 TTL
-ns3-nestle A 10.0.27.10 TTL
+ns3-nestle A 10.0.27.11 TTL
 mx1-nestle A 10.0.28.11 TTL
+mx2-nestle A 10.0.27.12 TTL
 
 spnestle CNAME ns1-nestle TTL
 ss1nestle CNAME ns2-nestle TTL
 ss2nestle CNAME ns3-nestle TTL
 mail1nestle CNAME mx1-nestle TTL
+mail2nestle CNAME mx2-nestle TTL

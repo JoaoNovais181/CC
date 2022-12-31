@@ -41,5 +41,3 @@ spsubreverse CNAME ns1-subreverse TTL
 11.24 PTR mx1-choca.chocapic.mafarrico.
 12.24 PTR ns2-choca.chocapic.mafarrico.
 20.23 PTR Cliente.choca.chocapic.mafarrico.
-
-12.27 PTR mx2-nextle.nestle.sonso.

@@ -4,11 +4,26 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+/**
+ * Implementation of a Cache used to store information about DNS Databases/Queries in the context of the CC project.
+ * 
+ * <p> Since it is going to be used by multiple threads, this class is made to be safe in that context </p>
+ * 
+ * @author Bianca Araújo do Vale a95835
+ * @author João Carlos Fernandes Novais a96626
+ * @author Nuno Miguel Leite da Costa a96897 
+ */
 public class Cache
 {
+    /**
+     * Static {@link CacheEntry} array used to store the entries in the cache
+     */
     private CacheEntry[] values;
 
-    
+    /**
+     * Constructs a new cache with capacity of {@code size}
+     * @param size Capacity of the cache
+     */
     public Cache (int size)
     {
         this.values = new CacheEntry[size];
@@ -16,6 +31,11 @@ public class Cache
             this.values[i] = new CacheEntry();
     }
 
+    /**
+     * Method used to put a entry that comes from a Servers Database File or a ZoneTransfer, from the Primary Server
+     * @param entry {@link CacheEntry} to put into the {@code Cache}
+     * @return {@code boolean} that indicates whether the entry was successfully put into the Cache or not
+     */
     private synchronized boolean putFILEorSP (CacheEntry entry)
     {
         for (int i=0 ; i<this.values.length ; i++)
@@ -23,6 +43,11 @@ public class Cache
         return false;
     }
 
+    /**
+     * Method used to put a new entry into the cache
+     * @param entry {@link CacheEntry} to put into the {@code Cache}
+     * @return {@code boolean} that indicates whether the entry was successfully put into the Cache or not
+     */
     public synchronized boolean put(CacheEntry entry)
     {
         if ("FILE SP".contains(entry.getOrigin()))
@@ -51,6 +76,11 @@ public class Cache
         return true;
     }
 
+    /**
+     * Method to put every entry from a {@link Collection}&lt;{@link CacheEntry}&gt; into the cache
+     * @param entries {@link Collection}&lt;{@link CacheEntry}&gt; containing the entries to be put into the cache 
+     * @return {@code boolean} that indicates whether every entry was successfully put into the Cache or not
+     */
     public synchronized boolean put(Collection<CacheEntry> entries)
     {
         boolean r = true;
@@ -59,6 +89,13 @@ public class Cache
         return r;
     }
 
+    /**
+     * Method to search a entry in the cache with the same name and type given as arguments, starting on the Index given also as an argument 
+     * @param Name Name the entry should have
+     * @param Type Type the entry should have
+     * @param Index Index to start the search at
+     * @return -1 if the entry is not found and it's index in case it is
+     */
     public synchronized int searchValid(String Name, String Type, int Index)
     {
         int r = -1;
@@ -75,12 +112,24 @@ public class Cache
         return r;
     }
 
+    /**
+     * Method to get the {@link CacheEntry} located at the specified index
+     * @param index Index of the {@link CacheEntry} to retrieve
+     * @return the {@link CacheEntry} located at the specified index
+     */
     public synchronized CacheEntry get(int index)
     {
         if (this.values[index].getStatus()==CacheEntry.VALID) return this.values[index];
         return null;
     }
 
+    /**
+     * Method used to get a {@link List}&lt;{@link CacheEntry}&gt; containing the entries with the best possible suffix of Name and
+     * of type given as argument.
+     * @param Name Name the entries should be a suffix to
+     * @param Type Type the entries should have
+     * @return a list of the entries with the best possible suffix
+     */
     public synchronized List<CacheEntry> get (String Name, String Type)
     {
         String currentMatch = null;
@@ -114,6 +163,11 @@ public class Cache
         return r;
     }
 
+    /**
+     * Method used to retrieve all the {@link CacheEntry} with the specified origin
+     * @param origin the origin the entries should have
+     * @return List of {@link CacheEntry} of the specified origin
+     */
     public synchronized List<CacheEntry> getEntriesByOrigin(String origin)
     {
         ArrayList<CacheEntry> r = new ArrayList<>();
@@ -123,6 +177,10 @@ public class Cache
         return r;
     }
 
+    /**
+     * Method used to remove all the {@link CacheEntry} with the specified origin
+     * @param origin origin the of cache entries to remove
+     */
     public synchronized void removeEntries(String origin)
     {
         for (CacheEntry curr : this.values)
@@ -131,6 +189,10 @@ public class Cache
     }
 
     @Override
+    /**
+     * Method used to get a Textual representation of the Cache
+     * @return Textual representation of the Cache
+     */
     public synchronized String toString()
     {
         String r = "";

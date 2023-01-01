@@ -5,14 +5,48 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementation of the {@code ServerWorker} class, used when a Server receives a query, in order to produce a response
+ * to it. This class is used in a multi-threaded context. 
+ *
+ * One thing to note is that this is only used to treat queries on Servers that are not DNS Cache Only Servers (SR)
+ *
+ * @author Bianca Araújo do Vale a95835
+ * @author João Carlos Fernandes Novais a96626
+ * @author Nuno Miguel Leite da Costa a96897 
+ */
 class ServerWorker implements Runnable
 {
+    /**
+     * {@link DatagramSocket} used to send the message back to whoever sent it
+     */
     private DatagramSocket serverSocket;
+    /**
+     * Parameter corresponding to the {@link DatagramPacket} received by the server
+     */
     private DatagramPacket receive; 
+    /**
+     * Instance of {@link CCLogger} used to log every event that needs logging
+     */
     private CCLogger logger;   
+    /**
+     * Instance of {@link Cache} that corresponds to the cache of the server it is serving, used to get the values to answer the
+     * queries and also store the information about the query in the cache
+     */
     private Cache cache;
+    /**
+     * Name of the domain on which the server it servers is located.
+     */
     private String domain;
 
+    /**
+     * Constructs a new instance of the {@code ServerWorker} class
+     * @param serverSocket socket of the server
+     * @param receive received UDP packet
+     * @param logger loger
+     * @param cache server cache
+     * @param domain name of the domain on which the server it servers is located
+     */
     public ServerWorker(DatagramSocket serverSocket, DatagramPacket receive, CCLogger logger, Cache cache, String domain)
     {
         this.serverSocket = serverSocket;
@@ -22,6 +56,12 @@ class ServerWorker implements Runnable
         this.domain = domain;
     }
 
+    /**
+     * Method used to generate an answer to a query by getting the values it wants from the cache
+     * @param msg {@link MyAppProto} object that represents the query received by the server
+     * @param successfullDecode {@code boolean} that indicates whether the decode was successful or not
+     * @return {@link MyAppProto} object that represents the answer to the query
+     */
     public MyAppProto generateAnswer(MyAppProto msg, boolean successfullDecode)
     {
         
@@ -70,6 +110,10 @@ class ServerWorker implements Runnable
         return answer;
     }
 
+    /**
+     * Method needed to execute the thread on which the ServerWorker is going to be ran. 
+     */
+    @Override
     public void run()
     {
         InetAddress clientAddress = receive.getAddress();
@@ -152,14 +196,34 @@ class ServerWorker implements Runnable
     }
 }
 
-
+/**
+ * Class that extends the {@link CommunicationManager} abstract class. used to manage the communication of a server that
+ * isn't a DNS Cache Only Server.
+ * 
+ * <p> It receives messages via UDP communication and treats them with sub-Threads </p>
+ *
+ * @author Bianca Araújo do Vale a95835
+ * @author João Carlos Fernandes Novais a96626
+ * @author Nuno Miguel Leite da Costa a96897 
+ */
 public class AuthoritativeCommunicationManager extends CommunicationManager
 {
+    /**
+     * Constructs a new authoritative communication manager
+     * @param logger logger of the server
+     * @param cache the Server it serves's cache
+     * @param domain name of the server it serves
+     * @param port port on which the server is listening
+     * @param timeout timeout used on querys
+     */
     public AuthoritativeCommunicationManager(CCLogger logger, Cache cache, String domain, int port, int timeout)
     {
         super(logger, cache, domain, port, timeout);
     }
 
+    /**
+     * Method needed to execute the thread on which the AuthoritativeCommunicationManager is going to be ran. 
+     */
     @Override
     public void run ()  
     {

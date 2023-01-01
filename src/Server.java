@@ -7,25 +7,93 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Class defined to represent a DNS Server on the context of the project.
+ * 
+ * <p> The server can have 3 distict types -> Primary Server (SP), Secondary Server (SS) or DNS Cache Only Server (SR) </p>
+ * 
+ * @author Bianca Araújo do Vale a95835
+ * @author João Carlos Fernandes Novais a96626
+ * @author Nuno Miguel Leite da Costa a96897 
+ */
 public class Server
 {
+    /**
+     * Definition of {@code enum Type}, used to represent the different types of servers
+     */
     public enum Type {SP, SS, SR, UNDEFINED};
+    /**
+     * Variable of type {@link Type}, used to represent the type of this server
+     */
     private Type type;
+    /**
+     * boolean to represent whether the server is a top-level server or not
+     */
     private boolean isST;
+    /**
+     * Strings representing the domain of the server, it's configuration file, database file, log file and ST list file
+     */
     private String domain, configFile, databaseFile, logFile, STfile;
+    /**
+     * {@link Cache} used to store the information about the server's domain
+     */
     private Cache cache;
+    /**
+     * {@link Map} used to represent the "DEFAULT" entries on the Database file
+     */
     private Map<String,String> macros;
+    /**
+     * boolean to indicate whether the server is operating on debug mode or not
+     */
     private boolean debug;
+    /**
+     * {@link CCLoger} used to log the operations performed by the server
+     */
     private CCLogger logger;
+    /**
+     * {@link List} of Strings that represent the addres of the Secondary Servers of the domain (if the server is a Primary Server)
+     */
     private List<String> SSlist;
+    /**
+     * String containing the address of the primary server of the domain (if the server is a Secondary Server)
+     */
     private String SP;
+    /**
+     * List of Default Domains of a server
+     */
     private Map<String, String> DDlist;
-    private Map<String,List<String>> logFiles;
+    /**
+     * {@link Map} that pairs the name of something to it's log file
+     */
+    private Map<String,String> logFiles;
+    /**
+     * {@link List} that contains String containing the Top-Level Servers's addresses 
+     */
     private List<String> STs;
+    /**
+     * {@link ZoneTransferManager} used to manage the zone transfer of the Server (if the server is not a SR)
+     */
     private ZoneTransferManager tzm;
+    /**
+     * {@link CommunicationManager} used to manage the communication of the Server
+     */
     private CommunicationManager cm;
+    /**
+     * ints containing the value of the timeout waited to receive answers to queries and the port the server should listen on
+     */
     private int timeout, port;
 
+    /**
+     * Constructor of the Server
+     * @param port port it should listen on
+     * @param timeout timeout to wait for answers to queries
+     * @param configFile file containing the configuration of the server
+     * @param debug boolean indicating wheter the server is in debug mode
+     * @throws IOException
+     * @throws InvalidConfigException
+     * @throws InvalidDatabaseException
+     * @throws InvalidCacheEntryException
+     */
     public Server (int port, int timeout, String configFile, boolean debug) throws IOException, InvalidConfigException, InvalidDatabaseException, InvalidCacheEntryException
     {
         this.type = Type.UNDEFINED;
@@ -42,24 +110,45 @@ public class Server
         this.macros = new HashMap<>();
         this.STs    = new ArrayList<>();
         this.cache  = new Cache(1000);//,this.configFile, this.debug);
-        this.logger = new CCLogger(null, this.debug);
+        this.logger = new CCLogger(null, null, this.debug);
         this.logFile = null;
         this.STfile = null;
         this.tzm = null;
         this.cm = null;
     }
 
+    /**
+     * Method called to setup the server (read it's configuration file, figure out what the type of the server is,
+     * parse the Database file, parse the ST list file, instantiate the {@link ZoneTransferManager} and the
+     * {@link CommunicationManager})
+     * @throws Exception
+     */
     private void setup() throws Exception {
         this.ParseConfig();
         this.logger.log(new LogEntry("EV", "localhost", ("conf-file-read " + this.configFile)));
         
-        File f = new File(this.logFile);
+        File f = new File(this.logFile), allLogsFile = null;
+        String allLogs = this.logFiles.get("all");
+        if (allLogs != null)
+        {
+            allLogsFile = new File(allLogs);
+            this.logger.setAllLogs(allLogs);
+            
+            if (!allLogsFile.exists())
+            {
+                allLogsFile.createNewFile();
+                this.logger.log(new LogEntry("EV", "localhost", ("all log-file-create " + allLogs)));
+            }
+        }
+
         if (!f.exists())
         {
             f.createNewFile();
             this.logger.log(new LogEntry("EV", "localhost", ("log-file-create " + this.logFile)));
         }
         
+
+
         if (this.type == Type.SP)
         {
             this.ParseDB();
@@ -95,6 +184,10 @@ public class Server
             this.cm = new AuthoritativeCommunicationManager(this.logger, this.cache, this.domain, this.port, this.timeout);
     }
 
+    /**
+     * Method used to parse the file containing the list of the ST servers
+     * @throws Exception
+     */
     private void ParseSTfile () throws Exception
     {
         List<String> lines = new ArrayList<String>();
@@ -125,6 +218,10 @@ public class Server
         }            
     }
 
+    /**
+     * Method used to parse the configuration file
+     * @throws Exception
+     */
     private void ParseConfig() throws Exception
     {
         List<String> lines = new ArrayList<String>();
@@ -182,7 +279,7 @@ public class Server
 
             else if (tokens[1].equals("LG"))
             {
-                if (this.logFile == null)
+                if (this.logFile == null && !tokens[0].equals("all"))
                 {
                     this.domain = tokens[0];
                     if (!this.domain.endsWith("."))
@@ -192,9 +289,7 @@ public class Server
                 }
                 else
                 {
-                    if (!this.logFiles.containsKey(tokens[0]))
-                        this.logFiles.put(tokens[0], new ArrayList<>());
-                    this.logFiles.get(tokens[0]).add(tokens[2]);
+                    this.logFiles.put(tokens[0], tokens[2]);
                 }
             }
 
@@ -218,6 +313,10 @@ public class Server
             this.isST = false;
     }
 
+    /**
+     * Method used to parse the Database File
+     * @throws Exception
+     */
     private void ParseDB () throws Exception 
     {
         if (this.type == Type.SP)
@@ -402,6 +501,11 @@ public class Server
     }
 
 
+    /**
+     * Mathod used to throw exceptions and also log them
+     * @param e Exception to be thrown
+     * @throws Exception
+     */
     private void ThrowException(Exception e) throws Exception
     {
         this.logger.log(new LogEntry("FL", "localhost", e.getMessage()));
@@ -409,8 +513,15 @@ public class Server
         throw e;
     }
 
+    /**
+     * Method used to get the {@link Type} of the server
+     * @return the type of the server
+     */
     public Type getType() { return this.type; }
 
+    /**
+     * Method called to run the server
+     */
     public void run()
     {
         try

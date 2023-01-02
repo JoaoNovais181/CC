@@ -92,6 +92,7 @@ class ZoneTransferSSWorker implements Runnable
                 if (receivedLines==entries)
                     success = true;
                 else
+                {
                     synchronized (lock)
                     {
                         try
@@ -103,6 +104,12 @@ class ZoneTransferSSWorker implements Runnable
                             e.printStackTrace();
                         }
                     }
+                    this.run();
+                    socket.shutdownOutput();
+                    socket.shutdownInput();
+                    socket.close();
+                    return;
+                }
 
             } while(!success);
 

@@ -274,7 +274,7 @@ public class Server
 
             else if (tokens[1].equals("DD"))
             {
-                this.DDlist.put(tokens[0], tokens[1]);
+                this.DDlist.put(tokens[0], tokens[2]);
             }
 
             else if (tokens[1].equals("LG"))

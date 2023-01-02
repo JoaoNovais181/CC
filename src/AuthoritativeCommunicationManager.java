@@ -66,6 +66,13 @@ class ServerWorker implements Runnable
     {
         
         List<CacheEntry> responseValues = this.cache.get(msg.getName(), msg.getTypeOfValue());
+        if (!msg.getTypeOfValue().equals("CNAME") && 
+            responseValues.size() > 0 && 
+            !responseValues.get(0).getName().equals(msg.getName()))
+        {
+            responseValues.clear();
+            System.out.println("CONAAA");
+        }
         List<CacheEntry> authoritativeValues = this.cache.get(msg.getName(), "NS");
         if (authoritativeValues.size() == 0)
             authoritativeValues = this.cache.get(this.domain, "NS");
@@ -116,6 +123,7 @@ class ServerWorker implements Runnable
     @Override
     public void run()
     {
+        System.out.println(this.domain);
         InetAddress clientAddress = receive.getAddress();
         int clientPort = receive.getPort();
         boolean successfullDecode = true;
@@ -236,7 +244,7 @@ public class AuthoritativeCommunicationManager extends CommunicationManager
             {
                 byte [] buf = new byte[256];
                 DatagramPacket receive = new DatagramPacket(buf,buf.length);
-                serverSocket.receive(receive) ;   // extrair ip cliente, Port Client, Payload UDP
+                serverSocket.receive(receive) ;
                 Thread t = new Thread(new ServerWorker(serverSocket, receive, this.logger, this.cache, this.domain));
                 t.run();
             }

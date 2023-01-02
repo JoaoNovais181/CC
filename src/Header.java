@@ -1,10 +1,28 @@
 import java.nio.ByteBuffer;
 
+/**
+ * Implementation of {@code Header}
+ *
+ * @author Bianca Araújo do Vale a95835
+ * @author João Carlos Fernandes Novais a96626
+ * @author Nuno Miguel Leite da Costa a96897 
+ */
 public class Header
 {
+    /**
+     * Message id and flags of the querie
+     */
     private String MsgID, Flags;
+    /**
+     * Response code, number of values, authorities and extra values
+     */
     private int responseCode, numberOfValues, numberOfAuthorities, numberOfExtraValues;
 
+    /**
+     * Constructs a header using the parameters
+     * @param MsgID
+     * @param Flags
+     */
     public Header(String MsgID, String Flags)
     {
         this.MsgID = MsgID;
@@ -15,6 +33,15 @@ public class Header
         this.numberOfExtraValues = 0;
     }
 
+    /**
+     * Constructs a header using the specified parameters
+     * @param MsgID
+     * @param Flags
+     * @param responseCode
+     * @param numberOfValues
+     * @param numberOfAuthorities
+     * @param numberOfExtraValues
+     */
     public Header(String MsgID, String Flags, int responseCode, int numberOfValues, int numberOfAuthorities, int numberOfExtraValues)
     {
         this.MsgID = MsgID;
@@ -25,6 +52,10 @@ public class Header
         this.numberOfExtraValues = numberOfExtraValues;
     }
 
+    /**
+     * Constructs a header using the string representation of a querie
+     * @param paramsString
+     */
     public Header(String paramsString)
     {
         String[] params = paramsString.split(",");
@@ -36,7 +67,15 @@ public class Header
         this.numberOfExtraValues = Integer.parseInt(params[5]);
     }
 
+    /**
+     * Method to get the Message ID
+     * @return Message ID
+     */
     public String getMsgID() { return this.MsgID; }
+    /**
+     * Method to get the Flags
+     * @return
+     */
     public String getFlags() { return this.Flags; }
     public int getResponseCode() { return this.responseCode; }
     public int getNumberOfValues() { return this.numberOfValues; }
@@ -44,52 +83,52 @@ public class Header
     public int getNumberOfExtraValues() { return this.numberOfExtraValues; }
 
     // msgid -> 16 bits, flags -> 4 bits  (podia ser 2 mas nao consigo fazer com 2 por enquanto), rest -> 8 bits
-    public byte[] Encode()
-    {
-        ByteBuffer bb = ByteBuffer.allocate(7);
-        short id = Short.valueOf(this.MsgID);
-        bb.putShort(id);
+    // public byte[] Encode()
+    // {
+    //     ByteBuffer bb = ByteBuffer.allocate(7);
+    //     short id = Short.valueOf(this.MsgID);
+    //     bb.putShort(id);
         
-        byte flags;
-        if (this.Flags.equals("Q")) flags = 0b001;        // se flag for Q entao fica com o valor 001 em binario
-        else if (this.Flags.equals("R")) flags = 0b010;   // se flag for R entao fica com o valor 010 em binario
-        else if (this.Flags.equals("A")) flags = 0b100;   // se flag for A entao fica com o valor 100 em binario
-        else if (this.Flags.equals("Q+R")) flags = 0b011;   // se flag for Q+R entao fica com o valor 011 em binario
-        else return null;   // mudar isto 
-        bb.put(flags);
+    //     byte flags;
+    //     if (this.Flags.equals("Q")) flags = 0b001;        // se flag for Q entao fica com o valor 001 em binario
+    //     else if (this.Flags.equals("R")) flags = 0b010;   // se flag for R entao fica com o valor 010 em binario
+    //     else if (this.Flags.equals("A")) flags = 0b100;   // se flag for A entao fica com o valor 100 em binario
+    //     else if (this.Flags.equals("Q+R")) flags = 0b011;   // se flag for Q+R entao fica com o valor 011 em binario
+    //     else return null;   // mudar isto 
+    //     bb.put(flags);
 
-        byte rc = (byte)this.responseCode;
-        byte nov = (byte)(this.numberOfValues - 127), noa = (byte)(this.numberOfAuthorities - 127), noev = (byte)(this.numberOfExtraValues - 127);
-        bb.put(rc);
-        bb.put(nov);
-        bb.put(noa);
-        bb.put(noev);
+    //     byte rc = (byte)this.responseCode;
+    //     byte nov = (byte)(this.numberOfValues - 127), noa = (byte)(this.numberOfAuthorities - 127), noev = (byte)(this.numberOfExtraValues - 127);
+    //     bb.put(rc);
+    //     bb.put(nov);
+    //     bb.put(noa);
+    //     bb.put(noev);
 
 
-        return bb.array();
-    }
+    //     return bb.array();
+    // }
 
-    public static Header Decode (byte[] encodedHeader)
-    {
-        String MsgId, Flags;
-        int responseCode, numberOfValues, numberOfAuthorities, numberOfExtraValues;
+    // public static Header Decode (byte[] encodedHeader)
+    // {
+    //     String MsgId, Flags;
+    //     int responseCode, numberOfValues, numberOfAuthorities, numberOfExtraValues;
 
-        short id = ByteBuffer.wrap(new byte[]{encodedHeader[0], encodedHeader[1]}).getShort();
-        MsgId = "" + id;
+    //     short id = ByteBuffer.wrap(new byte[]{encodedHeader[0], encodedHeader[1]}).getShort();
+    //     MsgId = "" + id;
 
-        if (encodedHeader[2]==0b001) Flags = "Q";
-        else if (encodedHeader[2]==0b010) Flags = "R";
-        else if (encodedHeader[2]==0b100) Flags = "A";
-        else if (encodedHeader[2]==0b011) Flags = "Q+R";
-        else return null; // mudar isto
+    //     if (encodedHeader[2]==0b001) Flags = "Q";
+    //     else if (encodedHeader[2]==0b010) Flags = "R";
+    //     else if (encodedHeader[2]==0b100) Flags = "A";
+    //     else if (encodedHeader[2]==0b011) Flags = "Q+R";
+    //     else return null; // mudar isto
 
-        responseCode = (int)encodedHeader[3];
-        numberOfValues = (int)encodedHeader[4] + 127;
-        numberOfAuthorities = (int)encodedHeader[5] + 127;
-        numberOfExtraValues = (int)encodedHeader[6] + 127;
+    //     responseCode = (int)encodedHeader[3];
+    //     numberOfValues = (int)encodedHeader[4] + 127;
+    //     numberOfAuthorities = (int)encodedHeader[5] + 127;
+    //     numberOfExtraValues = (int)encodedHeader[6] + 127;
 
-        return new Header(MsgId, Flags, responseCode, numberOfValues, numberOfAuthorities, numberOfExtraValues);
-    }
+    //     return new Header(MsgId, Flags, responseCode, numberOfValues, numberOfAuthorities, numberOfExtraValues);
+    // }
 
     @Override
     public String toString()

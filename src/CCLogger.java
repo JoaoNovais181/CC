@@ -62,8 +62,8 @@ public class CCLogger
 
     /**
      * Method used to log a {@link LogEntry} to the general log file
-     * @param log
-     * @throws IOException
+     * @param log Entry to be logged
+     * @throws IOException if there's an error writing to the log file
      */
     public synchronized void generalLog(LogEntry log) throws IOException
     {
@@ -84,6 +84,11 @@ public class CCLogger
             this.allLogsStagedEntries.clear();
     }
 
+    /**
+     * Method used to log a {@link LogEntry}
+     * @param log Entry to be logged
+     * @throws IOException if there's an error writing to the log file
+     */
     public synchronized void log(LogEntry log) throws IOException
     {
         if (this.debugMode)

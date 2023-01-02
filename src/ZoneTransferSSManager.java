@@ -7,16 +7,53 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+/**
+ * Implementation of the Worker of the {@link ZoneTransferSSManager}, used to receive the Database entries from de Primary Server
+ * @author Bianca Araújo do Vale a95835
+ * @author João Carlos Fernandes Novais a96626
+ * @author Nuno Miguel Leite da Costa a96897 
+ */
 class ZoneTransferSSWorker implements Runnable
 {
+    /**
+     * Address of the Primary Server
+     */
     private String SP;
+    /**
+     * The secondary Server's {@link Cache} 
+     */
     private Cache cache;
+    /**
+     * The port the secondary Server is listening on
+     */
     private int port;
+    /**
+     * The logger that the server uses to log it's operations
+     */
     private CCLogger logger;
+    /**
+     * The domain on which the server is located
+     */
     private String domain;
+    /**
+     * The value of the SOARETRY field
+     */
     private int SOARETRY;
+    /**
+     * The Worker's Manager
+     */
     private ZoneTransferSSManager manager;
 
+    /**
+     * Instantiates a new ZoneTransferSSWorker with the specified arguments
+     * @param SP Address of the Primary Server
+     * @param cache The secondary Server's {@link Cache}
+     * @param port The port the secondary Server is listening on
+     * @param logger The logger that the server uses to log it's operations
+     * @param domain The domain on which the server is located
+     * @param SOARETRY The value of the SOARETRY field
+     * @param manager The Worker's Manager
+     */
     public ZoneTransferSSWorker(String SP, Cache cache, int port, CCLogger logger, String domain, int SOARETRY, ZoneTransferSSManager manager) 
     {
         this.SP = SP;
@@ -28,6 +65,11 @@ class ZoneTransferSSWorker implements Runnable
         this.manager = manager;
     }
 
+    /**
+     * Method used to throw an exception
+     * @param e exception to be thrown
+     * @throws Exception
+     */
     public void ThrowException(Exception e) throws Exception
     {
         this.logger.log(new LogEntry("FL", "localhost", e.getMessage()));
@@ -35,6 +77,9 @@ class ZoneTransferSSWorker implements Runnable
         throw e;
     }
 
+    /**
+     * Method used to run the Worker
+     */
     public void run()
     {
         try {
@@ -124,16 +169,51 @@ class ZoneTransferSSWorker implements Runnable
     }
 }
 
+/**
+ * Implementation of {@code ZoneTransferSSManager}, that extends the {@link ZoneTransferManager} abstract class, used 
+ * to manage the zone transfer on a Secondary Server
+ * @author Bianca Araújo do Vale a95835
+ * @author João Carlos Fernandes Novais a96626
+ * @author Nuno Miguel Leite da Costa a96897 
+ */
 public class ZoneTransferSSManager extends ZoneTransferManager {
-
+/**
+     * Address of the Primary Server
+     */
     private String SP;
+    /**
+     * The secondary Server's {@link Cache} 
+     */
     private Cache cache;
+    /**
+     * The port the secondary Server is listening on
+     */
     private int port;
+    /**
+     * The logger that the server uses to log it's operations
+     */
     private CCLogger logger;
+    /**
+     * The domain on which the server is located
+     */
     private String domain;
+    /**
+     * The value of the SOAREFRESH, SOARETRY and SOASERIAL field
+     */
     private int SOAREFRESH, SOARETRY, SOASERIAL;
+    /**
+     * boolean representing whether the server is running
+     */
     private boolean running;
 
+    /**
+     * Instantiates a new ZoneTransferSSManager using the specified arguments
+     * @param SP Address of the Primary Server
+     * @param cache The secondary Server's {@link Cache}
+     * @param port The port the secondary Server is listening on
+     * @param logger The logger that the server uses to log it's operations
+     * @param domain The domain on which the server is located
+     */
     public ZoneTransferSSManager(String SP, Cache cache, int port, CCLogger logger, String domain) 
     {
         this.SP = SP;
@@ -156,6 +236,9 @@ public class ZoneTransferSSManager extends ZoneTransferManager {
         this.running = true;
     }
 
+    /**
+     * Method used to renew the value of the timeouts
+     */
     public synchronized void renewTimeouts()
     {
         List<CacheEntry> l = this.cache.get(this.domain, "SOAREFRESH");
@@ -173,6 +256,10 @@ public class ZoneTransferSSManager extends ZoneTransferManager {
             this.SOARETRY = Integer.parseInt(l.get(0).getValue());
     }
 
+    /**
+     * Method used to see wheter the Server needs a zone transfer or not
+     * @return boolean indicating whether the Server needs a zone transfer or not
+     */
     public synchronized boolean needsZT()
     {
         this.renewTimeouts();
@@ -215,6 +302,9 @@ public class ZoneTransferSSManager extends ZoneTransferManager {
     }
 
     @Override
+    /**
+     * Method used to run the Manager
+     */
     public void run() {
         
         Object lock = new Object();
@@ -244,6 +334,9 @@ public class ZoneTransferSSManager extends ZoneTransferManager {
     }
 
 	@Override
+    /**
+     * Method used to turn off the Manager
+     */
 	public synchronized void turnOff() { this.running = false; }
     
 }

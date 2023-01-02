@@ -7,15 +7,48 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation of {@code ResolveServerWorker}, the worker for the Resolve Server Communication Manager
+ * @author Bianca Araújo do Vale a95835
+ * @author João Carlos Fernandes Novais a96626
+ * @author Nuno Miguel Leite da Costa a96897
+ */
 class ResolveServerWorker implements Runnable
 {
+    /**
+     * {@link DatagramSocket} containing the socket to use to answer requests
+     */
     private DatagramSocket serverSocket;
+    /**
+     * {@link DatagramPacket} that was received
+     */
     private DatagramPacket receive; 
-    private CCLogger logger;   
+    /**
+     * The logger
+     */
+    private CCLogger logger;
+    /**
+     * The cache of the server  
+     */   
     private Cache cache;
+    /**
+     * The list of Top Level Servers
+     */
     private List<String> STlist;
+    /**
+     * Map of string-string containing the default address associated to a domain
+     */
     private Map<String,String> DD;
 
+    /**
+     * Constructor for the Server Worker with the specified arguments
+     * @param serversocket server socket
+     * @param receive packet received
+     * @param logger logger
+     * @param cache cache
+     * @param STlist stlist
+     * @param DD DD
+     */
     public ResolveServerWorker(DatagramSocket serverSocket, DatagramPacket receive, CCLogger logger, Cache cache, List<String> STlist, Map<String,String> DD)
     {
         this.serverSocket = serverSocket;
@@ -26,6 +59,12 @@ class ResolveServerWorker implements Runnable
         this.DD = DD;
     }
 
+    /**
+     * Method used to send a packet via UDP to one address on a List
+     * @param pdu pdu to send
+     * @param Aentries List of addresses to send to
+     * @return a list representing a tuple with (sentAdrress and the packet received)
+     */
     public List<Object> sendTo(MyAppProto pdu, List<String> Aentries)
     {
         String sentAddress = null;
@@ -64,6 +103,13 @@ class ResolveServerWorker implements Runnable
         return List.of(sentAddress, answer);
     }
 
+    /**
+     * Method to treat a query
+     * @param msg message received
+     * @param recursive boolean indicating whether the query is recursive
+     * @param successfullDecode boolean indicating whether the decode was successful
+     * @return the answer to the query
+     */
     public MyAppProto treatQuery(MyAppProto msg, boolean recursive, boolean successfullDecode)
     {
         if (msg.getFlags().contains("+R"))
@@ -140,7 +186,7 @@ class ResolveServerWorker implements Runnable
                 if (authoritiesNames.contains(parts[0]))
                     nextAddress = parts[2];
                 else
-                   sendto.add(extraValue);
+                    sendto.add(extraValue);
             }
             
             while (sentAddress != nextAddress)
@@ -178,6 +224,9 @@ class ResolveServerWorker implements Runnable
     }
 
     @Override
+    /**
+     * Method to run the worker
+     */
     public void run()
     {
         InetAddress clientAddress = receive.getAddress();
@@ -218,11 +267,33 @@ class ResolveServerWorker implements Runnable
     }
 }
 
+/**
+ * Implementation of {@code ResolveCommunicationManager} that extends the {@link CommunicationManager} abstract class
+ * @author Bianca Araújo do Vale a95835
+ * @author João Carlos Fernandes Novais a96626
+ * @author Nuno Miguel Leite da Costa a96897
+ */
 public class ResolveCommunicationManager extends CommunicationManager 
 {
+    /**
+     * The list of Top Level Servers
+     */
     private List<String> STlist;
+    /**
+     * Map of string-string containing the default address associated to a domain
+     */
     private Map<String,String> DD;
 
+    /**
+     * Constructor of the ResolveCommunicationManager
+     * @param logger logger
+     * @param cache cache
+     * @param domain domain
+     * @param port port
+     * @param timeout timeout
+     * @param STlist STlist
+     * @param DD DD
+     */
     public ResolveCommunicationManager(CCLogger logger, Cache cache, String domain, int port, int timeout, List<String> STlist, Map<String,String> DD)
     {
         super(logger, cache, domain, port, timeout);
@@ -232,6 +303,9 @@ public class ResolveCommunicationManager extends CommunicationManager
 
 
     @Override
+    /**
+     * Method to run the communication manager
+     */
     public void run() {
         try 
         {

@@ -74,12 +74,28 @@ public class Header
     public String getMsgID() { return this.MsgID; }
     /**
      * Method to get the Flags
-     * @return
+     * @return Flags
      */
     public String getFlags() { return this.Flags; }
+    /**
+     * Method to get the Response Code
+     * @return Response Code
+     */
     public int getResponseCode() { return this.responseCode; }
+    /**
+     * Method used to get the number of values
+     * @return the number of values
+     */
     public int getNumberOfValues() { return this.numberOfValues; }
+    /**
+     * Method used to get the number of authorities values
+     * @return the number of authorities values
+     */
     public int getNumberOfAuthorities() { return this.numberOfAuthorities; }
+    /**
+     * Method used to get the number of extra values
+     * @return the number of extra values
+     */
     public int getNumberOfExtraValues() { return this.numberOfExtraValues; }
 
     // msgid -> 16 bits, flags -> 4 bits  (podia ser 2 mas nao consigo fazer com 2 por enquanto), rest -> 8 bits
@@ -131,18 +147,34 @@ public class Header
     // }
 
     @Override
+    /**
+     * Method used to get a String representation of the Header
+     * @return a String representation of the Header
+     */
     public String toString()
     {
-        return this.MsgID + "," + this.Flags + "," + this.responseCode + ","
-               + this.numberOfValues + "," + this.numberOfAuthorities + "," + this.numberOfExtraValues + ";";
+        return  this.MsgID + "," + this.Flags + "," + this.responseCode + ","
+                + this.numberOfValues + "," + this.numberOfAuthorities + "," + this.numberOfExtraValues + ";";
     }
 
+    /**
+     * Method used to get a prettier String representation of the Header
+     * @return a prettier String representation of the Header
+     */
     public String prettyString()
     {
         return "# Header\nMESSAGE-ID = " + this.MsgID + ", FLAGS = " + this.Flags + ", RESPONSE-CODE = " + this.responseCode + ", N-VALUES = " + this.numberOfValues + 
                 ", N-AUTHORITIES = " + this.numberOfAuthorities + ", N-EXTRA-VALUES = " + this.numberOfExtraValues + ";\n";
     }
 
+    /**
+     * Method used to set the value of the response code
+     * @param responseCode value to set the response code
+     */
     public void setResponseCode(int responseCode) { this.responseCode = responseCode; }
+    /**
+     * Method used to set the message ID
+     * @param MsgID the message ID to set
+     */
     public void setMsgID(String MsgID) { this.MsgID = MsgID; }
 }

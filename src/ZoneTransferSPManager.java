@@ -9,14 +9,44 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+/**
+ * Implementation of the Worker of the {@link ZoneTransferSPManager}, used to send the Database entries to the Secondary Server
+ * @author Bianca Araújo do Vale a95835
+ * @author João Carlos Fernandes Novais a96626
+ * @author Nuno Miguel Leite da Costa a96897 
+ */
 class ZoneTransferSPWorker implements Runnable
 {
+    /**
+     * The socket used to communicate with the Secondary Server
+     */
     private Socket socket;
+    /**
+     * The list of Secodary Servers
+     */
     private List<String> SSlist;
+    /**
+     * The logger used to log every event on the primary server
+     */
     private CCLogger logger;
+    /**
+     * The domain where the Server is located at
+     */
     private String domain;
+    /**
+     * The list of {@link CacheEntry} of the Server's Database
+     */
     private List<CacheEntry> DBentries;
 
+
+    /**
+     * Creation of a new instance of ZoneTransferSPWorker
+     * @param socket The socket used to communicate with the Secondary Server
+     * @param SSlist The list of Secodary Servers
+     * @param logger The logger used to log every event on the primary server
+     * @param domain The domain where the Server is located at
+     * @param DBentries The list of {@link CacheEntry} of the Server's Database
+     */
     public ZoneTransferSPWorker(Socket socket, List<String> SSlist, CCLogger logger, String domain, List<CacheEntry> DBentries)
     {
         this.socket = socket;
@@ -27,6 +57,9 @@ class ZoneTransferSPWorker implements Runnable
     }
 
     @Override
+    /**
+     * Method used to run the Worker
+     */
     public void run() {
         try
         {
@@ -87,15 +120,48 @@ class ZoneTransferSPWorker implements Runnable
 
 }
 
+/**
+ * Implementation of {@code ZoneTransferSPManager} that extends the {@link ZoneTransferManager} abstract class, used to 
+ * manager the Zone Transfer on a Primary Server
+ * @author Bianca Araújo do Vale a95835
+ * @author João Carlos Fernandes Novais a96626
+ * @author Nuno Miguel Leite da Costa a96897 
+ */
 public class ZoneTransferSPManager extends ZoneTransferManager {
 
+    /**
+     * The list of Secodary Servers
+     */
     private List<String> SSlist;
-    private int port;
+    /**
+     * The logger used to log every event on the primary server
+     */
     private CCLogger logger;
+    /**
+     * The domain where the Server is located at
+     */
     private String domain;
+    /**
+     * The list of {@link CacheEntry} of the Server's Database
+     */
     private List<CacheEntry> DBentries;
+    /**
+     * integer that represents the port the server is listening on
+     */
+    private int port;
+    /**
+     * Boolean indicating whether the server is running or not
+     */
     private boolean running;
 
+    /**
+     * Constructor for the {@code ZoneTransferSPManager}
+     * @param SSlist The list of Secodary Servers
+     * @param port The port the server is listening on
+     * @param logger The logger used to log every event on the primary server
+     * @param domain The domain where the Server is located at
+     * @param DBentries The list of {@link CacheEntry} of the Server's Database
+     */
     public ZoneTransferSPManager(List<String> SSlist, int port, CCLogger logger, String domain, List<CacheEntry> DBentries) 
     {
         this.SSlist = SSlist;
@@ -107,6 +173,9 @@ public class ZoneTransferSPManager extends ZoneTransferManager {
     }
 
     @Override
+    /**
+     * Method used to run the server
+     */
     public synchronized void run() {
         try
         {
@@ -127,5 +196,8 @@ public class ZoneTransferSPManager extends ZoneTransferManager {
     }
     
     @Override
+    /**
+     * Method used to turn off the server
+     */
     public synchronized void turnOff() { this.running = false; }
 }
